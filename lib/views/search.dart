@@ -69,6 +69,7 @@ class _SearchState extends State<Search> {
         MaterialPageRoute(
             builder: (context) => Chat(
                   chatRoomId: chatRoomId,
+                  userName: users[1],
                 )));
   }
 

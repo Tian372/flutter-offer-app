@@ -7,6 +7,21 @@ class DatabaseMethods {
     });
   }
 
+  Future<void> rejectJob(String jobId) async {
+    DocumentReference dr =
+        Firestore.instance.collection("chatRoom").document(jobId);
+
+    dr.collection("chats").getDocuments().then((snapshot) {
+      for (DocumentSnapshot ds in snapshot.documents) {
+        ds.reference.delete();
+      }
+    });
+
+    await Firestore.instance.runTransaction((Transaction myTransaction) async {
+      await myTransaction.delete(dr);
+    });
+  }
+
   getUserInfo(String email) async {
     return Firestore.instance
         .collection("users")

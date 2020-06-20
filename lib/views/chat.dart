@@ -95,10 +95,12 @@ class _ChatState extends State<Chat> {
                             child: RaisedButton(
                               color: Colors.red,
                               onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => ChatRoom()));
+                                DatabaseMethods().rejectJob(widget.chatRoomId);
+                                Navigator.pop(context);
+//                                Navigator.push(
+//                                    context,
+//                                    MaterialPageRoute(
+//                                        builder: (context) => ChatRoom()));
                               },
                               child: const Text('Decline',
                                   style: TextStyle(
