@@ -11,14 +11,13 @@ class Chat extends StatefulWidget {
   final String chatRoomId;
   final String userName;
 
-  Chat({this.chatRoomId,this.userName});
+  Chat({this.chatRoomId, this.userName});
 
   @override
   _ChatState createState() => _ChatState();
 }
 
 class _ChatState extends State<Chat> {
-
   Stream<QuerySnapshot> chats;
   TextEditingController messageEditingController = new TextEditingController();
   TextEditingController priceEditingController = new TextEditingController();
@@ -57,6 +56,7 @@ class _ChatState extends State<Chat> {
 
       setState(() {
         messageEditingController.text = "";
+        priceEditingController.text = "";
       });
     }
   }
@@ -75,26 +75,51 @@ class _ChatState extends State<Chat> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(
-          widget.userName
-        ),
-        /*title: Image.network(
-
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
-          height: 40,
-        ),*/
+        title: Text(widget.userName),
         elevation: 0.0,
         centerTitle: false,
       ),
       body: Container(
-        child: Stack(
+        child: Column(
           children: [
-            chatMessages(),
-            Container(
-              alignment: Alignment.bottomCenter,
-              width: MediaQuery.of(context).size.width,
+            Expanded(flex: 5, child: chatMessages()),
+            Expanded(
+                flex: 1,
+                child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    color: Colors.blueGrey[100],
+                    child: Row(
+                      children: [
+                        Expanded(
+                            flex: 1,
+                            child: RaisedButton(
+                              color: Colors.red,
+                              onPressed: () {
+
+                              },
+                              child: const Text('Decline',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                            )),
+                        Expanded(
+                            flex: 1,
+                            child: RaisedButton(
+                              color: Colors.green,
+                              onPressed: () {},
+                              child: const Text('Accept',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 20,
+                                      fontWeight: FontWeight.bold)),
+                            ))
+                      ],
+                    ))),
+            Expanded(
+              flex: 1,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                 color: Colors.blueGrey[100],
                 child: Row(
                   children: [
@@ -152,22 +177,23 @@ class _ChatState extends State<Chat> {
                         addMessage();
                       },
                       child: Container(
-                          height: 40,
-                          width: 40,
+                          height: 50,
+                          width: 50,
                           decoration: BoxDecoration(
-                              gradient: LinearGradient(
-                                  colors: [
-                                    const Color(0x36FFFFFF),
-                                    const Color(0x0FFFFFFF)
-                                  ],
-                                  begin: FractionalOffset.topLeft,
-                                  end: FractionalOffset.bottomRight),
+                              color: Colors.black38,
+//                              gradient: LinearGradient(
+//                                  colors: [
+//                                    const Color(0x36FFFFFF),
+//                                    const Color(0x0FFFFFFF)
+//                                  ],
+//                                  begin: FractionalOffset.topLeft,
+//                                  end: FractionalOffset.bottomRight),
                               borderRadius: BorderRadius.circular(40)),
-                          padding: EdgeInsets.all(12),
+                          padding: EdgeInsets.all(8),
                           child: Image.asset(
                             "assets/images/send.png",
-                            height: 25,
-                            width: 25,
+                            height: 50,
+                            width: 50,
                           )),
                     ),
                   ],
