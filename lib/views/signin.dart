@@ -37,7 +37,7 @@ class _SignInState extends State<SignIn> {
           .signInWithEmailAndPassword(
               emailEditingController.text, passwordEditingController.text)
           .then((result) async {
-        if (result != null)  {
+        if (result != null) {
           QuerySnapshot userInfoSnapshot =
               await DatabaseMethods().getUserInfo(emailEditingController.text);
 
@@ -68,10 +68,12 @@ class _SignInState extends State<SignIn> {
               child: Center(child: CircularProgressIndicator()),
             )
           : Container(
-              padding: EdgeInsets.symmetric(horizontal: 24),
+              padding: EdgeInsets.symmetric(horizontal: 26),
               child: Column(
                 children: [
-                  Spacer(),
+                  Spacer(
+                    flex: 2,
+                  ),
                   Form(
                     key: formKey,
                     child: Column(
@@ -125,8 +127,8 @@ class _SignInState extends State<SignIn> {
                       )
                     ],
                   ),
-                  SizedBox(
-                    height: 16,
+                  Spacer(
+                    flex: 2,
                   ),
                   GestureDetector(
                     onTap: () {
@@ -136,12 +138,14 @@ class _SignInState extends State<SignIn> {
                       padding: EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
-                          gradient: LinearGradient(
-                            colors: [
-                              const Color(0xff007EF4),
-                              const Color(0xff2A75BC)
-                            ],
-                          )),
+                          color: Colors.blueGrey[200]
+//                          gradient: LinearGradient(
+//                            colors: [
+//                              const Color(0xff007EF4),
+//                              const Color(0xff2A75BC)
+//                            ],
+//                          )
+                          ),
                       width: MediaQuery.of(context).size.width,
                       child: Text(
                         "Sign In",
@@ -153,19 +157,19 @@ class _SignInState extends State<SignIn> {
                   SizedBox(
                     height: 16,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Colors.white),
-                    width: MediaQuery.of(context).size.width,
-                    child: Text(
-                      "Sign In with Google",
-                      style:
-                          TextStyle(fontSize: 17, color: CustomTheme.textColor),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+//                  Container(
+//                    padding: EdgeInsets.symmetric(vertical: 16),
+//                    decoration: BoxDecoration(
+//                        borderRadius: BorderRadius.circular(30),
+//                        color: Colors.white),
+//                    width: MediaQuery.of(context).size.width,
+//                    child: Text(
+//                      "Sign In with Google",
+//                      style:
+//                          TextStyle(fontSize: 17, color: CustomTheme.textColor),
+//                      textAlign: TextAlign.center,
+//                    ),
+//                  ),
                   SizedBox(
                     height: 16,
                   ),
@@ -183,16 +187,17 @@ class _SignInState extends State<SignIn> {
                         child: Text(
                           "Register now",
                           style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontSize: 16,
                               decoration: TextDecoration.underline),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 50,
-                  )
+
+                  Spacer(
+                    flex: 1,
+                  ),
                 ],
               ),
             ),

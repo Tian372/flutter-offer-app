@@ -30,7 +30,8 @@ class _ChatRoomState extends State<ChatRoom> {
                         .toString()
                         .replaceAll("_", "")
                         .replaceAll(Constants.myName, ""),
-                    chatRoomId: snapshot.data.documents[index].data["chatRoomId"],
+                    chatRoomId:
+                        snapshot.data.documents[index].data["chatRoomId"],
                   );
                 })
             : Container();
@@ -59,8 +60,8 @@ class _ChatRoomState extends State<ChatRoom> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Image.asset(
-          "assets/images/logo.png",
+        title: Image.network(
+          "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
           height: 40,
         ),
         elevation: 0.0,
@@ -96,47 +97,49 @@ class ChatRoomsTile extends StatelessWidget {
   final String userName;
   final String chatRoomId;
 
-  ChatRoomsTile({this.userName,@required this.chatRoomId});
+  ChatRoomsTile({this.userName, @required this.chatRoomId});
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(
-          builder: (context) => Chat(
-            chatRoomId: chatRoomId,
-          )
-        ));
+      onTap: () {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) => Chat(
+                      chatRoomId: chatRoomId,
+                      userName: userName,
+                    )));
       },
       child: Container(
         color: Colors.black26,
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 20),
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Row(
           children: [
             Container(
-              height: 30,
-              width: 30,
+              height: 50,
+              width: 50,
               decoration: BoxDecoration(
                   color: CustomTheme.colorAccent,
-                  borderRadius: BorderRadius.circular(30)),
+                  borderRadius: BorderRadius.circular(50)),
               child: Text(userName.substring(0, 1),
                   textAlign: TextAlign.center,
                   style: TextStyle(
                       color: Colors.white,
-                      fontSize: 16,
+                      fontSize: 30,
                       fontFamily: 'OverpassRegular',
                       fontWeight: FontWeight.w300)),
             ),
             SizedBox(
-              width: 12,
+              width: 50,
             ),
             Text(userName,
-                textAlign: TextAlign.start,
+                textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white,
-                    fontSize: 16,
-                    fontFamily: 'OverpassRegular',
-                    fontWeight: FontWeight.w300))
+                    fontSize: 25,
+                    fontFamily: 'RobotoMono',
+                    fontWeight: FontWeight.w400))
           ],
         ),
       ),
