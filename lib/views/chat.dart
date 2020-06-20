@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter/services.dart';
-
+import '../views/chatrooms.dart';
 import '../helper/constants.dart';
 import '../services/database.dart';
 import '../widget/widget.dart';
@@ -95,7 +95,10 @@ class _ChatState extends State<Chat> {
                             child: RaisedButton(
                               color: Colors.red,
                               onPressed: () {
-
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => ChatRoom()));
                               },
                               child: const Text('Decline',
                                   style: TextStyle(
