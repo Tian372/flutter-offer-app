@@ -30,6 +30,15 @@ class DatabaseMethods {
     });
   }
 
+  getLatestPriceFrom(String chatRoomId) async {
+    return Firestore.instance
+        .collection("chatRoom")
+        .document(chatRoomId)
+        .collection("chats")
+        .orderBy('time', descending: true)
+        .limit(1).snapshots();
+  }
+
   searchByName(String searchField) {
     return Firestore.instance
         .collection("users")

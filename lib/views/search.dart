@@ -63,7 +63,7 @@ class _SearchState extends State<Search> {
     };
 
     databaseMethods.addChatRoom(chatRoom, chatRoomId);
-
+    Navigator.pop(context);
     Navigator.push(
         context,
         MaterialPageRoute(
@@ -103,10 +103,10 @@ class _SearchState extends State<Search> {
 //                    color: Colors.blue,
 //                    borderRadius: BorderRadius.circular(40)),
                 child: Image.asset(
-                  "assets/images/send.png",
-                  height: 45,
-                  width: 45,
-                )),
+              "assets/images/send.png",
+              height: 45,
+              width: 45,
+            )),
           )
         ],
       ),

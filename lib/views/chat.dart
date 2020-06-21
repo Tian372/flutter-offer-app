@@ -1,5 +1,7 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:offer_app/views/payment.dart';
 import '../views/chatrooms.dart';
 import '../helper/constants.dart';
 import '../services/database.dart';
@@ -18,9 +20,28 @@ class Chat extends StatefulWidget {
 }
 
 class _ChatState extends State<Chat> {
+  int _latestAmount;
   Stream<QuerySnapshot> chats;
+  Stream<QuerySnapshot> priceStream;
   TextEditingController messageEditingController = new TextEditingController();
   TextEditingController priceEditingController = new TextEditingController();
+
+  Widget priceTag() {
+    return StreamBuilder(
+        stream: priceStream,
+        builder: (context, snapshot) {
+          if (snapshot.hasData && !snapshot.data.documents.isEmpty) {
+            _latestAmount = snapshot.data.documents[0].data["price"];
+            print(_latestAmount);
+            return Text(
+              "Last Price: $_latestAmount",
+              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+            );
+          } else {
+            return Text("");
+          }
+        });
+  }
 
   Widget chatMessages() {
     return StreamBuilder(
@@ -47,7 +68,7 @@ class _ChatState extends State<Chat> {
         priceEditingController.text.isNotEmpty) {
       Map<String, dynamic> chatMessageMap = {
         "sendBy": Constants.myName,
-        "price": priceEditingController.text,
+        "price": int.parse(priceEditingController.text),
         "message": messageEditingController.text,
         'time': DateTime.now().millisecondsSinceEpoch,
       };
@@ -63,9 +84,15 @@ class _ChatState extends State<Chat> {
 
   @override
   void initState() {
+    //TODO: add
+    DatabaseMethods().getLatestPriceFrom(widget.chatRoomId).then((val) {
+      setState(() {
+        this.priceStream = val;
+      });
+    });
     DatabaseMethods().getChats(widget.chatRoomId).then((val) {
       setState(() {
-        chats = val;
+        this.chats = val;
       });
     });
     super.initState();
@@ -82,7 +109,11 @@ class _ChatState extends State<Chat> {
       body: Container(
         child: Column(
           children: [
-            Expanded(flex: 5, child: chatMessages()),
+            Expanded(
+              flex: 1,
+              child: Container(child: priceTag()),
+            ),
+            Expanded(flex: 6, child: chatMessages()),
             Expanded(
                 flex: 1,
                 child: Container(
@@ -112,7 +143,12 @@ class _ChatState extends State<Chat> {
                             flex: 1,
                             child: RaisedButton(
                               color: Colors.green,
-                              onPressed: () {},
+                              onPressed: () {
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) => Payment()));
+                              },
                               child: const Text('Accept',
                                   style: TextStyle(
                                       color: Colors.white,
@@ -213,7 +249,7 @@ class _ChatState extends State<Chat> {
 }
 
 class MessageTile extends StatelessWidget {
-  final String price;
+  final int price;
   final String message;
   final bool sendByMe;
 
@@ -245,7 +281,7 @@ class MessageTile extends StatelessWidget {
                   ? [Colors.blueGrey[500], Colors.blueGrey[900]]
                   : [const Color(0xff007EF4), const Color(0xff2A75BC)],
             )),
-        child: Text("\$" + price + ": " + message,
+        child: Text("\$$price: " + message,
             textAlign: TextAlign.start,
             style: TextStyle(
                 color: Colors.white,
