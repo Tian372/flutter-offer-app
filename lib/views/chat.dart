@@ -147,7 +147,11 @@ class _ChatState extends State<Chat> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Payment()));
+                                        builder: (context) => Payment(
+                                              userName: widget.userName,
+                                              myName: Constants.myName,
+                                              price: _latestAmount,
+                                            )));
                               },
                               child: const Text('Accept',
                                   style: TextStyle(

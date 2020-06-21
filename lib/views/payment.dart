@@ -22,13 +22,17 @@ class _PaymentState extends State<Payment> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Sample Payment'),
+        title: Text('Sample Payment'),
       ),
       body: paymentMethod(),
       backgroundColor: Colors.blueGrey.shade200,
       bottomNavigationBar: BottomAppBar(
         shape: const CircularNotchedRectangle(),
         child: Container(
+          child: Text(
+              widget.myName + ' Need to Pay ' + widget.userName + ' \$'+ widget.price.toString()
+          ),
+          alignment: Alignment.bottomCenter,
           height: 50.0,
         ),
       ),
