@@ -36,7 +36,7 @@ class _ChatState extends State<Chat> {
             print(_latestAmount);
             return Text(
               "Latest Offer: \$$_latestAmount",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100),
+              style: TextStyle(fontStyle: FontStyle.italic, fontSize: 20, fontWeight: FontWeight.bold,fontFamily: 'Sriracha'),
             );
           } else {
             return Text("");
@@ -171,70 +171,63 @@ class _ChatState extends State<Chat> {
                     Container(child: priceTag()),
                   ],
                 )),
+          ],
+        ),
+      ),
+      bottomNavigationBar: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+        color: boxColor,
+        child: Row(
+          children: [
             Expanded(
-              flex: 2,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                color: boxColor,
-                child: Row(
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: Container(
-                          height: 65,
-                    
-                          child: TextField(
-                            controller: priceEditingController,
-                            style: simpleTextStyle(),
-                            keyboardType: TextInputType.number,
-                            inputFormatters: [
-                              WhitelistingTextInputFormatter.digitsOnly
-                            ],
-                            decoration: InputDecoration(
-                              hintText: "\$",
-                              hintStyle: simpleTextStyle(),
-                    
-                            ),
-                          ),
-                        )
-                        ),
-                    SizedBox(
-                      width: 10,
+                flex: 1,
+                child: Container(
+                  child: TextField(
+                    controller: priceEditingController,
+                    style: simpleTextStyle(),
+                    keyboardType: TextInputType.number,
+                    inputFormatters: [
+                      WhitelistingTextInputFormatter.digitsOnly
+                    ],
+                    decoration: InputDecoration(
+                      hintText: "\$",
+                      hintStyle: simpleTextStyle(),
                     ),
-                    Expanded(
-                      flex: 4,
-                      child: TextField(
-                        controller: messageEditingController,
-                        style: simpleTextStyle(),
-                        decoration: InputDecoration(
-                          hintText: "Message ...",
-                          hintStyle: simpleTextStyle(),
-                        ),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 10,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        addMessage();
-                      },
-                      child: Container(
-                          height: 45,
-                          width: 45,
-                          decoration: BoxDecoration(
-                              color: Colors.black38,
-                              borderRadius: BorderRadius.circular(40)),
-                          padding: EdgeInsets.all(8),
-                          child: Image.asset(
-                            "assets/images/send.png",
-                            height: 40,
-                            width: 40,
-                          )),
-                    ),
-                  ],
+                  ),
+                )),
+            SizedBox(
+              width: 10,
+            ),
+            Expanded(
+              flex: 3,
+              child: TextField(
+                controller: messageEditingController,
+                style: simpleTextStyle(),
+                decoration: InputDecoration(
+                  hintText: "Message ...",
+                  hintStyle: simpleTextStyle(),
                 ),
               ),
+            ),
+            SizedBox(
+              width: 10,
+            ),
+            GestureDetector(
+              onTap: () {
+                addMessage();
+              },
+              child: Container(
+                  height: 45,
+                  width: 45,
+                  decoration: BoxDecoration(
+                      color: Colors.black38,
+                      borderRadius: BorderRadius.circular(40)),
+                  padding: EdgeInsets.all(8),
+                  child: Image.asset(
+                    "assets/images/send.png",
+                    height: 40,
+                    width: 40,
+                  )),
             ),
           ],
         ),
