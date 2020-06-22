@@ -1,13 +1,14 @@
-import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:offer_app/main.dart';
 import 'package:offer_app/views/payment.dart';
-import '../views/chatrooms.dart';
 import '../helper/constants.dart';
 import '../services/database.dart';
 import '../widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+
+const boxColor = Colors.white;
 
 class Chat extends StatefulWidget {
   final String chatRoomId;
@@ -114,139 +115,121 @@ class _ChatState extends State<Chat> {
                 padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(16.0),
-                  color: Colors.blueGrey[300],
+                  color: boxColor,
                 ),
                 child: Text('Item Info Goes here.'),
               ),
             ),
             Expanded(flex: 8, child: chatMessages()),
             Expanded(
-              flex: 1,
-              child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                  color: Colors.blueGrey[100],
-                  child: priceTag()),
-            ),
-            Expanded(
-                flex: 1,
-                child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                    color: Colors.blueGrey[100],
-                    child: Row(
-                      children: [
-                        Expanded(
-                            flex: 1,
-                            child: RaisedButton(
-                              color: Colors.red,
-                              onPressed: () {
-                                DatabaseMethods().rejectJob(widget.chatRoomId);
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Decline',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                            )),
-                        Expanded(
-                            flex: 1,
-                            child: RaisedButton(
-                              color: Colors.green,
-                              onPressed: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (context) => Payment(
-                                              userName: widget.userName,
-                                              myName: Constants.myName,
-                                              price: _latestAmount,
-                                            )));
-                              },
-                              child: const Text('Accept',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                            ))
-                      ],
-                    ))),
+                flex: 2,
+                child: Column(
+                  children: [
+                    Container(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                        color: HexColor.fromHex('#00B9F1'),
+                        child: Row(
+                          children: [
+                            Expanded(
+                                flex: 1,
+                                child: RaisedButton(
+                                  color: Colors.red,
+                                  onPressed: () {
+                                    DatabaseMethods()
+                                        .rejectJob(widget.chatRoomId);
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Decline',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                )),
+                            Expanded(
+                                flex: 1,
+                                child: RaisedButton(
+                                  color: Colors.green,
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => Payment(
+                                                  userName: widget.userName,
+                                                  myName: Constants.myName,
+                                                  price: _latestAmount,
+                                                )));
+                                  },
+                                  child: const Text('Accept',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                ))
+                          ],
+                        )),
+                    Container(child: priceTag()),
+                  ],
+                )),
             Expanded(
               flex: 2,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                color: Colors.blueGrey[100],
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                color: boxColor,
                 child: Row(
                   children: [
                     Expanded(
-                      flex: 1,
-                      child: TextField(
-                        controller: priceEditingController,
-                        style: simpleTextStyle(),
-                        keyboardType: TextInputType.number,
-                        inputFormatters: [
-                          WhitelistingTextInputFormatter.digitsOnly
-                        ],
-                        decoration: InputDecoration(
-                          hintText: "\$",
-                          hintStyle: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
+                        flex: 1,
+                        child: Container(
+                          height: 65,
+                    
+                          child: TextField(
+                            controller: priceEditingController,
+                            style: simpleTextStyle(),
+                            keyboardType: TextInputType.number,
+                            inputFormatters: [
+                              WhitelistingTextInputFormatter.digitsOnly
+                            ],
+                            decoration: InputDecoration(
+                              hintText: "\$",
+                              hintStyle: simpleTextStyle(),
+                    
+                            ),
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                            borderSide: BorderSide(color: Colors.grey),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(10.0)),
-                            borderSide: BorderSide(color: Colors.blue),
-                          ),
+                        )
                         ),
-                      ),
-                    ),
                     SizedBox(
-                      width: 16,
+                      width: 10,
                     ),
                     Expanded(
-                      flex: 3,
+                      flex: 4,
                       child: TextField(
                         controller: messageEditingController,
                         style: simpleTextStyle(),
                         decoration: InputDecoration(
                           hintText: "Message ...",
-                          hintStyle: TextStyle(
-                            color: Colors.black,
-                            fontSize: 16,
-                          ),
+                          hintStyle: simpleTextStyle(),
                         ),
                       ),
                     ),
                     SizedBox(
-                      width: 16,
+                      width: 10,
                     ),
                     GestureDetector(
                       onTap: () {
                         addMessage();
                       },
                       child: Container(
-                          height: 50,
-                          width: 50,
+                          height: 45,
+                          width: 45,
                           decoration: BoxDecoration(
                               color: Colors.black38,
-//                              gradient: LinearGradient(
-//                                  colors: [
-//                                    const Color(0x36FFFFFF),
-//                                    const Color(0x0FFFFFFF)
-//                                  ],
-//                                  begin: FractionalOffset.topLeft,
-//                                  end: FractionalOffset.bottomRight),
                               borderRadius: BorderRadius.circular(40)),
                           padding: EdgeInsets.all(8),
                           child: Image.asset(
                             "assets/images/send.png",
-                            height: 50,
-                            width: 50,
+                            height: 40,
+                            width: 40,
                           )),
                     ),
                   ],
@@ -290,7 +273,7 @@ class MessageTile extends StatelessWidget {
                     bottomRight: Radius.circular(23)),
             gradient: LinearGradient(
               colors: sendByMe
-                  ? [Colors.blueGrey[500], Colors.blueGrey[900]]
+                  ? [Colors.blueGrey[400], Colors.blueGrey[500]]
                   : [const Color(0xff007EF4), const Color(0xff2A75BC)],
             )),
         child: Text("\$$price: " + message,

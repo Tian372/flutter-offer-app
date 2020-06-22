@@ -1,3 +1,5 @@
+import 'package:offer_app/main.dart';
+
 import '../helper/helperfunctions.dart';
 import '../helper/theme.dart';
 import '../services/auth.dart';
@@ -138,7 +140,7 @@ class _SignInState extends State<SignIn> {
                       padding: EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
-                          color: Colors.blueGrey[200]
+                          color: Colors.white 
 //                          gradient: LinearGradient(
 //                            colors: [
 //                              const Color(0xff007EF4),

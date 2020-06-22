@@ -123,12 +123,14 @@ class _SignUpState extends State<SignUp> {
                       padding: EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
-                          gradient: LinearGradient(
-                            colors: [
-                              const Color(0xff007EF4),
-                              const Color(0xff2A75BC)
-                            ],
-                          )),
+                          // gradient: LinearGradient(
+                          //   colors: [
+                          //     const Color(0xff007EF4),
+                          //     const Color(0xff2A75BC)
+                          //   ],
+                          // )
+                          color: Colors.white
+                          ),
                       width: MediaQuery.of(context).size.width,
                       child: Text(
                         "Sign Up",
@@ -140,19 +142,19 @@ class _SignUpState extends State<SignUp> {
                   SizedBox(
                     height: 16,
                   ),
-                  Container(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(30),
-                        color: Colors.white),
-                    width: MediaQuery.of(context).size.width,
-                    child: Text(
-                      "Sign Up with Google",
-                      style:
-                          TextStyle(fontSize: 17, color: CustomTheme.textColor),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
+                  // Container(
+                  //   padding: EdgeInsets.symmetric(vertical: 16),
+                  //   decoration: BoxDecoration(
+                  //       borderRadius: BorderRadius.circular(30),
+                  //       color: Colors.white),
+                  //   width: MediaQuery.of(context).size.width,
+                  //   child: Text(
+                  //     "Sign Up with Google",
+                  //     style:
+                  //         TextStyle(fontSize: 17, color: CustomTheme.textColor),
+                  //     textAlign: TextAlign.center,
+                  //   ),
+                  // ),
                   SizedBox(
                     height: 16,
                   ),

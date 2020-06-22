@@ -1,5 +1,4 @@
 import '../helper/constants.dart';
-import '../models/user.dart';
 import '../services/database.dart';
 import '../views/chat.dart';
 import '../widget/widget.dart';
