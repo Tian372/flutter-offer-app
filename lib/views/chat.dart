@@ -34,8 +34,8 @@ class _ChatState extends State<Chat> {
             _latestAmount = snapshot.data.documents[0].data["price"];
             print(_latestAmount);
             return Text(
-              "Last Price: $_latestAmount",
-              style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+              "Latest Offer: \$$_latestAmount",
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w100),
             );
           } else {
             return Text("");
@@ -84,7 +84,6 @@ class _ChatState extends State<Chat> {
 
   @override
   void initState() {
-    //TODO: add
     DatabaseMethods().getLatestPriceFrom(widget.chatRoomId).then((val) {
       setState(() {
         this.priceStream = val;
@@ -110,14 +109,28 @@ class _ChatState extends State<Chat> {
         child: Column(
           children: [
             Expanded(
-              flex: 1,
-              child: Container(child: priceTag()),
+              flex: 2,
+              child: Container(
+                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(16.0),
+                  color: Colors.blueGrey[300],
+                ),
+                child: Text('Item Info Goes here.'),
+              ),
             ),
-            Expanded(flex: 6, child: chatMessages()),
+            Expanded(flex: 8, child: chatMessages()),
+            Expanded(
+              flex: 1,
+              child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  color: Colors.blueGrey[100],
+                  child: priceTag()),
+            ),
             Expanded(
                 flex: 1,
                 child: Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                     color: Colors.blueGrey[100],
                     child: Row(
                       children: [
@@ -128,10 +141,6 @@ class _ChatState extends State<Chat> {
                               onPressed: () {
                                 DatabaseMethods().rejectJob(widget.chatRoomId);
                                 Navigator.pop(context);
-//                                Navigator.push(
-//                                    context,
-//                                    MaterialPageRoute(
-//                                        builder: (context) => ChatRoom()));
                               },
                               child: const Text('Decline',
                                   style: TextStyle(
@@ -162,16 +171,15 @@ class _ChatState extends State<Chat> {
                       ],
                     ))),
             Expanded(
-              flex: 1,
+              flex: 2,
               child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5),
                 color: Colors.blueGrey[100],
                 child: Row(
                   children: [
                     Expanded(
                       flex: 1,
                       child: TextField(
-                        //not be empty
                         controller: priceEditingController,
                         style: simpleTextStyle(),
                         keyboardType: TextInputType.number,
@@ -264,12 +272,12 @@ class MessageTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: EdgeInsets.only(
-          top: 8, bottom: 8, left: sendByMe ? 0 : 24, right: sendByMe ? 24 : 0),
+          top: 3, bottom: 3, left: sendByMe ? 0 : 24, right: sendByMe ? 24 : 0),
       alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin:
             sendByMe ? EdgeInsets.only(left: 30) : EdgeInsets.only(right: 30),
-        padding: EdgeInsets.only(top: 17, bottom: 17, left: 20, right: 20),
+        padding: EdgeInsets.only(top: 8, bottom: 8, left: 20, right: 20),
         decoration: BoxDecoration(
             borderRadius: sendByMe
                 ? BorderRadius.only(
