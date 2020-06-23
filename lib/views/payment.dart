@@ -6,12 +6,17 @@ import '../widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+
+//TODO: view title, view method
+//accept:payment on the same page
+//progress bar
+//less views
 class Payment extends StatefulWidget {
   final String userName;
   final String myName;
   final int price;
-
-  Payment({this.userName, this.myName, this.price});
+  final String chatId;
+  Payment({this.userName, this.myName, this.price, this.chatId});
 
   @override
   _PaymentState createState() => _PaymentState();
@@ -37,10 +42,12 @@ class _PaymentState extends State<Payment> {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        onPressed: () {},
-//            setState(() {
-//              _count++;
-//            }),
+        onPressed: () {
+          DatabaseMethods()
+              .rejectJob(widget.chatId);
+          Navigator.popUntil(context, ModalRoute.withName("chatRoom"));
+
+        },
         tooltip: '',
         child: Icon(Icons.payment),
       ),

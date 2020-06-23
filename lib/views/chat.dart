@@ -8,6 +8,14 @@ import '../widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+
+//only one accept or decline between
+//inventory closed until the payment is finished
+//always have a video backup
+//use less blue,
+//decline: history
+
+
 const boxColor = Colors.white;
 
 class Chat extends StatefulWidget {
@@ -159,6 +167,7 @@ class _ChatState extends State<Chat> {
                                       userName: widget.userName,
                                       myName: Constants.myName,
                                       price: _latestAmount,
+                                      chatId: widget.chatRoomId,
                                     )));
                           },
                           child: const Text('Accept',

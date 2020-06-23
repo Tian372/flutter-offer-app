@@ -28,7 +28,7 @@ class _SignInState extends State<SignIn> {
   final formKey = GlobalKey<FormState>();
 
   bool isLoading = false;
-
+//
   signIn() async {
     if (formKey.currentState.validate()) {
       setState(() {
@@ -50,7 +50,7 @@ class _SignInState extends State<SignIn> {
               userInfoSnapshot.documents[0].data["userEmail"]);
 
           Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => ChatRoom()));
+              context, MaterialPageRoute(settings: RouteSettings(name: "chatRoom"),builder: (context) => ChatRoom()));
         } else {
           setState(() {
             isLoading = false;
