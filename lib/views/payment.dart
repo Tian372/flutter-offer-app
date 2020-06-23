@@ -48,9 +48,6 @@ class _PaymentState extends State<Payment> {
     );
   }
 
-  @override
-  void initState() {}
-
   Widget paymentMethod() {
     return RadioButtonGroup(labels: <String>[
       "Payment 1",

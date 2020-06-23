@@ -36,7 +36,11 @@ class _ChatState extends State<Chat> {
             print(_latestAmount);
             return Text(
               "Latest Offer: \$$_latestAmount",
-              style: TextStyle(fontStyle: FontStyle.italic, fontSize: 20, fontWeight: FontWeight.bold,fontFamily: 'Sriracha'),
+              style: TextStyle(
+                  fontStyle: FontStyle.italic,
+                  fontSize: 20,
+                  fontWeight: FontWeight.bold,
+                  fontFamily: 'Sriracha'),
             );
           } else {
             return Text("");
@@ -120,114 +124,112 @@ class _ChatState extends State<Chat> {
                 child: Text('Item Info Goes here.'),
               ),
             ),
-            Expanded(flex: 8, child: chatMessages()),
-            Expanded(
-                flex: 2,
-                child: Column(
+            Expanded(flex: 6, child: chatMessages()),
+            Expanded(flex:1, child: Container(child: priceTag()),),
+            Container(
+                padding:
+                EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                color: HexColor.fromHex('#00B9F1'),
+                child: Row(
                   children: [
-                    Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                        color: HexColor.fromHex('#00B9F1'),
-                        child: Row(
-                          children: [
-                            Expanded(
-                                flex: 1,
-                                child: RaisedButton(
-                                  color: Colors.red,
-                                  onPressed: () {
-                                    DatabaseMethods()
-                                        .rejectJob(widget.chatRoomId);
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Decline',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold)),
-                                )),
-                            Expanded(
-                                flex: 1,
-                                child: RaisedButton(
-                                  color: Colors.green,
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => Payment(
-                                                  userName: widget.userName,
-                                                  myName: Constants.myName,
-                                                  price: _latestAmount,
-                                                )));
-                                  },
-                                  child: const Text('Accept',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold)),
-                                ))
-                          ],
+                    Expanded(
+                        flex: 1,
+                        child: RaisedButton(
+                          color: Colors.red,
+                          onPressed: () {
+                            DatabaseMethods()
+                                .rejectJob(widget.chatRoomId);
+                            Navigator.pop(context);
+                          },
+                          child: const Text('Decline',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold)),
                         )),
-                    Container(child: priceTag()),
+                    Expanded(
+                        flex: 1,
+                        child: RaisedButton(
+                          color: Colors.green,
+                          onPressed: () {
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => Payment(
+                                      userName: widget.userName,
+                                      myName: Constants.myName,
+                                      price: _latestAmount,
+                                    )));
+                          },
+                          child: const Text('Accept',
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.bold)),
+                        ))
                   ],
                 )),
-          ],
-        ),
-      ),
-      bottomNavigationBar: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-        color: boxColor,
-        child: Row(
-          children: [
             Expanded(
-                flex: 1,
-                child: Container(
-                  child: TextField(
-                    controller: priceEditingController,
-                    style: simpleTextStyle(),
-                    keyboardType: TextInputType.number,
-                    inputFormatters: [
-                      WhitelistingTextInputFormatter.digitsOnly
+                flex: 2,
+                child:Container(
+                  padding:
+                  EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                  color: boxColor,
+                  child: Row(
+                    children: [
+                      Expanded(
+                          flex: 1,
+                          child: Container(
+                            child: TextField(
+                              controller: priceEditingController,
+                              style: simpleTextStyle(),
+                              keyboardType: TextInputType.number,
+                              inputFormatters: [
+                                WhitelistingTextInputFormatter.digitsOnly
+                              ],
+                              decoration: InputDecoration(
+                                hintText: "\$",
+                                hintStyle: simpleTextStyle(),
+                              ),
+                            ),
+                          )),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      Expanded(
+                        flex: 3,
+                        child: TextField(
+                          controller: messageEditingController,
+                          style: simpleTextStyle(),
+                          decoration: InputDecoration(
+                            hintText: "Message ...",
+                            hintStyle: simpleTextStyle(),
+                          ),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 10,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          addMessage();
+                        },
+                        child: Container(
+                            height: 45,
+                            width: 45,
+                            decoration: BoxDecoration(
+                                color: Colors.black38,
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: EdgeInsets.all(8),
+                            child: Image.asset(
+                              "assets/images/send.png",
+                              height: 40,
+                              width: 40,
+                            )),
+                      ),
                     ],
-                    decoration: InputDecoration(
-                      hintText: "\$",
-                      hintStyle: simpleTextStyle(),
-                    ),
                   ),
-                )),
-            SizedBox(
-              width: 10,
-            ),
-            Expanded(
-              flex: 3,
-              child: TextField(
-                controller: messageEditingController,
-                style: simpleTextStyle(),
-                decoration: InputDecoration(
-                  hintText: "Message ...",
-                  hintStyle: simpleTextStyle(),
                 ),
-              ),
-            ),
-            SizedBox(
-              width: 10,
-            ),
-            GestureDetector(
-              onTap: () {
-                addMessage();
-              },
-              child: Container(
-                  height: 45,
-                  width: 45,
-                  decoration: BoxDecoration(
-                      color: Colors.black38,
-                      borderRadius: BorderRadius.circular(40)),
-                  padding: EdgeInsets.all(8),
-                  child: Image.asset(
-                    "assets/images/send.png",
-                    height: 40,
-                    width: 40,
-                  )),
             ),
           ],
         ),
