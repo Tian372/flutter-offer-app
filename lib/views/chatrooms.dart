@@ -31,7 +31,8 @@ class _ChatRoomState extends State<ChatRoom> {
                         .replaceAll("_", "")
                         .replaceAll(Constants.myName, ""),
                     chatRoomId:
-                        snapshot.data.documents[index].data["chatRoomId"],
+                        snapshot.data.documents[index].data['chatRoomId'],
+                    de: snapshot.data.documents[index].data['declined'],
                   );
                 })
             : Container();
@@ -51,7 +52,7 @@ class _ChatRoomState extends State<ChatRoom> {
       setState(() {
         chatRooms = snapshots;
         print(
-            "we got the data + ${chatRooms.toString()} this is name  ${Constants.myName}");
+            "we got the data + ${chatRooms.toString()} this is name  ${Constants.myName} ");
       });
     });
   }
@@ -104,8 +105,9 @@ class _ChatRoomState extends State<ChatRoom> {
 class ChatRoomsTile extends StatelessWidget {
   final String userName;
   final String chatRoomId;
+  final bool de;
 
-  ChatRoomsTile({this.userName, @required this.chatRoomId});
+  ChatRoomsTile({this.userName, @required this.chatRoomId, this.de});
 
   @override
   Widget build(BuildContext context) {
@@ -117,6 +119,7 @@ class ChatRoomsTile extends StatelessWidget {
                 builder: (context) => Chat(
                       chatRoomId: chatRoomId,
                       userName: userName,
+                      declined: de,
                     )));
       },
       child: Container(
@@ -128,7 +131,7 @@ class ChatRoomsTile extends StatelessWidget {
               height: 50,
               width: 50,
               decoration: BoxDecoration(
-                  color: CustomTheme.colorAccent,
+                  color: de ? Colors.red : Colors.green,
                   borderRadius: BorderRadius.circular(50)),
               child: Text(userName.substring(0, 1),
                   textAlign: TextAlign.center,
@@ -142,6 +145,16 @@ class ChatRoomsTile extends StatelessWidget {
               width: 50,
             ),
             Text(userName,
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 25,
+                    fontFamily: 'RobotoMono',
+                    fontWeight: FontWeight.w400)),
+            SizedBox(
+              width: 50,
+            ),
+            Text((de == true) ? "D" : "A",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                     color: Colors.white,

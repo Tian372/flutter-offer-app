@@ -29,3 +29,4 @@ TextStyle simpleTextStyle() {
 TextStyle biggerTextStyle() {
   return TextStyle(color: Colors.black, fontSize: 17);
 }
+

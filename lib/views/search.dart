@@ -59,6 +59,7 @@ class _SearchState extends State<Search> {
     Map<String, dynamic> chatRoom = {
       "users": users,
       "chatRoomId": chatRoomId,
+      "declined" : false,
     };
 
     databaseMethods.addChatRoom(chatRoom, chatRoomId);

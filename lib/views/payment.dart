@@ -45,7 +45,7 @@ class _PaymentState extends State<Payment> {
       floatingActionButton: FloatingActionButton(
         onPressed: () {
           DatabaseMethods()
-              .rejectJob(widget.chatId);
+              .declineJob(widget.chatId);
           Navigator.popUntil(context, ModalRoute.withName("chatRoom"));
 
         },
