@@ -114,26 +114,28 @@ class _ChatState extends State<Chat> {
   //TODO: add sliding panel for payment
   @override
   Widget build(BuildContext context) {
+
     BorderRadiusGeometry radius = BorderRadius.only(
       bottomLeft: Radius.circular(24.0),
       bottomRight: Radius.circular(24.0),
     );
 
     return Scaffold(
-      resizeToAvoidBottomInset: true,
-      resizeToAvoidBottomPadding: false,
+     // resizeToAvoidBottomInset: true,
+      //resizeToAvoidBottomPadding: false,
+
       appBar: AppBar(
         title: Text(widget.userName),
         elevation: 0.0,
         centerTitle: false,
       ),
 
-
       body: Center(
+
         child: SingleChildScrollView(
           child: Container(
             child: Column(
-              children: [
+              children: <Widget>[
                 Padding(
                   padding: const EdgeInsets.only(top: 100),
                 ),
@@ -190,15 +192,16 @@ class _ChatState extends State<Chat> {
                   ),
                 ),
                 Container(
-                  height: 50,
+                  height: 100,
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   color: boxColor,
                   child: Row(
                     children: [
                       Expanded(
-                          flex: 1,
+                          flex: 2,
                           child: Container(
                             child: TextField(
+                              maxLength: 15,
                               controller: priceEditingController,
                               style: simpleTextStyle(),
                               keyboardType: TextInputType.number,
@@ -206,8 +209,8 @@ class _ChatState extends State<Chat> {
                                 WhitelistingTextInputFormatter.digitsOnly
                               ],
                               decoration: InputDecoration(
-                                hintText: '\$',
-                                hintStyle: simpleTextStyle(),
+                                border: OutlineInputBorder(),
+                                labelText: 'Price',
                               ),
                             ),
                           )),
@@ -215,44 +218,48 @@ class _ChatState extends State<Chat> {
                         width: 10,
                       ),
                       Expanded(
-                        flex: 3,
+                        flex: 4,
                         child: TextField(
+                          maxLength: 100,
                           controller: messageEditingController,
                           style: simpleTextStyle(),
                           decoration: InputDecoration(
-                            hintText: 'Message ...',
-                            hintStyle: simpleTextStyle(),
+                            border: OutlineInputBorder(),
+                            labelText: 'Message',
                           ),
                         ),
                       ),
                       SizedBox(
                         width: 10,
                       ),
-                      GestureDetector(
-                        onTap: () {
-                          addMessage();
-                        },
-                        child: Container(
-                          height: 45,
-                          width: 45,
-                          decoration: BoxDecoration(
-                              color: Colors.black38,
-                              borderRadius: BorderRadius.circular(40)),
-                          padding: EdgeInsets.all(8),
-                          child: Icon(Icons.arrow_upward),
+                      Expanded(
+                        flex: 1,
+                        child: GestureDetector(
+                          onTap: () {
+                            addMessage();
+                          },
+                          child: Container(
+                          height: double.infinity,
+                            decoration: BoxDecoration(
+                                color: Colors.black38,
+                                borderRadius: BorderRadius.circular(40)),
+                            padding: EdgeInsets.all(8),
+                            child: Icon(Icons.arrow_upward),
+                          ),
                         ),
                       ),
                     ],
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
+                  padding: const EdgeInsets.only(bottom: 10),
                 ),
               ],
             ),
           ),
         ),
       ),
+
 
     );
   }
