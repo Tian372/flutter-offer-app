@@ -30,8 +30,9 @@ class _PaymentState extends State<Payment> {
         title: Text('Sample Payment'),
       ),
       body: paymentMethod(),
-      backgroundColor: Colors.blueGrey.shade200,
+      backgroundColor: Colors.white,
       bottomNavigationBar: BottomAppBar(
+        color: Colors.white30,
         shape: const CircularNotchedRectangle(),
         child: Container(
           child: Text(

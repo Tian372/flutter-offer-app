@@ -60,9 +60,17 @@ class _ChatRoomState extends State<ChatRoom> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Image.network(
-          "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
-          height: 40,
+        title: Row(
+          children: [
+            Image.network(
+              "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
+              height: 40,
+            ),
+            SizedBox(
+              width: 20,
+            ),
+            const Text('Chat Room')
+          ],
         ),
         elevation: 0.0,
         centerTitle: false,
@@ -71,8 +79,7 @@ class _ChatRoomState extends State<ChatRoom> {
             onTap: () {
               AuthService().signOut();
               Navigator.pushReplacement(context,
-
-                  MaterialPageRoute( builder: (context) => Authenticate()));
+                  MaterialPageRoute(builder: (context) => Authenticate()));
             },
             child: Container(
                 padding: EdgeInsets.symmetric(horizontal: 16),

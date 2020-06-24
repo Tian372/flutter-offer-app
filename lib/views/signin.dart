@@ -140,7 +140,7 @@ class _SignInState extends State<SignIn> {
                       padding: EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
-                          color: Colors.white 
+                          color: HexColor.fromHex('#0064D2')
 //                          gradient: LinearGradient(
 //                            colors: [
 //                              const Color(0xff007EF4),
@@ -151,7 +151,7 @@ class _SignInState extends State<SignIn> {
                       width: MediaQuery.of(context).size.width,
                       child: Text(
                         "Sign In",
-                        style: biggerTextStyle(),
+                        style: TextStyle(color: Colors.white, fontSize: 17),
                         textAlign: TextAlign.center,
                       ),
                     ),

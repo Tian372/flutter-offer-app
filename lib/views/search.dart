@@ -101,11 +101,7 @@ class _SearchState extends State<Search> {
 //                decoration: BoxDecoration(
 //                    color: Colors.blue,
 //                    borderRadius: BorderRadius.circular(40)),
-                child: Image.asset(
-              "assets/images/send.png",
-              height: 45,
-              width: 45,
-            )),
+                child: Icon(Icons.send)),
           )
         ],
       ),
@@ -174,11 +170,8 @@ class _SearchState extends State<Search> {
 //                                      end: FractionalOffset.bottomRight),
                                   borderRadius: BorderRadius.circular(40)),
                               padding: EdgeInsets.all(12),
-                              child: Image.asset(
-                                "assets/images/search_white.png",
-                                height: 25,
-                                width: 25,
-                              )),
+                              child: Icon(Icons.search)
+                          ),
                         )
                       ],
                     ),

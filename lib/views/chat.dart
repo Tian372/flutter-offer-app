@@ -2,19 +2,18 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:offer_app/main.dart';
 import 'package:offer_app/views/payment.dart';
+import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../helper/constants.dart';
 import '../services/database.dart';
 import '../widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-
 //only one accept or decline between
 //inventory closed until the payment is finished
 //always have a video backup
 //use less blue,
 //decline: history
-
 
 const boxColor = Colors.white;
 
@@ -110,79 +109,89 @@ class _ChatState extends State<Chat> {
     super.initState();
   }
 
+  PanelController _pc = new PanelController();
+
+  //TODO: add sliding panel for payment
   @override
   Widget build(BuildContext context) {
+    BorderRadiusGeometry radius = BorderRadius.only(
+      bottomLeft: Radius.circular(24.0),
+      bottomRight: Radius.circular(24.0),
+    );
+
     return Scaffold(
+      resizeToAvoidBottomInset: true,
+      resizeToAvoidBottomPadding: false,
       appBar: AppBar(
         title: Text(widget.userName),
         elevation: 0.0,
         centerTitle: false,
       ),
-      body: Container(
-        child: Column(
-          children: [
-            Expanded(
-              flex: 2,
-              child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16.0),
-                  color: boxColor,
+
+
+      body: Center(
+        child: SingleChildScrollView(
+          child: Container(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(top: 100),
                 ),
-                child: Text('Item Info Goes here.'),
-              ),
-            ),
-            Expanded(flex: 6, child: chatMessages()),
-            Expanded(flex:1, child: Container(child: priceTag()),),
-            Container(
-                padding:
-                EdgeInsets.symmetric(horizontal: 20, vertical: 0),
-                color: HexColor.fromHex('#00B9F1'),
-                child: Row(
-                  children: [
-                    Expanded(
-                        flex: 1,
-                        child: RaisedButton(
-                          color: Colors.red,
-                          onPressed: () {
-                            DatabaseMethods()
-                                .rejectJob(widget.chatRoomId);
-                            Navigator.pop(context);
-                          },
-                          child: const Text('Decline',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold)),
-                        )),
-                    Expanded(
-                        flex: 1,
-                        child: RaisedButton(
-                          color: Colors.green,
-                          onPressed: () {
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (context) => Payment(
-                                      userName: widget.userName,
-                                      myName: Constants.myName,
-                                      price: _latestAmount,
-                                      chatId: widget.chatRoomId,
-                                    )));
-                          },
-                          child: const Text('Accept',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold)),
-                        ))
-                  ],
-                )),
-            Expanded(
-                flex: 2,
-                child:Container(
-                  padding:
-                  EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                Container(height: 500, child: chatMessages()),
+                Container(
+                  height: 20,
+                  width: double.infinity,
+                  //padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  color: Colors.white,
+                  child: Center(child: priceTag()),
+                ),
+                Container(
+                  height: 50,
+                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                  color: Colors.white,
+                  child: Row(
+                    children: [
+                      Expanded(
+                          flex: 1,
+                          child: RaisedButton(
+                            color: Colors.red,
+                            onPressed: () {
+                              DatabaseMethods().rejectJob(widget.chatRoomId);
+                              Navigator.pop(context);
+                            },
+                            child: const Text('Decline',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold)),
+                          )),
+                      Expanded(
+                          flex: 1,
+                          child: RaisedButton(
+                            color: Colors.green,
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => Payment(
+                                        userName: widget.userName,
+                                        myName: Constants.myName,
+                                        price: _latestAmount,
+                                        chatId: widget.chatRoomId,
+                                      )));
+                            },
+                            child: const Text('Accept',
+                                style: TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 20,
+                                    fontWeight: FontWeight.bold)),
+                          ))
+                    ],
+                  ),
+                ),
+                Container(
+                  height: 50,
+                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),
                   color: boxColor,
                   child: Row(
                     children: [
@@ -197,7 +206,7 @@ class _ChatState extends State<Chat> {
                                 WhitelistingTextInputFormatter.digitsOnly
                               ],
                               decoration: InputDecoration(
-                                hintText: "\$",
+                                hintText: '\$',
                                 hintStyle: simpleTextStyle(),
                               ),
                             ),
@@ -211,7 +220,7 @@ class _ChatState extends State<Chat> {
                           controller: messageEditingController,
                           style: simpleTextStyle(),
                           decoration: InputDecoration(
-                            hintText: "Message ...",
+                            hintText: 'Message ...',
                             hintStyle: simpleTextStyle(),
                           ),
                         ),
@@ -224,25 +233,27 @@ class _ChatState extends State<Chat> {
                           addMessage();
                         },
                         child: Container(
-                            height: 45,
-                            width: 45,
-                            decoration: BoxDecoration(
-                                color: Colors.black38,
-                                borderRadius: BorderRadius.circular(40)),
-                            padding: EdgeInsets.all(8),
-                            child: Image.asset(
-                              "assets/images/send.png",
-                              height: 40,
-                              width: 40,
-                            )),
+                          height: 45,
+                          width: 45,
+                          decoration: BoxDecoration(
+                              color: Colors.black38,
+                              borderRadius: BorderRadius.circular(40)),
+                          padding: EdgeInsets.all(8),
+                          child: Icon(Icons.arrow_upward),
+                        ),
                       ),
                     ],
                   ),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(bottom: 16),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
+
     );
   }
 }
