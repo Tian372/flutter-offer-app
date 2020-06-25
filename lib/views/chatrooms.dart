@@ -21,7 +21,9 @@ class _ChatRoomState extends State<ChatRoom> {
       stream: chatRooms,
       builder: (context, snapshot) {
         return snapshot.hasData
-            ? ListView.builder(
+            ? ListView.separated(
+                separatorBuilder: (context, index) => Divider(
+                    ),
                 itemCount: snapshot.data.documents.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
@@ -123,7 +125,7 @@ class ChatRoomsTile extends StatelessWidget {
                     )));
       },
       child: Container(
-        color: Colors.black26,
+        color: Colors.white,
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
         child: Row(
           children: [
@@ -147,7 +149,7 @@ class ChatRoomsTile extends StatelessWidget {
             Text(userName,
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: 25,
                     fontFamily: 'RobotoMono',
                     fontWeight: FontWeight.w400)),
@@ -157,7 +159,7 @@ class ChatRoomsTile extends StatelessWidget {
             Text((de == true) ? "D" : "A",
                 textAlign: TextAlign.center,
                 style: TextStyle(
-                    color: Colors.white,
+                    color: Colors.black,
                     fontSize: 25,
                     fontFamily: 'RobotoMono',
                     fontWeight: FontWeight.w400))

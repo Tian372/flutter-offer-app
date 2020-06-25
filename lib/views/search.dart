@@ -38,7 +38,9 @@ class _SearchState extends State<Search> {
 
   Widget userList() {
     return haveUserSearched
-        ? ListView.builder(
+        ? ListView.separated(
+        separatorBuilder: (context, index) => Divider(
+        ),
             shrinkWrap: true,
             itemCount: searchResultSnapshot.documents.length,
             itemBuilder: (context, index) {
@@ -59,7 +61,7 @@ class _SearchState extends State<Search> {
     Map<String, dynamic> chatRoom = {
       "users": users,
       "chatRoomId": chatRoomId,
-      "declined" : false,
+      "declined": false,
     };
 
     databaseMethods.addChatRoom(chatRoom, chatRoomId);
@@ -70,41 +72,42 @@ class _SearchState extends State<Search> {
             builder: (context) => Chat(
                   chatRoomId: chatRoomId,
                   userName: users[1],
+                  declined: false,
                 )));
   }
 
   Widget userTile(String userName, String userEmail) {
-    return Container(
-      color: Colors.blueGrey[100],
-      padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-      child: Row(
-        children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                userName,
-                style: TextStyle(color: Colors.black, fontSize: 30),
-              ),
-              Text(
-                userEmail,
-                style: TextStyle(color: Colors.black, fontSize: 15),
-              )
-            ],
-          ),
-          Spacer(),
-          GestureDetector(
-            onTap: () {
-              sendMessage(userName);
-            },
-            child: Container(
+    return GestureDetector(
+      onTap: () {
+        sendMessage(userName);
+      },
+      child: Container(
+        color: Colors.blueGrey[100],
+        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        child: Row(
+          children: [
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  userName,
+                  style: TextStyle(color: Colors.black, fontSize: 30),
+                ),
+                Text(
+                  userEmail,
+                  style: TextStyle(color: Colors.black, fontSize: 15),
+                )
+              ],
+            ),
+            Spacer(),
+            Container(
                 //padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
 //                decoration: BoxDecoration(
 //                    color: Colors.blue,
 //                    borderRadius: BorderRadius.circular(40)),
-                child: Icon(Icons.send)),
-          )
-        ],
+                child: Icon(Icons.send))
+          ],
+        ),
       ),
     );
   }
@@ -138,43 +141,18 @@ class _SearchState extends State<Search> {
                   Container(
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
                     color: Color(0x54FFFFFF),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: TextField(
-                            controller: searchEditingController,
-                            style: simpleTextStyle(),
-                            decoration: InputDecoration(
-                                hintText: "search username",
-                                hintStyle: TextStyle(
-                                  color: Colors.black,
-                                  fontSize: 21,
-                                ),
-                                border: InputBorder.none),
-                          ),
-                        ),
-                        GestureDetector(
-                          onTap: () {
-                            initiateSearch();
-                          },
-                          child: Container(
-                              height: 50,
-                              width: 50,
-                              decoration: BoxDecoration(
-                                  color: Colors.blueGrey[200],
-//                                  gradient: LinearGradient(
-//                                      colors: [
-//                                        const Color(0x36FFFFFF),
-//                                        Colors.black
-//                                      ],
-//                                      begin: FractionalOffset.topLeft,
-//                                      end: FractionalOffset.bottomRight),
-                                  borderRadius: BorderRadius.circular(40)),
-                              padding: EdgeInsets.all(12),
-                              child: Icon(Icons.search)
-                          ),
-                        )
-                      ],
+                    child: TextField(
+                      textInputAction: TextInputAction.search,
+                      onSubmitted: (_) {
+                        initiateSearch();
+                      },
+                      maxLength: 42,
+                      controller: searchEditingController,
+                      style: simpleTextStyle(),
+                      decoration: InputDecoration(
+                        border: OutlineInputBorder(),
+                        labelText: 'search username',
+                      ),
                     ),
                   ),
                   userList()
@@ -184,3 +162,4 @@ class _SearchState extends State<Search> {
     );
   }
 }
+

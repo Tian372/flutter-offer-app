@@ -339,19 +339,20 @@ class _ChatState extends State<Chat> {
           ),
 
           body: Center(
-            child: SingleChildScrollView(
-              child: Container(
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 100,
-                      width: double.infinity,
-                      child: Container(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                          child: itemView()),
-                    ),
-                    Container(height: 500, child: chatMessages()),
+            child: SafeArea(
+              child: SingleChildScrollView(
+                child: Container(
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 100,
+                        width: double.infinity,
+                        child: Container(
+                            padding:
+                                EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                            child: itemView()),
+                      ),
+                      Container(height: 500, child: chatMessages()),
 //                    (widget.declined)?
 //                    SizedBox(
 //                      height: 0,
@@ -362,32 +363,32 @@ class _ChatState extends State<Chat> {
 //                      color: Colors.white,
 //                      child: Center(child: priceTag()),
 //                    ),
-                    (widget.declined)
-                        ? SizedBox(
-                            height: 50,
-                          )
-                        : Container(
-                            height: 50,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 0),
-                            color: Colors.white,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                    flex: 1,
-                                    child: RaisedButton(
-                                      color: Colors.red,
-                                      onPressed: () {
-                                        DatabaseMethods()
-                                            .declineJob(widget.chatRoomId);
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('Decline',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold)),
-                                    )),
+                      (widget.declined)
+                          ? SizedBox(
+                              height: 50,
+                            )
+                          : Container(
+                              height: 50,
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 20, vertical: 0),
+                              color: Colors.white,
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                      flex: 1,
+                                      child: RaisedButton(
+                                        color: Colors.red,
+                                        onPressed: () {
+                                          DatabaseMethods()
+                                              .declineJob(widget.chatRoomId);
+                                          Navigator.pop(context);
+                                        },
+                                        child: const Text('Decline',
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 20,
+                                                fontWeight: FontWeight.bold)),
+                                      )),
 //                                Expanded(
 //                                    flex: 1,
 //                                    child: RaisedButton(
@@ -410,56 +411,56 @@ class _ChatState extends State<Chat> {
 //                                              fontSize: 20,
 //                                              fontWeight: FontWeight.bold)),
 //                                    ))
-                              ],
-                            ),
-                          ),
-                    Container(
-                      height: 100,
-                      padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                      color: boxColor,
-                      child: Row(
-                        children: [
-                          (widget.declined)?
-                          SizedBox(
-                            width: 0,
-                          ):Expanded(
-                              flex: 2,
-                              child: Container(
-                                child: TextField(
-                                  textInputAction: TextInputAction.next,
-                                  maxLength: 15,
-                                  controller: priceEditingController,
-                                  style: simpleTextStyle(),
-                                  keyboardType: TextInputType.number,
-                                  inputFormatters: [
-                                    WhitelistingTextInputFormatter.digitsOnly
-                                  ],
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'Price',
-                                  ),
-                                ),
-                              )),
-                          SizedBox(
-                            width: (widget.declined) ? 0:10,
-                          ),
-                          Expanded(
-                            flex: 4,
-                            child: TextField(
-                              textInputAction: TextInputAction.send,
-                              onSubmitted: (_) {
-                                addMessage();
-                              },
-                              maxLength: 100,
-                              controller: messageEditingController,
-                              style: simpleTextStyle(),
-                              decoration: InputDecoration(
-                                border: OutlineInputBorder(),
-                                labelText: 'Message',
+                                ],
                               ),
                             ),
-                          ),
+                      Container(
+                        height: 100,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 10, vertical: 0),
+                        color: boxColor,
+                        child: Row(
+                          children: [
+                            (widget.declined)?
+                            SizedBox(
+                              width: 0,
+                            ):Expanded(
+                                flex: 2,
+                                child: Container(
+                                  child: TextField(
+                                    textInputAction: TextInputAction.next,
+                                    maxLength: 15,
+                                    controller: priceEditingController,
+                                    style: simpleTextStyle(),
+                                    keyboardType: TextInputType.number,
+                                    inputFormatters: [
+                                      WhitelistingTextInputFormatter.digitsOnly
+                                    ],
+                                    decoration: InputDecoration(
+                                      border: OutlineInputBorder(),
+                                      labelText: 'Price',
+                                    ),
+                                  ),
+                                )),
+                            SizedBox(
+                              width: (widget.declined) ? 0:10,
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: TextField(
+                                textInputAction: TextInputAction.send,
+                                onSubmitted: (_) {
+                                  addMessage();
+                                },
+                                maxLength: 100,
+                                controller: messageEditingController,
+                                style: simpleTextStyle(),
+                                decoration: InputDecoration(
+                                  border: OutlineInputBorder(),
+                                  labelText: 'Message',
+                                ),
+                              ),
+                            ),
 //                          SizedBox(
 //                            width: 10,
 //                          ),
@@ -479,13 +480,14 @@ class _ChatState extends State<Chat> {
 //                              ),
 //                            ),
 //                          ),
-                        ],
+                          ],
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(bottom: 30),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(bottom: 30),
+                      ),
+                    ],
+                  ),
                 ),
               ),
             ),
