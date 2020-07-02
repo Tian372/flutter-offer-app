@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 import '../helper/helperfunctions.dart';
 import '../helper/theme.dart';
 import '../services/auth.dart';
@@ -59,9 +61,9 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarMain(context),
-      body: isLoading
+    return CupertinoPageScaffold(
+      navigationBar: appBarMain(context),
+      child: isLoading
           ? Container(
               child: Center(
                 child: CircularProgressIndicator(),
@@ -76,38 +78,38 @@ class _SignUpState extends State<SignUp> {
                     key: formKey,
                     child: Column(
                       children: [
-                        TextFormField(
+                        CupertinoTextField(
                           style: simpleTextStyle(),
                           controller: usernameEditingController,
-                          validator: (val) {
-                            return val.isEmpty || val.length < 3
-                                ? "Enter Username 3+ characters"
-                                : null;
-                          },
-                          decoration: textFieldInputDecoration("username"),
+//                          validator: (val) {
+//                            return val.isEmpty || val.length < 3
+//                                ? "Enter Username 3+ characters"
+//                                : null;
+//                          },
+//                          decoration: textFieldInputDecoration("username"),
                         ),
-                        TextFormField(
+                        CupertinoTextField(
                           controller: emailEditingController,
                           style: simpleTextStyle(),
-                          validator: (val) {
-                            return RegExp(
-                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                    .hasMatch(val)
-                                ? null
-                                : "Enter correct email";
-                          },
-                          decoration: textFieldInputDecoration("email"),
+//                          validator: (val) {
+//                            return RegExp(
+//                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+//                                    .hasMatch(val)
+//                                ? null
+//                                : "Enter correct email";
+//                          },
+//                          decoration: textFieldInputDecoration("email"),
                         ),
-                        TextFormField(
+                        CupertinoTextField(
                           obscureText: true,
                           style: simpleTextStyle(),
-                          decoration: textFieldInputDecoration("password"),
-                          controller: passwordEditingController,
-                          validator: (val) {
-                            return val.length < 6
-                                ? "Enter Password 6+ characters"
-                                : null;
-                          },
+//                          decoration: textFieldInputDecoration("password"),
+//                          controller: passwordEditingController,
+//                          validator: (val) {
+//                            return val.length < 6
+//                                ? "Enter Password 6+ characters"
+//                                : null;
+//                          },
                         ),
                       ],
                     ),

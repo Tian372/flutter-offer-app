@@ -1,14 +1,18 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 Widget appBarMain(BuildContext context) {
-  return AppBar(
-    title: Image.network(
+  return CupertinoNavigationBar(
+    middle: Image.network(
       "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
 
       height: 40,
     ),
-    elevation: 0.0,
-    centerTitle: false,
+//    leading: CupertinoNavigationBarBackButton(
+//      onPressed: () => Navigator.of(context).pop(),
+//    ),
+//    elevation: 0.0,
+//    centerTitle: false,
   );
 }
 

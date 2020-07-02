@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../helper/constants.dart';
@@ -283,16 +284,14 @@ class _BuyerChatState extends State<BuyerChat> {
         panel: Center(
           child: slidingCheckoutView(),
         ),
-        body: Scaffold(
+        body: CupertinoPageScaffold(
           // resizeToAvoidBottomInset: true,
           //resizeToAvoidBottomPadding: false,
-          appBar: AppBar(
-            title: Text(widget.sellerName),
-            elevation: 0.0,
-            centerTitle: false,
+          navigationBar: CupertinoNavigationBar(
+            middle: Text(widget.sellerName),
           ),
 
-          body: Center(
+          child: Center(
             child: SafeArea(
               child: SingleChildScrollView(
                 child: Container(
@@ -350,7 +349,7 @@ class _BuyerChatState extends State<BuyerChat> {
                                 : Expanded(
                                     flex: 2,
                                     child: Container(
-                                      child: TextField(
+                                      child: CupertinoTextField(
                                         textInputAction: TextInputAction.next,
                                         maxLength: 15,
                                         controller: priceEditingController,
@@ -360,10 +359,10 @@ class _BuyerChatState extends State<BuyerChat> {
                                           WhitelistingTextInputFormatter
                                               .digitsOnly
                                         ],
-                                        decoration: InputDecoration(
-                                          border: OutlineInputBorder(),
-                                          labelText: 'Price',
-                                        ),
+//                                        decoration: InputDecoration(
+//                                          border: OutlineInputBorder(),
+//                                          labelText: 'Price',
+//                                        ),
                                       ),
                                     )),
                             SizedBox(
@@ -371,7 +370,7 @@ class _BuyerChatState extends State<BuyerChat> {
                             ),
                             Expanded(
                               flex: 4,
-                              child: TextField(
+                              child: CupertinoTextField(
                                 textInputAction: TextInputAction.send,
                                 onSubmitted: (_) {
                                   addMessage();
@@ -379,10 +378,10 @@ class _BuyerChatState extends State<BuyerChat> {
                                 maxLength: 100,
                                 controller: messageEditingController,
                                 style: simpleTextStyle(),
-                                decoration: InputDecoration(
-                                  border: OutlineInputBorder(),
-                                  labelText: 'Message',
-                                ),
+//                                decoration: InputDecoration(
+//                                  border: OutlineInputBorder(),
+//                                  labelText: 'Message',
+//                                ),
                               ),
                             ),
                           ],

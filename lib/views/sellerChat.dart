@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../helper/constants.dart';
@@ -163,15 +164,13 @@ class _SellerChatState extends State<SellerChat> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return CupertinoPageScaffold(
       // resizeToAvoidBottomInset: true,
       //resizeToAvoidBottomPadding: false,
-      appBar: AppBar(
-        title: Text(widget.userName),
-        elevation: 0.0,
-        centerTitle: false,
+      navigationBar: CupertinoNavigationBar(
+        middle: Text(widget.userName),
       ),
-      body: Center(
+      child: Center(
         child: SingleChildScrollView(
           child: Container(
             child: Column(
@@ -227,7 +226,7 @@ class _SellerChatState extends State<SellerChat> {
                           : Expanded(
                               flex: 2,
                               child: Container(
-                                child: TextField(
+                                child: CupertinoTextField(
                                   textInputAction: TextInputAction.next,
                                   maxLength: 15,
                                   controller: priceEditingController,
@@ -236,10 +235,10 @@ class _SellerChatState extends State<SellerChat> {
                                   inputFormatters: [
                                     WhitelistingTextInputFormatter.digitsOnly
                                   ],
-                                  decoration: InputDecoration(
-                                    border: OutlineInputBorder(),
-                                    labelText: 'Price',
-                                  ),
+//                                  decoration: InputDecoration(
+//                                    border: OutlineInputBorder(),
+//                                    labelText: 'Price',
+//                                  ),
                                 ),
                               )),
                       SizedBox(
@@ -247,7 +246,7 @@ class _SellerChatState extends State<SellerChat> {
                       ),
                       Expanded(
                         flex: 4,
-                        child: TextField(
+                        child: CupertinoTextField(
                           textInputAction: TextInputAction.send,
                           onSubmitted: (_) {
                             addMessage();
@@ -255,10 +254,10 @@ class _SellerChatState extends State<SellerChat> {
                           maxLength: 100,
                           controller: messageEditingController,
                           style: simpleTextStyle(),
-                          decoration: InputDecoration(
-                            border: OutlineInputBorder(),
-                            labelText: 'Message',
-                          ),
+//                          decoration: InputDecoration(
+//                            border: OutlineInputBorder(),
+//                            labelText: 'Message',
+//                          ),
                         ),
                       ),
                     ],

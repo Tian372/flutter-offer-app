@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/gestures.dart';
 import 'package:offer_app/main.dart';
 import 'package:offer_app/views/sellerChat.dart';
 
@@ -102,83 +104,41 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.lightBlueAccent,
-          title: Row(
-            children: [
-              Image.network(
-                'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png',
-                height: 40,
-              ),
-              SizedBox(
-                width: 20,
-              ),
-              Text('Your Name: ${Constants.myName}'),
-            ],
-          ),
-          elevation: 0.0,
-          centerTitle: false,
-          actions: [
-            GestureDetector(
+    return CupertinoApp(
+      home: CupertinoPageScaffold(
+        navigationBar: CupertinoNavigationBar(
+            backgroundColor: Colors.white,
+            middle: Text('Your Name: ${Constants.myName}'),
+//            Row(
+//              children: [
+//              Image.network(
+//                'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png',
+//                height: 40,
+//              ),
+//              SizedBox(
+//                width: 20,
+//              ),
+//                Text('Your Name: ${Constants.myName}'),
+//              ],
+//            ),
+//          elevation: 0.0,
+//          centerTitle: false,
+            trailing: GestureDetector(
               onTap: () {
                 AuthService().signOut();
                 Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (context) => Authenticate()));
+                    CupertinoPageRoute(builder: (context) => Authenticate()));
               },
-              child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 16),
-                  child: Icon(Icons.exit_to_app)),
+              child: Text('Exit'),
             )
-          ],
-        ),
-        body: Column(
-          children: [
-            Text('Buy:'),
-            chatRoomsBuyerList(),
-            Text('Sell:'),
-            chatRoomsSellerList(),
-          ],
-        ),
-        floatingActionButton: FloatingActionButton(
-          child: Icon(Icons.search),
-          onPressed: () {
-            Navigator.push(
-                context, MaterialPageRoute(builder: (context) => Search()));
-          },
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          currentIndex: this._currentIndex,
-          items: [
-            BottomNavigationBarItem(
-              backgroundColor: Colors.black38,
-              icon: Icon(Icons.home),
-              title: Text('Home'),
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              title: Text('My eBay'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              title: Text('Search'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.notifications),
-              title: Text('Notifications'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.monetization_on),
-              title: Text('Selling'),
-            ),
-          ],
-          onTap: (int index) {
-            setState(() {
-              this._currentIndex = index;
-            });
-          },
-        ),
+        child: Column(children: [
+          Text('Buy:'),
+          chatRoomsBuyerList(),
+          Text('Sell:'),
+          chatRoomsSellerList(),
+        ]),
+
       ),
     );
   }
@@ -209,7 +169,7 @@ class ChatRoomsTile extends StatelessWidget {
       onTap: () {
         Navigator.push(
             context,
-            MaterialPageRoute(
+            CupertinoPageRoute(
                 builder: (context) => isSeller
                     ? SellerChat(
                         chatRoomId: this.chatRoomId,

@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:offer_app/views/ebayMock.dart';
+
 import 'helper/authenticate.dart';
 import 'helper/helperfunctions.dart';
 import 'views/chatrooms.dart';
@@ -32,18 +35,11 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return CupertinoApp(
       title: 'FlutterChat',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primaryColor: HexColor.fromHex('#002E6E'),
-        scaffoldBackgroundColor: Colors.white,
-        accentColor: HexColor.fromHex('#0064D2'),
-        fontFamily: "OverpassRegular",
-        visualDensity: VisualDensity.adaptivePlatformDensity,
-      ),
       home: userIsLoggedIn != null
-          ? userIsLoggedIn ? ChatRoom() : Authenticate()
+          ? userIsLoggedIn ? EbayMock() : Authenticate()
           : Container(
               child: Center(
                 child: Authenticate(),

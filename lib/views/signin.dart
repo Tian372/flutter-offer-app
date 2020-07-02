@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:offer_app/main.dart';
 
 import '../helper/helperfunctions.dart';
@@ -30,6 +31,7 @@ class _SignInState extends State<SignIn> {
   final formKey = GlobalKey<FormState>();
 
   bool isLoading = false;
+
 //
   signIn() async {
     if (formKey.currentState.validate()) {
@@ -39,11 +41,11 @@ class _SignInState extends State<SignIn> {
 
       await authService
           .signInWithEmailAndPassword(
-              emailEditingController.text, passwordEditingController.text)
+          emailEditingController.text, passwordEditingController.text)
           .then((result) async {
         if (result != null) {
           QuerySnapshot userInfoSnapshot =
-              await DatabaseMethods().getUserInfo(emailEditingController.text);
+          await DatabaseMethods().getUserInfo(emailEditingController.text);
 
           HelperFunctions.saveUserLoggedInSharedPreference(true);
           HelperFunctions.saveUserNameSharedPreference(
@@ -52,7 +54,9 @@ class _SignInState extends State<SignIn> {
               userInfoSnapshot.documents[0].data["userEmail"]);
 
           Navigator.pushReplacement(
-              context, MaterialPageRoute(settings: RouteSettings(name: "chatRoom"),builder: (context) => ChatRoom()));
+              context, CupertinoPageRoute(
+              settings: RouteSettings(name: "chatRoom"),
+              builder: (context) => ChatRoom()));
         } else {
           setState(() {
             isLoading = false;
@@ -65,117 +69,114 @@ class _SignInState extends State<SignIn> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarMain(context),
-      body: isLoading
+    return CupertinoPageScaffold(
+      navigationBar: appBarMain(context),
+      child: isLoading
           ? Container(
-              child: Center(child: CircularProgressIndicator()),
-            )
+        child: Center(child: CircularProgressIndicator()),
+      )
           : Container(
-              padding: EdgeInsets.symmetric(horizontal: 26),
+        padding: EdgeInsets.symmetric(horizontal: 26),
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(builder: (context) => ItemView()),
+                );
+              },
+              child: Text(
+                "add item info",
+                style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 16,
+                    decoration: TextDecoration.underline),
+              ),
+            ),
+            Spacer(
+              flex: 2,
+            ),
+            Form(
+              key: formKey,
               child: Column(
                 children: [
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
+                  CupertinoTextField(
+//                          validator: (val) {
+//                            return RegExp(
+//                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
+//                                    .hasMatch(val)
+//                                ? null
+//                                : "Please Enter Correct Email";
+//                          },
+                    controller: emailEditingController,
+                    style: simpleTextStyle(),
+//                          decoration: textFieldInputDecoration("email"),
+                  ),
+                  CupertinoTextField(
+                    obscureText: true,
+//                          validator: (val) {
+//                            return val.length >= 6
+//                                ? null
+//                                : "Enter Password 6+ characters";
+//                          },
+                    style: simpleTextStyle(),
+                    controller: passwordEditingController,
+//                          decoration: textFieldInputDecoration("password"),
+                  ),
+                ],
+              ),
+            ),
+            SizedBox(
+              height: 16,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: [
+                GestureDetector(
+                  onTap: () {
+                    Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => ItemView()),
-                      );
-                    },
-                    child: Text(
-                      "add item info",
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
-                          decoration: TextDecoration.underline),
-                    ),
-                  ),
-                  Spacer(
-                    flex: 2,
-                  ),
-                  Form(
-                    key: formKey,
-                    child: Column(
-                      children: [
-                        TextFormField(
-                          validator: (val) {
-                            return RegExp(
-                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
-                                    .hasMatch(val)
-                                ? null
-                                : "Please Enter Correct Email";
-                          },
-                          controller: emailEditingController,
-                          style: simpleTextStyle(),
-                          decoration: textFieldInputDecoration("email"),
-                        ),
-                        TextFormField(
-                          obscureText: true,
-                          validator: (val) {
-                            return val.length >= 6
-                                ? null
-                                : "Enter Password 6+ characters";
-                          },
-                          style: simpleTextStyle(),
-                          controller: passwordEditingController,
-                          decoration: textFieldInputDecoration("password"),
-                        ),
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    children: [
-                      GestureDetector(
-                        onTap: () {
-                          Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                  builder: (context) => ForgotPassword()));
-                        },
-                        child: Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16, vertical: 8),
-                            child: Text(
-                              "Forgot Password?",
-                              style: simpleTextStyle(),
-                            )),
-                      )
-                    ],
-                  ),
-                  Spacer(
-                    flex: 2,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      signIn();
-                    },
-                    child: Container(
-                      padding: EdgeInsets.symmetric(vertical: 16),
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: HexColor.fromHex('#0064D2')
-//                          gradient: LinearGradient(
-//                            colors: [
-//                              const Color(0xff007EF4),
-//                              const Color(0xff2A75BC)
-//                            ],
-//                          )
-                          ),
-                      width: MediaQuery.of(context).size.width,
+                        CupertinoPageRoute(
+                            builder: (context) => ForgotPassword()));
+                  },
+                  child: Container(
+                      padding: EdgeInsets.symmetric(
+                          horizontal: 16, vertical: 8),
                       child: Text(
-                        "Sign In",
-                        style: TextStyle(color: Colors.white, fontSize: 17),
-                        textAlign: TextAlign.center,
-                      ),
-                    ),
-                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
+                        "Forgot Password?",
+                        style: simpleTextStyle(),
+                      )),
+                )
+              ],
+            ),
+            Spacer(
+              flex: 2,
+            ),
+            GestureDetector(
+              onTap: () {
+                signIn();
+              },
+              child: Container(
+                padding: EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(30),
+                    color: HexColor.fromHex('#0064D2')
+                ),
+                width: MediaQuery
+                    .of(context)
+                    .size
+                    .width,
+                child: CupertinoButton(child: Text(
+                  "Sign In",
+                  style: TextStyle(color: Colors.white, fontSize: 17),
+                  textAlign: TextAlign.center,
+                ),),
+              ),
+            ),
+            SizedBox(
+              height: 16,
+            ),
 //                  Container(
 //                    padding: EdgeInsets.symmetric(vertical: 16),
 //                    decoration: BoxDecoration(
@@ -189,37 +190,37 @@ class _SignInState extends State<SignIn> {
 //                      textAlign: TextAlign.center,
 //                    ),
 //                  ),
-                  SizedBox(
-                    height: 16,
-                  ),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        "Don't have account? ",
-                        style: simpleTextStyle(),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          widget.toggleView();
-                        },
-                        child: Text(
-                          "Register now",
-                          style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 16,
-                              decoration: TextDecoration.underline),
-                        ),
-                      ),
-                    ],
-                  ),
-
-                  Spacer(
-                    flex: 1,
-                  ),
-                ],
-              ),
+            SizedBox(
+              height: 16,
             ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  "Don't have account? ",
+                  style: simpleTextStyle(),
+                ),
+                GestureDetector(
+                  onTap: () {
+                    widget.toggleView();
+                  },
+                  child: Text(
+                    "Register now",
+                    style: TextStyle(
+                        color: Colors.black,
+                        fontSize: 16,
+                        decoration: TextDecoration.underline),
+                  ),
+                ),
+              ],
+            ),
+
+            Spacer(
+              flex: 1,
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

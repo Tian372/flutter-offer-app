@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:offer_app/helper/style.dart';
 
 import '../helper/helperfunctions.dart';
 import '../helper/theme.dart';
@@ -15,70 +16,59 @@ class ItemView extends StatelessWidget {
     TextEditingController nameEditingController = new TextEditingController();
     TextEditingController priceEditingController = new TextEditingController();
     TextEditingController sellerEditingController = new TextEditingController();
-    return Scaffold(
-        appBar: appBarMain(context),
-        body: SafeArea(
+    return SafeArea(
+      child: Container(
+        child: Form(
           child: Column(
             children: [
-              Expanded(
-                flex: 1,
-                child: TextField(
-                  controller: nameEditingController,
-                  style: simpleTextStyle(),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Name',
-                  ),
-                ),
+              Text('Item Name:'),
+              SizedBox(height: 10),
+              CupertinoTextField(
+                controller: nameEditingController,
+                style: Styles.searchText,
+                cursorColor: Styles.searchCursorColor,
               ),
-              Expanded(
-                flex: 1,
-                child: TextField(
-                  controller: descEditingController,
-                  style: simpleTextStyle(),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Desc',
-                  ),
-                ),
+              SizedBox(height: 50),
+              Text('Description:'),
+              SizedBox(height: 10),
+              CupertinoTextField(
+                controller: descEditingController,
+                style: Styles.searchText,
+                cursorColor: Styles.searchCursorColor,
               ),
-              Expanded(
-                flex: 1,
-                child: TextField(
-                  controller: sellerEditingController,
-                  style: simpleTextStyle(),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Seller',
-                  ),
-                ),
+              SizedBox(height: 50),
+              Text('seller:'),
+              SizedBox(height: 10),
+              CupertinoTextField(
+                controller: sellerEditingController,
+                style: Styles.searchText,
+                cursorColor: Styles.searchCursorColor,
               ),
-              Expanded(
-                flex: 1,
-                child: TextField(
-                  controller: priceEditingController,
-                  style: simpleTextStyle(),
-                  decoration: InputDecoration(
-                    border: OutlineInputBorder(),
-                    labelText: 'Price',
-                  ),
-                ),
+              SizedBox(height: 50),
+              Text('Price:'),
+              SizedBox(height: 10),
+              CupertinoTextField(
+                controller: priceEditingController,
+                style: Styles.searchText,
+                cursorColor: Styles.searchCursorColor,
               ),
-              Expanded(
-                flex: 1,
-                child: RaisedButton(
-                  color: Colors.green,
-                  onPressed: (){addItemMap(
+              SizedBox(height: 50),
+              RaisedButton(
+                color: Colors.green,
+                child: Text('Submit'),
+                onPressed: () {
+                  addItemMap(
                       nameEditingController.text,
                       descEditingController.text,
                       sellerEditingController.text,
                       priceEditingController.text);
-                  },
-              )
+                },
               )
             ],
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   addItemMap(String itemName, desc, seller, price) {

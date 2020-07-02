@@ -1,3 +1,6 @@
+import 'package:flutter/cupertino.dart';
+import 'package:offer_app/helper/style.dart';
+
 import '../helper/constants.dart';
 import '../services/database.dart';
 import '../views/buyerChat.dart';
@@ -7,27 +10,30 @@ import 'package:flutter/material.dart';
 
 //TODO: search by items
 
-class Search extends StatefulWidget {
+class SearchTab extends StatefulWidget {
   @override
-  _SearchState createState() => _SearchState();
+  _SearchTabState createState() => _SearchTabState();
 }
 
-class _SearchState extends State<Search> {
+class _SearchTabState extends State<SearchTab> {
   DatabaseMethods databaseMethods = new DatabaseMethods();
-  TextEditingController searchEditingController = new TextEditingController();
+  TextEditingController _controller;
+  FocusNode _focusNode;
   QuerySnapshot searchResultSnapshot;
+
+  String _terms = '';
 
   bool isLoading = false;
   bool haveUserSearched = false;
 
 //TODO: should not be able to search one's self
   initiateSearch() async {
-    if (searchEditingController.text.isNotEmpty) {
+    if (_terms != '') {
       setState(() {
         isLoading = true;
       });
       await databaseMethods
-          .searchByItem(searchEditingController.text, Constants.myName)
+          .searchByItem(_terms, Constants.myName)
           .then((snapshot) {
         searchResultSnapshot = snapshot;
         //TODO: get rid of all elements == myName
@@ -41,8 +47,7 @@ class _SearchState extends State<Search> {
 
   Widget userList() {
     return haveUserSearched
-        ? ListView.separated(
-            separatorBuilder: (context, index) => Divider(),
+        ? ListView.builder(
             shrinkWrap: true,
             itemCount: searchResultSnapshot.documents.length,
             itemBuilder: (context, index) {
@@ -54,6 +59,16 @@ class _SearchState extends State<Search> {
               );
             })
         : Container();
+  }
+
+  Widget _buildSearchBox() {
+    return Padding(
+      padding: const EdgeInsets.all(8),
+      child: SearchBar(
+        controller: _controller,
+        focusNode: _focusNode,
+      ),
+    );
   }
 
   /// 1.create a chatroom, send user to the chatroom, other userdetails
@@ -75,7 +90,7 @@ class _SearchState extends State<Search> {
       Map<String, dynamic> chatRoom = {
         'itemName': itemName,
         'itemId': itemId,
-        'seller' : userName,
+        'seller': userName,
         'buyer': Constants.myName,
         'chatRoomId': chatRoomId,
         'declined': declinedStatus,
@@ -140,43 +155,83 @@ class _SearchState extends State<Search> {
 
   @override
   void initState() {
+    _controller = TextEditingController()..addListener(_onTextChanged);
+    _focusNode = FocusNode();
     super.initState();
+  }
+
+  void _onTextChanged() {
+    setState(() {
+      _terms = _controller.text;
+      initiateSearch();
+    });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: appBarMain(context),
-      body: isLoading
-          ? Container(
-              child: Center(
-                child: CircularProgressIndicator(),
-              ),
-            )
-          : Container(
-              child: Column(
-                children: [
-                  Container(
-                    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 5),
-                    color: Color(0x54FFFFFF),
-                    child: TextField(
-                      textInputAction: TextInputAction.search,
-                      onSubmitted: (_) {
-                        initiateSearch();
-                      },
-                      maxLength: 42,
-                      controller: searchEditingController,
-                      style: simpleTextStyle(),
-                      decoration: InputDecoration(
-                        border: OutlineInputBorder(),
-                        labelText: 'search item',
-                      ),
-                    ),
-                  ),
-                  userList()
-                ],
+    return DecoratedBox(
+      decoration: const BoxDecoration(
+        color: Styles.scaffoldBackground,
+      ),
+      child: SafeArea(
+        child: Container(
+          child: Column(
+            children: [
+              _buildSearchBox(),
+              isLoading ? CupertinoActivityIndicator() : userList()
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class SearchBar extends StatelessWidget {
+  const SearchBar({
+    @required this.controller,
+    @required this.focusNode,
+  });
+
+  final TextEditingController controller;
+  final FocusNode focusNode;
+
+  @override
+  Widget build(BuildContext context) {
+    return DecoratedBox(
+      decoration: BoxDecoration(
+        color: Styles.searchBackground,
+        borderRadius: BorderRadius.circular(10),
+      ),
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 4,
+          vertical: 8,
+        ),
+        child: Row(
+          children: [
+            const Icon(
+              CupertinoIcons.search,
+              color: Styles.searchIconColor,
+            ),
+            Expanded(
+              child: CupertinoTextField(
+                controller: controller,
+                focusNode: focusNode,
+                style: Styles.searchText,
+                cursorColor: Styles.searchCursorColor,
               ),
             ),
+            GestureDetector(
+              onTap: controller.clear,
+              child: const Icon(
+                CupertinoIcons.clear_thick_circled,
+                color: Styles.searchIconColor,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
