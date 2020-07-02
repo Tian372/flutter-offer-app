@@ -19,6 +19,7 @@ class ChatRoom extends StatefulWidget {
 class _ChatRoomState extends State<ChatRoom> {
   Stream chatSellerRooms;
   Stream chatBuyerRooms;
+  int _currentIndex;
 
   Widget chatRoomsSellerList() {
     return StreamBuilder(
@@ -76,6 +77,7 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   void initState() {
+    this._currentIndex = 0;
     getUserInfoGetChats();
     super.initState();
   }
@@ -103,7 +105,7 @@ class _ChatRoomState extends State<ChatRoom> {
     return MaterialApp(
       home: Scaffold(
         appBar: AppBar(
-          backgroundColor: HexColor.fromHex('#002E6E'),
+          backgroundColor: Colors.lightBlueAccent,
           title: Row(
             children: [
               Image.network(
@@ -144,6 +146,37 @@ class _ChatRoomState extends State<ChatRoom> {
           onPressed: () {
             Navigator.push(
                 context, MaterialPageRoute(builder: (context) => Search()));
+          },
+        ),
+        bottomNavigationBar: BottomNavigationBar(
+          currentIndex: this._currentIndex,
+          items: [
+            BottomNavigationBarItem(
+              backgroundColor: Colors.black38,
+              icon: Icon(Icons.home),
+              title: Text('Home'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.person),
+              title: Text('My eBay'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.search),
+              title: Text('Search'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.notifications),
+              title: Text('Notifications'),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.monetization_on),
+              title: Text('Selling'),
+            ),
+          ],
+          onTap: (int index) {
+            setState(() {
+              this._currentIndex = index;
+            });
           },
         ),
       ),
