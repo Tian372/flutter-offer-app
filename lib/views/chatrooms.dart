@@ -1,10 +1,13 @@
+import 'package:offer_app/main.dart';
+import 'package:offer_app/views/sellerChat.dart';
+
 import '../helper/authenticate.dart';
 import '../helper/constants.dart';
 import '../helper/helperfunctions.dart';
 import '../helper/theme.dart';
 import '../services/auth.dart';
 import '../services/database.dart';
-import '../views/chat.dart';
+import '../views/buyerChat.dart';
 import '../views/search.dart';
 import 'package:flutter/material.dart';
 
@@ -21,148 +24,168 @@ class _ChatRoomState extends State<ChatRoom> {
       stream: chatRooms,
       builder: (context, snapshot) {
         return snapshot.hasData
-            ? ListView.separated(
-                separatorBuilder: (context, index) => Divider(
-                    ),
+            ? ListView.builder(
                 itemCount: snapshot.data.documents.length,
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
+                  var roomData = snapshot.data.documents[index];
                   return ChatRoomsTile(
-                    userName: snapshot.data.documents[index].data['chatRoomId']
-                        .toString()
-                        .replaceAll("_", "")
-                        .replaceAll(Constants.myName, ""),
-                    chatRoomId:
-                        snapshot.data.documents[index].data['chatRoomId'],
-                    de: snapshot.data.documents[index].data['declined'],
+                    sellerName: roomData.data['seller'],
+                    buyerName: roomData.data['buyer'],
+                    chatRoomId: roomData.data['chatRoomId'],
+                    declined: roomData.data['declined'],
+                    payment: roomData.data['paid'],
+                    itemName: roomData.data['itemName'],
+                    itemId: roomData.data['itemId'],
                   );
                 })
-            : Container();
+            : Center(
+                child: CircularProgressIndicator(),
+              );
       },
     );
   }
 
   @override
   void initState() {
-    getUserInfogetChats();
+    getUserInfoGetChats();
     super.initState();
   }
 
-  getUserInfogetChats() async {
+  getUserInfoGetChats() async {
     Constants.myName = await HelperFunctions.getUserNameSharedPreference();
     DatabaseMethods().getUserChats(Constants.myName).then((snapshots) {
       setState(() {
         chatRooms = snapshots;
         print(
-            "we got the data + ${chatRooms.toString()} this is name  ${Constants.myName} ");
+            'we got the data + ${chatRooms.toString()} this is name ${Constants.myName} ');
       });
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            Image.network(
-              "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
-              height: 40,
-            ),
-            SizedBox(
-              width: 20,
-            ),
-            const Text('Chat Room')
+    return MaterialApp(
+      home: Scaffold(
+        appBar: AppBar(
+          backgroundColor: HexColor.fromHex('#002E6E'),
+          title: Row(
+            children: [
+              Image.network(
+                'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png',
+                height: 40,
+              ),
+              SizedBox(
+                width: 20,
+              ),
+              Text('Your Name: ${Constants.myName}'),
+            ],
+          ),
+          elevation: 0.0,
+          centerTitle: false,
+          actions: [
+            GestureDetector(
+              onTap: () {
+                AuthService().signOut();
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (context) => Authenticate()));
+              },
+              child: Container(
+                  padding: EdgeInsets.symmetric(horizontal: 16),
+                  child: Icon(Icons.exit_to_app)),
+            )
           ],
         ),
-        elevation: 0.0,
-        centerTitle: false,
-        actions: [
-          GestureDetector(
-            onTap: () {
-              AuthService().signOut();
-              Navigator.pushReplacement(context,
-                  MaterialPageRoute(builder: (context) => Authenticate()));
-            },
-            child: Container(
-                padding: EdgeInsets.symmetric(horizontal: 16),
-                child: Icon(Icons.exit_to_app)),
-          )
-        ],
-      ),
-      body: Container(
-        child: chatRoomsList(),
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.search),
-        onPressed: () {
-          Navigator.push(
-              context, MaterialPageRoute(builder: (context) => Search()));
-        },
+        body: chatRoomsList(),
+        floatingActionButton: FloatingActionButton(
+          child: Icon(Icons.search),
+          onPressed: () {
+            Navigator.push(
+                context, MaterialPageRoute(builder: (context) => Search()));
+          },
+        ),
       ),
     );
   }
 }
 
 class ChatRoomsTile extends StatelessWidget {
-  final String userName;
   final String chatRoomId;
-  final bool de;
+  final String itemName;
+  final bool declined;
+  final String itemId;
+  final String sellerName;
+  final String buyerName;
+  final bool payment;
 
-  ChatRoomsTile({this.userName, @required this.chatRoomId, this.de});
+  ChatRoomsTile(
+      {@required this.chatRoomId,
+      this.declined,
+      this.payment,
+      this.itemName,
+      @required this.itemId,
+      this.buyerName,
+      this.sellerName});
 
   @override
   Widget build(BuildContext context) {
+    bool isSeller = Constants.myName == sellerName;
     return GestureDetector(
       onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
-                builder: (context) => Chat(
-                      chatRoomId: chatRoomId,
-                      userName: userName,
-                      declined: de,
-                    )));
+                builder: (context) => isSeller
+                    ? SellerChat(
+                        chatRoomId: this.chatRoomId,
+                        userName: this.buyerName,
+                        declined: this.declined,
+                      )
+                    : BuyerChat(
+                        chatRoomId: this.chatRoomId,
+                        sellerName: this.sellerName,
+                        declined: this.declined,
+                        itemId: this.itemId,
+                      )));
       },
       child: Container(
-        color: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 20),
+        color: this.declined
+            ? (this.payment ? Colors.green[200] : Colors.red[200])
+            : Colors.grey,
+        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
         child: Row(
           children: [
+            Expanded(
+              child: Column(
+                children: [
+                  Text('Item: $itemName',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 25,
+                          fontFamily: 'RobotoMono',
+                          fontWeight: FontWeight.w400)),
+                  Text('Seller: ${this.sellerName}; Buyer: ${this.buyerName}',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                          color: Colors.black38,
+                          fontSize: 20,
+                          fontFamily: 'RobotoMono',
+                          fontWeight: FontWeight.w400)),
+                ],
+              ),
+            ),
             Container(
-              height: 50,
-              width: 50,
-              decoration: BoxDecoration(
-                  color: de ? Colors.red : Colors.green,
-                  borderRadius: BorderRadius.circular(50)),
-              child: Text(userName.substring(0, 1),
-                  textAlign: TextAlign.center,
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 30,
-                      fontFamily: 'OverpassRegular',
-                      fontWeight: FontWeight.w300)),
-            ),
-            SizedBox(
-              width: 50,
-            ),
-            Text(userName,
-                textAlign: TextAlign.center,
+              height: 100,
+              width: 100,
+              color: Colors.black38,
+              child: Text(
+                'pic goes here',
                 style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 25,
-                    fontFamily: 'RobotoMono',
-                    fontWeight: FontWeight.w400)),
-            SizedBox(
-              width: 50,
-            ),
-            Text((de == true) ? "D" : "A",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 25,
-                    fontFamily: 'RobotoMono',
-                    fontWeight: FontWeight.w400))
+                  color: Colors.white,
+                ),
+              ),
+            )
           ],
         ),
       ),

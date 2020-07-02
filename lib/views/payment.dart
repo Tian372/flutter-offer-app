@@ -46,7 +46,7 @@ class _PaymentState extends State<Payment> {
         onPressed: () {
           DatabaseMethods()
               .declineJob(widget.chatId);
-          Navigator.popUntil(context, ModalRoute.withName("chatRoom"));
+          Navigator.popUntil(context, ModalRoute.withName('chatRoom'));
 
         },
         tooltip: '',
@@ -58,8 +58,8 @@ class _PaymentState extends State<Payment> {
 
   Widget paymentMethod() {
     return RadioButtonGroup(labels: <String>[
-      "Payment 1",
-      "Payment 2",
+      'Payment 1',
+      'Payment 2',
     ], onSelected: (String selected) => print(selected));
   }
 }

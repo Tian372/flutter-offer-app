@@ -38,12 +38,13 @@ dependencies:
   sliding_up_panel: 1.0.2
   custom_radio_grouped_button: any
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
 
 # For information on the generic Dart part of this file, see the
-# following page: https://dart.dev/tools/pub/pubspessss
+# following page: https://dart.dev/tools/pub/pubspec
 
 # The following section is specific to Flutter.
 flutter:

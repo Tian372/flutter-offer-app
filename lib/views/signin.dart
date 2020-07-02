@@ -10,6 +10,8 @@ import '../widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import 'addItem.dart';
+
 class SignIn extends StatefulWidget {
   final Function toggleView;
 
@@ -73,6 +75,21 @@ class _SignInState extends State<SignIn> {
               padding: EdgeInsets.symmetric(horizontal: 26),
               child: Column(
                 children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => ItemView()),
+                      );
+                    },
+                    child: Text(
+                      "add item info",
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 16,
+                          decoration: TextDecoration.underline),
+                    ),
+                  ),
                   Spacer(
                     flex: 2,
                   ),
@@ -95,7 +112,7 @@ class _SignInState extends State<SignIn> {
                         TextFormField(
                           obscureText: true,
                           validator: (val) {
-                            return val.length > 6
+                            return val.length >= 6
                                 ? null
                                 : "Enter Password 6+ characters";
                           },
