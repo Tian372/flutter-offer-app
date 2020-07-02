@@ -132,15 +132,22 @@ class DatabaseMethods {
         .catchError((e) {
       print(e.toString());
     });
+
   }
 
-  getUserChats(String myName) async {
+  getUserSellerChats(String myName) async {
     return Firestore.instance
         .collection("chatRoom")
-        .where('buyer',  isEqualTo: myName)
+        .where('seller', isEqualTo: myName)
         .snapshots();
   }
 
+  getUserBuyerChats(String myName) async {
+    return Firestore.instance
+        .collection("chatRoom")
+        .where('buyer', isEqualTo: myName)
+        .snapshots();
+  }
   isChatroomExist(String chatRoomId) {
     Firestore.instance
         .collection('chatRoom')

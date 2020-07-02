@@ -17,11 +17,39 @@ class ChatRoom extends StatefulWidget {
 }
 
 class _ChatRoomState extends State<ChatRoom> {
-  Stream chatRooms;
+  Stream chatSellerRooms;
+  Stream chatBuyerRooms;
 
-  Widget chatRoomsList() {
+  Widget chatRoomsSellerList() {
     return StreamBuilder(
-      stream: chatRooms,
+      stream: chatSellerRooms,
+      builder: (context, snapshot) {
+        return snapshot.hasData
+            ? ListView.builder(
+                itemCount: snapshot.data.documents.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  var roomData = snapshot.data.documents[index];
+                  return ChatRoomsTile(
+                    sellerName: roomData.data['seller'],
+                    buyerName: roomData.data['buyer'],
+                    chatRoomId: roomData.data['chatRoomId'],
+                    declined: roomData.data['declined'],
+                    payment: roomData.data['paid'],
+                    itemName: roomData.data['itemName'],
+                    itemId: roomData.data['itemId'],
+                  );
+                })
+            : Center(
+                child: CircularProgressIndicator(),
+              );
+      },
+    );
+  }
+
+  Widget chatRoomsBuyerList() {
+    return StreamBuilder(
+      stream: chatBuyerRooms,
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
@@ -54,11 +82,18 @@ class _ChatRoomState extends State<ChatRoom> {
 
   getUserInfoGetChats() async {
     Constants.myName = await HelperFunctions.getUserNameSharedPreference();
-    DatabaseMethods().getUserChats(Constants.myName).then((snapshots) {
+    DatabaseMethods().getUserBuyerChats(Constants.myName).then((snapshots) {
       setState(() {
-        chatRooms = snapshots;
+        chatBuyerRooms = snapshots;
         print(
-            'we got the data + ${chatRooms.toString()} this is name ${Constants.myName} ');
+            'we got the data + ${chatBuyerRooms.toString()} this is name ${Constants.myName} ');
+      });
+    });
+    DatabaseMethods().getUserSellerChats(Constants.myName).then((snapshots) {
+      setState(() {
+        chatSellerRooms = snapshots;
+        print(
+            'we got the data + ${chatSellerRooms.toString()} this is name ${Constants.myName} ');
       });
     });
   }
@@ -96,7 +131,14 @@ class _ChatRoomState extends State<ChatRoom> {
             )
           ],
         ),
-        body: chatRoomsList(),
+        body: Column(
+          children: [
+            Text('Buy:'),
+            chatRoomsBuyerList(),
+            Text('Sell:'),
+            chatRoomsSellerList(),
+          ],
+        ),
         floatingActionButton: FloatingActionButton(
           child: Icon(Icons.search),
           onPressed: () {

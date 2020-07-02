@@ -58,7 +58,7 @@ class _SearchState extends State<Search> {
 
   /// 1.create a chatroom, send user to the chatroom, other userdetails
   sendMessage(String userName, String itemId, String itemName) async {
-    String chatRoomId = getChatRoomId(Constants.myName, userName);
+    String chatRoomId = getChatRoomId(Constants.myName, userName, itemName);
 
     final snapShot = await Firestore.instance
         .collection('chatRoom')
@@ -130,11 +130,11 @@ class _SearchState extends State<Search> {
     );
   }
 
-  getChatRoomId(String a, String b) {
+  getChatRoomId(String a, b, itemName) {
     if (a.substring(0, 1).codeUnitAt(0) > b.substring(0, 1).codeUnitAt(0)) {
-      return '$b\_$a';
+      return '$b\_$a\_$itemName';
     } else {
-      return '$a\_$b';
+      return '$a\_$b\_$itemName';
     }
   }
 
