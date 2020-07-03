@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:offer_app/helper/style.dart';
 
 import '../helper/helperfunctions.dart';
-import '../helper/theme.dart';
 import '../services/auth.dart';
 import '../services/database.dart';
 import '../views/chatrooms.dart';
@@ -62,6 +61,10 @@ class ItemView extends StatelessWidget {
                       descEditingController.text,
                       sellerEditingController.text,
                       priceEditingController.text);
+                  nameEditingController.text = '';
+                  descEditingController.text = '';
+                  sellerEditingController.text = '';
+                  priceEditingController.text = '';
                 },
               )
             ],

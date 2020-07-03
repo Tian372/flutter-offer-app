@@ -26,6 +26,13 @@ class _SearchTabState extends State<SearchTab> {
   bool isLoading = false;
   bool haveUserSearched = false;
 
+  @override
+  void dispose() {
+    _focusNode.dispose();
+    _controller.dispose();
+    super.dispose();
+  }
+
 //TODO: should not be able to search one's self
   initiateSearch() async {
     if (_terms != '') {
@@ -98,10 +105,9 @@ class _SearchTabState extends State<SearchTab> {
       };
       databaseMethods.addChatRoom(chatRoom, chatRoomId);
     }
-    Navigator.pop(context);
     Navigator.push(
         context,
-        MaterialPageRoute(
+        CupertinoPageRoute(
             builder: (context) => BuyerChat(
                   chatRoomId: chatRoomId,
                   sellerName: userName,
@@ -214,13 +220,22 @@ class SearchBar extends StatelessWidget {
               CupertinoIcons.search,
               color: Styles.searchIconColor,
             ),
+            SizedBox(
+              width: 5,
+            ),
             Expanded(
               child: CupertinoTextField(
                 controller: controller,
                 focusNode: focusNode,
                 style: Styles.searchText,
                 cursorColor: Styles.searchCursorColor,
+                decoration: BoxDecoration(
+                  color: Styles.searchBackground,
+                ),
               ),
+            ),
+            SizedBox(
+              width: 5,
             ),
             GestureDetector(
               onTap: controller.clear,

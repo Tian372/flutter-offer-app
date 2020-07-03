@@ -87,7 +87,7 @@ class _BuyerChatState extends State<BuyerChat> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.only(top: 42),
+            padding: EdgeInsets.only(bottom: 100),
           ),
         ],
       ),
@@ -97,6 +97,7 @@ class _BuyerChatState extends State<BuyerChat> {
   Widget paymentMethod() {
     return Container(
       child: CustomRadioButton(
+        height: 50,
         buttonColor: Theme.of(context).canvasColor,
         buttonLables: [
           'Payment 1',
@@ -112,7 +113,7 @@ class _BuyerChatState extends State<BuyerChat> {
           print(values);
         },
         horizontal: true,
-        width: 120,
+        width: 110,
         selectedColor: Theme.of(context).accentColor,
         padding: 5,
         enableShape: false,
@@ -140,7 +141,9 @@ class _BuyerChatState extends State<BuyerChat> {
 
   Widget addressMethod() {
     return Container(
+
       child: CustomRadioButton(
+        height: 50,
         buttonColor: Theme.of(context).canvasColor,
         buttonLables: [
           'Address 1',
@@ -156,7 +159,7 @@ class _BuyerChatState extends State<BuyerChat> {
           print(values);
         },
         horizontal: true,
-        width: 120,
+        width: 110,
         selectedColor: Theme.of(context).accentColor,
         padding: 5,
         enableShape: false,
@@ -278,7 +281,7 @@ class _BuyerChatState extends State<BuyerChat> {
         backdropEnabled: true,
         slideDirection: SlideDirection.UP,
         minHeight: 0,
-        maxHeight: 600,
+        maxHeight: 700,
         isDraggable: false,
         controller: _pc,
         panel: Center(
@@ -289,6 +292,9 @@ class _BuyerChatState extends State<BuyerChat> {
           //resizeToAvoidBottomPadding: false,
           navigationBar: CupertinoNavigationBar(
             middle: Text(widget.sellerName),
+            leading: CupertinoNavigationBarBackButton(
+              onPressed: () => Navigator.of(context).pop(),
+            ),
           ),
 
           child: Center(

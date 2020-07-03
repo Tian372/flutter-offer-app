@@ -6,7 +6,6 @@ import 'package:offer_app/views/sellerChat.dart';
 import '../helper/authenticate.dart';
 import '../helper/constants.dart';
 import '../helper/helperfunctions.dart';
-import '../helper/theme.dart';
 import '../services/auth.dart';
 import '../services/database.dart';
 import '../views/buyerChat.dart';
@@ -104,41 +103,18 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoApp(
-      home: CupertinoPageScaffold(
-        navigationBar: CupertinoNavigationBar(
-            backgroundColor: Colors.white,
-            middle: Text('Your Name: ${Constants.myName}'),
-//            Row(
-//              children: [
-//              Image.network(
-//                'https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png',
-//                height: 40,
-//              ),
-//              SizedBox(
-//                width: 20,
-//              ),
-//                Text('Your Name: ${Constants.myName}'),
-//              ],
-//            ),
-//          elevation: 0.0,
-//          centerTitle: false,
-            trailing: GestureDetector(
-              onTap: () {
-                AuthService().signOut();
-                Navigator.pushReplacement(context,
-                    CupertinoPageRoute(builder: (context) => Authenticate()));
-              },
-              child: Text('Exit'),
-            )
-            ),
+    return SafeArea(
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10),
         child: Column(children: [
           Text('Buy:'),
           chatRoomsBuyerList(),
+          SizedBox(
+            height: 30,
+          ),
           Text('Sell:'),
           chatRoomsSellerList(),
         ]),
-
       ),
     );
   }

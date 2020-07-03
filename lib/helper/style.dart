@@ -24,7 +24,7 @@ abstract class Styles {
 
   static const TextStyle searchText = TextStyle(
     color: Color.fromRGBO(0, 0, 0, 1),
-    fontSize: 14,
+    fontSize: 16,
     fontStyle: FontStyle.normal,
     fontWeight: FontWeight.normal,
   );
