@@ -20,6 +20,9 @@ class ItemView extends StatelessWidget {
         child: Form(
           child: Column(
             children: [
+              SizedBox(
+                height: 30,
+              ),
               Text('Item Name:'),
               SizedBox(height: 10),
               CupertinoTextField(

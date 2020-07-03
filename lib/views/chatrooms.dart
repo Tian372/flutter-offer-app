@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
+import 'package:offer_app/helper/style.dart';
 import 'package:offer_app/main.dart';
 import 'package:offer_app/views/sellerChat.dart';
 
@@ -32,14 +33,16 @@ class _ChatRoomState extends State<ChatRoom> {
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   var roomData = snapshot.data.documents[index];
-                  return ChatRoomsTile(
-                    sellerName: roomData.data['seller'],
-                    buyerName: roomData.data['buyer'],
-                    chatRoomId: roomData.data['chatRoomId'],
-                    declined: roomData.data['declined'],
-                    payment: roomData.data['paid'],
-                    itemName: roomData.data['itemName'],
-                    itemId: roomData.data['itemId'],
+                  return Container(
+                    child: ChatRoomsTile(
+                      sellerName: roomData.data['seller'],
+                      buyerName: roomData.data['buyer'],
+                      chatRoomId: roomData.data['chatRoomId'],
+                      declined: roomData.data['declined'],
+                      payment: roomData.data['paid'],
+                      itemName: roomData.data['itemName'],
+                      itemId: roomData.data['itemId'],
+                    ),
                   );
                 })
             : Center(
@@ -105,14 +108,43 @@ class _ChatRoomState extends State<ChatRoom> {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10),
+        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
         child: Column(children: [
-          Text('Buy:'),
-          chatRoomsBuyerList(),
-          SizedBox(
-            height: 30,
+          Container(
+            height: 100,
+            padding: EdgeInsets.symmetric(vertical: 10),
+            decoration: new BoxDecoration(
+                color: Styles.scaffoldBackground,
+                borderRadius: new BorderRadius.only(
+                  topLeft: const Radius.circular(10),
+                  topRight: const Radius.circular(10),
+                  bottomRight: const Radius.circular(10),
+                  bottomLeft: const Radius.circular(10),
+                )),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Icon(CupertinoIcons.collections_solid, size: 60,),
+                      Text('System')
+                    ],
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Icon(CupertinoIcons.news_solid, size: 60,),
+                      Text('Other')
+                    ],
+                  ),
+                )
+              ],
+            ),
           ),
-          Text('Sell:'),
+          Container(height: 50, child: Center(child: Text('Buy:'))),
+          chatRoomsBuyerList(),
+          Container(height: 50, child: Center(child: Text('Sell:'))),
           chatRoomsSellerList(),
         ]),
       ),
@@ -141,63 +173,82 @@ class ChatRoomsTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isSeller = Constants.myName == sellerName;
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-            context,
-            CupertinoPageRoute(
-                builder: (context) => isSeller
-                    ? SellerChat(
-                        chatRoomId: this.chatRoomId,
-                        userName: this.buyerName,
-                        declined: this.declined,
-                      )
-                    : BuyerChat(
-                        chatRoomId: this.chatRoomId,
-                        sellerName: this.sellerName,
-                        declined: this.declined,
-                        itemId: this.itemId,
-                      )));
-      },
-      child: Container(
-        color: this.declined
-            ? (this.payment ? Colors.green[200] : Colors.red[200])
-            : Colors.grey,
-        padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                children: [
-                  Text('Item: $itemName',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 25,
-                          fontFamily: 'RobotoMono',
-                          fontWeight: FontWeight.w400)),
-                  Text('Seller: ${this.sellerName}; Buyer: ${this.buyerName}',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(
-                          color: Colors.black38,
-                          fontSize: 20,
-                          fontFamily: 'RobotoMono',
-                          fontWeight: FontWeight.w400)),
-                ],
-              ),
-            ),
-            Container(
-              height: 100,
-              width: 100,
-              color: Colors.black38,
-              child: Text(
-                'pic goes here',
-                style: TextStyle(
-                  color: Colors.white,
+    return Container(
+      child: Center(
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                CupertinoPageRoute(
+                    builder: (context) => isSeller
+                        ? SellerChat(
+                            chatRoomId: this.chatRoomId,
+                            userName: this.buyerName,
+                            declined: this.declined,
+                          )
+                        : BuyerChat(
+                            chatRoomId: this.chatRoomId,
+                            sellerName: this.sellerName,
+                            declined: this.declined,
+                            itemId: this.itemId,
+                          )));
+          },
+          child: Container(
+            decoration: new BoxDecoration(
+                color: this.declined
+                    ? (this.payment ? Colors.green[200] : Colors.red[200])
+                    : Colors.grey,
+                borderRadius: new BorderRadius.only(
+                  topLeft: const Radius.circular(10),
+                  topRight: const Radius.circular(10),
+                  bottomRight: const Radius.circular(10),
+                  bottomLeft: const Radius.circular(10),
+                )),
+            padding: EdgeInsets.symmetric(horizontal: 5, vertical: 5),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Text('Item: $itemName',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 25,
+                              fontFamily: 'RobotoMono',
+                              fontWeight: FontWeight.w400)),
+                      Text(
+                          'Seller: ${this.sellerName}; Buyer: ${this.buyerName}',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                              color: Colors.black38,
+                              fontSize: 20,
+                              fontFamily: 'RobotoMono',
+                              fontWeight: FontWeight.w400)),
+                    ],
+                  ),
                 ),
-              ),
-            )
-          ],
+                Container(
+                  height: 80,
+                  width: 80,
+                  decoration: new BoxDecoration(
+                      color: Colors.black38,
+                      borderRadius: new BorderRadius.only(
+                        topLeft: const Radius.circular(10),
+                        topRight: const Radius.circular(10),
+                        bottomRight: const Radius.circular(10),
+                        bottomLeft: const Radius.circular(10),
+                      )),
+                  child: Text(
+                    'pic goes here',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
         ),
       ),
     );

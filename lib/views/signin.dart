@@ -149,11 +149,13 @@ class _SignInState extends State<SignIn> {
                   Container(
                     padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
                     decoration: BoxDecoration(
+                      border: Border.all(color:Colors.blueAccent, width: 1.0),
                       borderRadius: BorderRadius.circular(30),
-                      color: Colors.lightBlue,
+
                     ),
                     width: MediaQuery.of(context).size.width,
                     child: CupertinoButton(
+
                       onPressed: () {
                         if (emailEditingController.text.isEmpty ||
                             passwordEditingController.text.isEmpty) {
@@ -214,7 +216,7 @@ class _SignInState extends State<SignIn> {
                       },
                       child: Text(
                         "Sign In",
-                        style: TextStyle(color: Colors.white, fontSize: 17),
+                        style: TextStyle(color: Colors.blueAccent, fontSize: 17),
                         textAlign: TextAlign.center,
                       ),
                     ),

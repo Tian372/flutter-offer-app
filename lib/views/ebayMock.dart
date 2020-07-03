@@ -1,4 +1,5 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:offer_app/helper/authenticate.dart';
 import 'package:offer_app/helper/helperfunctions.dart';
@@ -54,12 +55,12 @@ class _EbayMockPage extends State<EbayMockPage> {
     final userIsLoggedIn = Provider.of<UserIsLoggedIn>(context);
     return CupertinoTabScaffold(
       tabBar: CupertinoTabBar(
-//        onTap: (index) {
-//          setState(() {
-//            getLoggedInState();
-//            serverLogin ? userIsLoggedIn.login() : userIsLoggedIn.logout();
-//          });
-//        },
+        onTap: (index) {
+          setState(() {
+            _index = index;
+          });
+        },
+
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.home),
@@ -99,6 +100,10 @@ class _EbayMockPage extends State<EbayMockPage> {
                   : userIsLoggedIn.log
                       ? CupertinoPageScaffold(
                           navigationBar: CupertinoNavigationBar(
+                            leading: Image.network(
+                              "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
+                              height: 30,
+                            ),
                             middle: Text('Item Enter'),
                           ),
                           child: ItemView(),
@@ -120,6 +125,10 @@ class _EbayMockPage extends State<EbayMockPage> {
                       ? CupertinoPageScaffold(
                           navigationBar: CupertinoNavigationBar(
                             middle: Text('User Info'),
+                            leading: Image.network(
+                              "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
+                              height: 30,
+                            ),
                           ),
                           child: UserInfoView())
                       : Authenticate();
@@ -135,6 +144,13 @@ class _EbayMockPage extends State<EbayMockPage> {
                     )
                   : userIsLoggedIn.log
                       ? CupertinoPageScaffold(
+                          navigationBar: CupertinoNavigationBar(
+                            middle: Text('Search'),
+                            leading: Image.network(
+                              "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
+                              height: 30,
+                            ),
+                          ),
                           child: SearchTab(),
                         )
                       : Authenticate();
@@ -150,6 +166,13 @@ class _EbayMockPage extends State<EbayMockPage> {
                     )
                   : userIsLoggedIn.log
                       ? CupertinoPageScaffold(
+                          navigationBar: CupertinoNavigationBar(
+                            leading: Image.network(
+                              "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
+                              height: 30,
+                            ),
+                            middle: Text('Notifications'),
+                          ),
                           child: ChatRoom(),
                         )
                       : Authenticate();

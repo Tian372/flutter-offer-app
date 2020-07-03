@@ -225,6 +225,7 @@ class SearchBar extends StatelessWidget {
             ),
             Expanded(
               child: CupertinoTextField(
+                autofocus:true,
                 controller: controller,
                 focusNode: focusNode,
                 style: Styles.searchText,

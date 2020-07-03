@@ -44,12 +44,17 @@ class UserInfoView extends StatelessWidget {
             SizedBox(
               height: 500,
             ),
-            SizedBox(
-              width: 200,
-              height: 50,
+            Container(
+              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+              decoration: BoxDecoration(
+                border: Border.all(color:Colors.blueAccent, width: 1.0),
+                borderRadius: BorderRadius.circular(30),
+
+              ),
+
               child: CupertinoButton(
-                color: Colors.lightBlue,
-                child: Text('Sign Out'),
+
+                child: Text('Sign Out', style: TextStyle(color: Colors.blueAccent, fontSize: 17),),
                 onPressed: () {
                   AuthService().signOut();
                   userIsLoggedIn.logout();
