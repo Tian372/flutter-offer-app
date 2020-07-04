@@ -76,7 +76,7 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     final userIsLoggedIn = Provider.of<UserIsLoggedIn>(context);
     return CupertinoPageScaffold(
-      navigationBar: appBarMain(context),
+      navigationBar: loginAppBar(context),
       child: isLoading
           ? Container(
               child: Center(child: CircularProgressIndicator()),

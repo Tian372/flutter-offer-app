@@ -61,7 +61,7 @@ class _SignUpState extends State<SignUp> {
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: appBarMain(context),
+      navigationBar: loginAppBar(context),
       child: isLoading
           ? Container(
               child: Center(

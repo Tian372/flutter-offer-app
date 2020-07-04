@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'package:offer_app/helper/style.dart';
 import 'package:offer_app/main.dart';
 import 'package:offer_app/views/sellerChat.dart';
+import 'package:offer_app/widget/widget.dart';
 
 import '../helper/authenticate.dart';
 import '../helper/constants.dart';
@@ -106,47 +107,50 @@ class _ChatRoomState extends State<ChatRoom> {
 
   @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Container(
-        padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-        child: Column(children: [
-          Container(
-            height: 100,
-            padding: EdgeInsets.symmetric(vertical: 10),
-            decoration: new BoxDecoration(
-                color: Styles.scaffoldBackground,
-                borderRadius: new BorderRadius.only(
-                  topLeft: const Radius.circular(10),
-                  topRight: const Radius.circular(10),
-                  bottomRight: const Radius.circular(10),
-                  bottomLeft: const Radius.circular(10),
-                )),
-            child: Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Icon(CupertinoIcons.collections_solid, size: 60,),
-                      Text('System')
-                    ],
+    return CupertinoPageScaffold(
+      navigationBar: appBarMain(context, 'Notification'),
+      child: SafeArea(
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          child: Column(children: [
+            Container(
+              height: 100,
+              padding: EdgeInsets.symmetric(vertical: 10),
+              decoration: new BoxDecoration(
+                  color: Styles.scaffoldBackground,
+                  borderRadius: new BorderRadius.only(
+                    topLeft: const Radius.circular(10),
+                    topRight: const Radius.circular(10),
+                    bottomRight: const Radius.circular(10),
+                    bottomLeft: const Radius.circular(10),
+                  )),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Icon(CupertinoIcons.collections_solid, size: 60,),
+                        Text('System')
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Icon(CupertinoIcons.news_solid, size: 60,),
-                      Text('Other')
-                    ],
-                  ),
-                )
-              ],
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Icon(CupertinoIcons.news_solid, size: 60,),
+                        Text('Other')
+                      ],
+                    ),
+                  )
+                ],
+              ),
             ),
-          ),
-          Container(height: 50, child: Center(child: Text('Buy:'))),
-          chatRoomsBuyerList(),
-          Container(height: 50, child: Center(child: Text('Sell:'))),
-          chatRoomsSellerList(),
-        ]),
+            Container(height: 50, child: Center(child: Text('Buy:'))),
+            chatRoomsBuyerList(),
+            Container(height: 50, child: Center(child: Text('Sell:'))),
+            chatRoomsSellerList(),
+          ]),
+        ),
       ),
     );
   }

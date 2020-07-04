@@ -6,6 +6,7 @@ import 'package:offer_app/helper/helperfunctions.dart';
 import 'package:offer_app/views/search.dart';
 import 'package:offer_app/views/signin.dart';
 import 'package:offer_app/views/userInfoView.dart';
+import 'package:offer_app/widget/widget.dart';
 import 'package:provider/provider.dart';
 
 import 'addItem.dart';
@@ -60,7 +61,6 @@ class _EbayMockPage extends State<EbayMockPage> {
             _index = index;
           });
         },
-
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(CupertinoIcons.home),
@@ -99,13 +99,7 @@ class _EbayMockPage extends State<EbayMockPage> {
                     )
                   : userIsLoggedIn.log
                       ? CupertinoPageScaffold(
-                          navigationBar: CupertinoNavigationBar(
-                            leading: Image.network(
-                              "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
-                              height: 30,
-                            ),
-                            middle: Text('Item Enter'),
-                          ),
+                          navigationBar: appBarMain(context, 'Item Enter'),
                           child: ItemView(),
                         )
                       : Authenticate();
@@ -123,13 +117,7 @@ class _EbayMockPage extends State<EbayMockPage> {
                     )
                   : userIsLoggedIn.log
                       ? CupertinoPageScaffold(
-                          navigationBar: CupertinoNavigationBar(
-                            middle: Text('User Info'),
-                            leading: Image.network(
-                              "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
-                              height: 30,
-                            ),
-                          ),
+                          navigationBar: appBarMain(context, 'User Info'),
                           child: UserInfoView())
                       : Authenticate();
             });
@@ -144,13 +132,7 @@ class _EbayMockPage extends State<EbayMockPage> {
                     )
                   : userIsLoggedIn.log
                       ? CupertinoPageScaffold(
-                          navigationBar: CupertinoNavigationBar(
-                            middle: Text('Search'),
-                            leading: Image.network(
-                              "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
-                              height: 30,
-                            ),
-                          ),
+                          navigationBar: appBarMain(context, 'Search'),
                           child: SearchTab(),
                         )
                       : Authenticate();
@@ -165,16 +147,7 @@ class _EbayMockPage extends State<EbayMockPage> {
                       ),
                     )
                   : userIsLoggedIn.log
-                      ? CupertinoPageScaffold(
-                          navigationBar: CupertinoNavigationBar(
-                            leading: Image.network(
-                              "https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png",
-                              height: 30,
-                            ),
-                            middle: Text('Notifications'),
-                          ),
-                          child: ChatRoom(),
-                        )
+                      ?  ChatRoom()
                       : Authenticate();
             });
             break;
@@ -188,6 +161,7 @@ class _EbayMockPage extends State<EbayMockPage> {
                     )
                   : userIsLoggedIn.log
                       ? CupertinoPageScaffold(
+                          navigationBar: appBarMain(context, 'Selling'),
                           child: Center(
                             child: Text('Selling'),
                           ),
