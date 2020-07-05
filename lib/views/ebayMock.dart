@@ -1,7 +1,9 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:offer_app/helper/authenticate.dart';
+import 'package:offer_app/helper/constants.dart';
 import 'package:offer_app/helper/helperfunctions.dart';
 import 'package:offer_app/views/search.dart';
 import 'package:offer_app/views/signin.dart';
@@ -15,10 +17,9 @@ import 'chatrooms.dart';
 class EbayMock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    // This app is designed only to work vertically, so we limit
-    // orientations to portrait up and down.
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
+
 
     return CupertinoApp(
       home: ChangeNotifierProvider<UserIsLoggedIn>(
@@ -32,24 +33,45 @@ class EbayMockPage extends StatefulWidget {
   _EbayMockPage createState() => _EbayMockPage();
 }
 
-class _EbayMockPage extends State<EbayMockPage> {
-  bool serverLogin;
+class _EbayMockPage extends State<EbayMockPage> with WidgetsBindingObserver {
   int _index;
-
   @override
   void initState() {
-//    getLoggedInState();
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
   }
 
-//  getLoggedInState() async {
-//    await HelperFunctions.getUserLoggedInSharedPreference().then((value) {
-//      setState(() {
-//        serverLogin = value;
-//
-//      });
-//    });
-//  }
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    super.didChangeAppLifecycleState(state);
+    switch(state){
+      case AppLifecycleState.paused:
+        print('paused state');
+        if(Constants.myName != ''){
+          setOfflineStatus(Constants.myName);
+        }
+        break;
+      case AppLifecycleState.resumed:
+        print('resumed state');
+        if(Constants.myName != ''){
+          setOnlineStatus(Constants.myName);
+        }
+        break;
+      case AppLifecycleState.inactive:
+        print('inactive state');
+        break;
+      case AppLifecycleState.detached:
+        print('detached state');
+        break;
+    }
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -60,6 +82,7 @@ class _EbayMockPage extends State<EbayMockPage> {
           setState(() {
             _index = index;
           });
+          print(_index);
         },
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
@@ -88,8 +111,6 @@ class _EbayMockPage extends State<EbayMockPage> {
         CupertinoTabView returnValue;
         switch (index) {
           case 0:
-            //login
-            //TODO: Login
             returnValue = CupertinoTabView(builder: (context) {
               return userIsLoggedIn.log == null
                   ? Container(
@@ -105,8 +126,6 @@ class _EbayMockPage extends State<EbayMockPage> {
                       : Authenticate();
             });
             break;
-          //TODO:
-          //my info
           case 1:
             returnValue = CupertinoTabView(builder: (context) {
               return userIsLoggedIn.log == null
@@ -146,9 +165,7 @@ class _EbayMockPage extends State<EbayMockPage> {
                         child: Authenticate(),
                       ),
                     )
-                  : userIsLoggedIn.log
-                      ?  ChatRoom()
-                      : Authenticate();
+                  : userIsLoggedIn.log ? ChatRoom() : Authenticate();
             });
             break;
           case 4:
@@ -174,6 +191,25 @@ class _EbayMockPage extends State<EbayMockPage> {
       },
     );
   }
+  void setOnlineStatus(String userId) async {
+    DatabaseReference rf = FirebaseDatabase.instance.reference();
+
+    rf.child('userStatus').child(userId).set({
+      'status': 'online',
+      'lastTime': DateTime.now().toUtc().toString(),
+    });
+
+
+
+  }
+  void setOfflineStatus(String userId) async {
+    DatabaseReference rf = FirebaseDatabase.instance.reference();
+
+    rf.child('userStatus').child(userId).set({
+      'status': 'offline',
+      'lastTime': DateTime.now().toUtc().toString(),
+    });
+  }
 }
 
 class UserIsLoggedIn with ChangeNotifier {
@@ -186,6 +222,11 @@ class UserIsLoggedIn with ChangeNotifier {
 
   void logout() {
     log = false;
+    DatabaseReference rf = FirebaseDatabase.instance.reference();
+    rf.child('userStatus').child(Constants.myName).set({
+      'status': 'offline',
+      'lastTime': DateTime.now().toUtc().toString(),
+    });
     notifyListeners();
   }
 }

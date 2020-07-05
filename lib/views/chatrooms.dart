@@ -1,3 +1,4 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:offer_app/helper/style.dart';
@@ -30,25 +31,25 @@ class _ChatRoomState extends State<ChatRoom> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
-                itemCount: snapshot.data.documents.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  var roomData = snapshot.data.documents[index];
-                  return Container(
-                    child: ChatRoomsTile(
-                      sellerName: roomData.data['seller'],
-                      buyerName: roomData.data['buyer'],
-                      chatRoomId: roomData.data['chatRoomId'],
-                      declined: roomData.data['declined'],
-                      payment: roomData.data['paid'],
-                      itemName: roomData.data['itemName'],
-                      itemId: roomData.data['itemId'],
-                    ),
-                  );
-                })
-            : Center(
-                child: CircularProgressIndicator(),
+            itemCount: snapshot.data.documents.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              var roomData = snapshot.data.documents[index];
+              return Container(
+                child: ChatRoomsTile(
+                  sellerName: roomData.data['seller'],
+                  buyerName: roomData.data['buyer'],
+                  chatRoomId: roomData.data['chatRoomId'],
+                  declined: roomData.data['declined'],
+                  payment: roomData.data['paid'],
+                  itemName: roomData.data['itemName'],
+                  itemId: roomData.data['itemId'],
+                ),
               );
+            })
+            : Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }
@@ -59,23 +60,23 @@ class _ChatRoomState extends State<ChatRoom> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
-                itemCount: snapshot.data.documents.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  var roomData = snapshot.data.documents[index];
-                  return ChatRoomsTile(
-                    sellerName: roomData.data['seller'],
-                    buyerName: roomData.data['buyer'],
-                    chatRoomId: roomData.data['chatRoomId'],
-                    declined: roomData.data['declined'],
-                    payment: roomData.data['paid'],
-                    itemName: roomData.data['itemName'],
-                    itemId: roomData.data['itemId'],
-                  );
-                })
-            : Center(
-                child: CircularProgressIndicator(),
+            itemCount: snapshot.data.documents.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              var roomData = snapshot.data.documents[index];
+              return ChatRoomsTile(
+                sellerName: roomData.data['seller'],
+                buyerName: roomData.data['buyer'],
+                chatRoomId: roomData.data['chatRoomId'],
+                declined: roomData.data['declined'],
+                payment: roomData.data['paid'],
+                itemName: roomData.data['itemName'],
+                itemId: roomData.data['itemId'],
               );
+            })
+            : Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }
@@ -93,14 +94,16 @@ class _ChatRoomState extends State<ChatRoom> {
       setState(() {
         chatBuyerRooms = snapshots;
         print(
-            'we got the data + ${chatBuyerRooms.toString()} this is name ${Constants.myName} ');
+            'we got the data + ${chatBuyerRooms
+                .toString()} this is name ${Constants.myName} ');
       });
     });
     DatabaseMethods().getUserSellerChats(Constants.myName).then((snapshots) {
       setState(() {
         chatSellerRooms = snapshots;
         print(
-            'we got the data + ${chatSellerRooms.toString()} this is name ${Constants.myName} ');
+            'we got the data + ${chatSellerRooms
+                .toString()} this is name ${Constants.myName} ');
       });
     });
   }
@@ -165,14 +168,13 @@ class ChatRoomsTile extends StatelessWidget {
   final String buyerName;
   final bool payment;
 
-  ChatRoomsTile(
-      {@required this.chatRoomId,
-      this.declined,
-      this.payment,
-      this.itemName,
-      @required this.itemId,
-      this.buyerName,
-      this.sellerName});
+  ChatRoomsTile({@required this.chatRoomId,
+    this.declined,
+    this.payment,
+    this.itemName,
+    @required this.itemId,
+    this.buyerName,
+    this.sellerName});
 
   @override
   Widget build(BuildContext context) {
@@ -184,18 +186,19 @@ class ChatRoomsTile extends StatelessWidget {
             Navigator.push(
                 context,
                 CupertinoPageRoute(
-                    builder: (context) => isSeller
+                    builder: (context) =>
+                    isSeller
                         ? SellerChat(
-                            chatRoomId: this.chatRoomId,
-                            userName: this.buyerName,
-                            declined: this.declined,
-                          )
+                      chatRoomId: this.chatRoomId,
+                      userName: this.buyerName,
+                      declined: this.declined,
+                    )
                         : BuyerChat(
-                            chatRoomId: this.chatRoomId,
-                            sellerName: this.sellerName,
-                            declined: this.declined,
-                            itemId: this.itemId,
-                          )));
+                      chatRoomId: this.chatRoomId,
+                      sellerName: this.sellerName,
+                      declined: this.declined,
+                      itemId: this.itemId,
+                    )));
           },
           child: Container(
             decoration: new BoxDecoration(
@@ -222,7 +225,8 @@ class ChatRoomsTile extends StatelessWidget {
                               fontFamily: 'RobotoMono',
                               fontWeight: FontWeight.w400)),
                       Text(
-                          'Seller: ${this.sellerName}; Buyer: ${this.buyerName}',
+                          'Seller: ${this.sellerName}; Buyer: ${this
+                              .buyerName}',
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               color: Colors.black38,
@@ -257,4 +261,6 @@ class ChatRoomsTile extends StatelessWidget {
       ),
     );
   }
+
+
 }

@@ -1,4 +1,7 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:offer_app/helper/constants.dart';
+import 'package:provider/provider.dart';
 
 import '../helper/helperfunctions.dart';
 import '../services/auth.dart';
@@ -6,6 +9,8 @@ import '../services/database.dart';
 import '../views/chatrooms.dart';
 import '../widget/widget.dart';
 import 'package:flutter/material.dart';
+
+import 'ebayMock.dart';
 
 class SignUp extends StatefulWidget {
   final Function toggleView;
@@ -27,7 +32,7 @@ class _SignUpState extends State<SignUp> {
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
 
-  singUp() async {
+  singUp(UserIsLoggedIn provider) async {
     if (formKey.currentState.validate()) {
       setState(() {
         isLoading = true;
@@ -36,7 +41,7 @@ class _SignUpState extends State<SignUp> {
       await authService
           .signUpWithEmailAndPassword(
               emailEditingController.text, passwordEditingController.text)
-          .then((result) {
+          .then((result) async {
         if (result != null) {
           Map<String, String> userDataMap = {
             "userName": usernameEditingController.text,
@@ -50,7 +55,9 @@ class _SignUpState extends State<SignUp> {
               usernameEditingController.text);
           HelperFunctions.saveUserEmailSharedPreference(
               emailEditingController.text);
-
+          Constants.myName = usernameEditingController.text;
+          provider.login();
+          setOnlineStatus(Constants.myName);
           Navigator.pushReplacement(
               context, MaterialPageRoute(builder: (context) => ChatRoom()));
         }
@@ -60,6 +67,7 @@ class _SignUpState extends State<SignUp> {
 
   @override
   Widget build(BuildContext context) {
+    final userIsLoggedIn = Provider.of<UserIsLoggedIn>(context);
     return CupertinoPageScaffold(
       navigationBar: loginAppBar(context),
       child: isLoading
@@ -80,6 +88,7 @@ class _SignUpState extends State<SignUp> {
                         CupertinoTextField(
                           style: simpleTextStyle(),
                           controller: usernameEditingController,
+                          placeholder: 'Username',
 //                          validator: (val) {
 //                            return val.isEmpty || val.length < 3
 //                                ? "Enter Username 3+ characters"
@@ -90,6 +99,7 @@ class _SignUpState extends State<SignUp> {
                         CupertinoTextField(
                           controller: emailEditingController,
                           style: simpleTextStyle(),
+                          placeholder: 'Email',
 //                          validator: (val) {
 //                            return RegExp(
 //                                        r"^[a-zA-Z0-9.a-zA-Z0-9.!#$%&'*+-/=?^_`{|}~]+@[a-zA-Z0-9]+\.[a-zA-Z]+")
@@ -102,6 +112,7 @@ class _SignUpState extends State<SignUp> {
                         CupertinoTextField(
                           obscureText: true,
                           style: simpleTextStyle(),
+                          placeholder: 'Password',
 //                          decoration: textFieldInputDecoration("password"),
 //                          controller: passwordEditingController,
 //                          validator: (val) {
@@ -118,20 +129,13 @@ class _SignUpState extends State<SignUp> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      singUp();
+                      singUp(userIsLoggedIn);
                     },
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 16),
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(30),
-                          // gradient: LinearGradient(
-                          //   colors: [
-                          //     const Color(0xff007EF4),
-                          //     const Color(0xff2A75BC)
-                          //   ],
-                          // )
-                          color: Colors.white
-                          ),
+                          color: Colors.white),
                       width: MediaQuery.of(context).size.width,
                       child: Text(
                         "Sign Up",
@@ -187,6 +191,14 @@ class _SignUpState extends State<SignUp> {
               ),
             ),
     );
-    ;
+  }
+
+  void setOnlineStatus(String userId) async {
+    DatabaseReference rf = FirebaseDatabase.instance.reference();
+
+    rf.child('userStatus').child(userId).set({
+      'status': 'online',
+      'lastTime': DateTime.now().toUtc().toString(),
+    });
   }
 }
