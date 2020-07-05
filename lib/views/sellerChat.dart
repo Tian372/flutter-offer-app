@@ -37,14 +37,15 @@ class _SellerChatState extends State<SellerChat> {
   TextEditingController messageEditingController = new TextEditingController();
   TextEditingController priceEditingController = new TextEditingController();
   ScrollController _controller = ScrollController();
+
   @override
-  void dispose(){
+  void dispose() {
     this.messageEditingController.dispose();
     this.priceEditingController.dispose();
     this._controller.dispose();
     super.dispose();
-
   }
+
   Widget itemView() {
     return Row(
       children: [
@@ -241,7 +242,6 @@ class _SellerChatState extends State<SellerChat> {
 
   @override
   Widget build(BuildContext context) {
-
     Timer(
       Duration(milliseconds: 200),
       () => _controller.jumpTo(_controller.position.maxScrollExtent),
@@ -358,7 +358,6 @@ class _SellerChatState extends State<SellerChat> {
     );
   }
 
-
   Widget statusIndicator(String userId) {
     return StreamBuilder(
         stream: FirebaseDatabase.instance
@@ -369,7 +368,8 @@ class _SellerChatState extends State<SellerChat> {
         builder: (BuildContext context, snapshot) {
           if (snapshot.hasData) {
             String onlineStatus = snapshot.data.snapshot.value['status'];
-            var lastTime = DateTime.parse(snapshot.data.snapshot.value['lastTime']);
+            var lastTime =
+                DateTime.parse(snapshot.data.snapshot.value['lastTime']);
 
             Duration diff = new DateTime.now().difference(lastTime);
             int inDays = diff.inDays;
@@ -379,7 +379,6 @@ class _SellerChatState extends State<SellerChat> {
             print(userId);
             print('online status: $onlineStatus');
             bool isOnline = onlineStatus == 'online';
-
 
             return Row(
               children: [
@@ -400,19 +399,34 @@ class _SellerChatState extends State<SellerChat> {
                 SizedBox(
                   width: 6,
                 ),
-                isOnline ? Text('online', style: Styles.productRowItemPrice,):
-                (inMinutes < 1) ? Text('less than 1 min', style: Styles.productRowItemPrice,)
-                    :
-                (inMinutes < 60) ?Text('$inMinutes m ago', style: Styles.productRowItemPrice,)
-                    :
-                (inHours < 24) ? Text('$inHours h ago', style: Styles.productRowItemPrice,)
-                    : Text('$inDays d ago', style: Styles.productRowItemPrice,)
+                isOnline
+                    ? Text(
+                        'online',
+                        style: Styles.productRowItemPrice,
+                      )
+                    : (inMinutes < 1)
+                        ? Text(
+                            'less than 1 min',
+                            style: Styles.productRowItemPrice,
+                          )
+                        : (inMinutes < 60)
+                            ? Text(
+                                '$inMinutes m ago',
+                                style: Styles.productRowItemPrice,
+                              )
+                            : (inHours < 24)
+                                ? Text(
+                                    '$inHours h ago',
+                                    style: Styles.productRowItemPrice,
+                                  )
+                                : Text(
+                                    '$inDays d ago',
+                                    style: Styles.productRowItemPrice,
+                                  )
               ],
             );
-          }
-          else
+          } else
             return Text('no data');
-        }
-    );
+        });
   }
 }

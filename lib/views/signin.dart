@@ -1,14 +1,11 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:offer_app/helper/constants.dart';
-import 'package:offer_app/main.dart';
-import 'package:offer_app/models/user.dart';
 import 'package:provider/provider.dart';
 
 import '../helper/helperfunctions.dart';
 import '../services/auth.dart';
 import '../services/database.dart';
-import '../views/chatrooms.dart';
 import '../views/forgot_password.dart';
 import '../widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,6 +33,12 @@ class _SignInState extends State<SignIn> {
 
   bool isLoading = false;
 
+  @override
+  void dispose() {
+    this.passwordEditingController.dispose();
+    this.emailEditingController.dispose();
+    super.dispose();
+  }
   signIn(UserIsLoggedIn provider) async {
     if (formKey.currentState.validate()) {
       setState(() {

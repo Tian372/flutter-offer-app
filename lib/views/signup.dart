@@ -31,7 +31,13 @@ class _SignUpState extends State<SignUp> {
 
   final formKey = GlobalKey<FormState>();
   bool isLoading = false;
-
+  @override
+  void dispose() {
+    this.emailEditingController.dispose();
+    this.passwordEditingController.dispose();
+    this.usernameEditingController.dispose();
+    super.dispose();
+  }
   singUp(UserIsLoggedIn provider) async {
     if (formKey.currentState.validate()) {
       setState(() {
@@ -41,7 +47,7 @@ class _SignUpState extends State<SignUp> {
       await authService
           .signUpWithEmailAndPassword(
               emailEditingController.text, passwordEditingController.text)
-          .then((result) async {
+          .then((result) {
         if (result != null) {
           Map<String, String> userDataMap = {
             "userName": usernameEditingController.text,
@@ -56,10 +62,12 @@ class _SignUpState extends State<SignUp> {
           HelperFunctions.saveUserEmailSharedPreference(
               emailEditingController.text);
           Constants.myName = usernameEditingController.text;
-          provider.login();
           setOnlineStatus(Constants.myName);
-          Navigator.pushReplacement(
-              context, MaterialPageRoute(builder: (context) => ChatRoom()));
+          provider.login();
+          print('provider.login()');
+
+//          Navigator.pushReplacement(
+//              context, MaterialPageRoute(builder: (context) => ChatRoom()));
         }
       });
     }
@@ -114,7 +122,7 @@ class _SignUpState extends State<SignUp> {
                           style: simpleTextStyle(),
                           placeholder: 'Password',
 //                          decoration: textFieldInputDecoration("password"),
-//                          controller: passwordEditingController,
+                          controller: passwordEditingController,
 //                          validator: (val) {
 //                            return val.length < 6
 //                                ? "Enter Password 6+ characters"
@@ -177,16 +185,16 @@ class _SignUpState extends State<SignUp> {
                         child: Text(
                           "SignIn now",
                           style: TextStyle(
-                              color: Colors.white,
+                              color: Colors.black,
                               fontSize: 16,
                               decoration: TextDecoration.underline),
                         ),
                       ),
                     ],
                   ),
-                  SizedBox(
-                    height: 50,
-                  )
+                  Spacer(
+                    flex: 1,
+                  ),
                 ],
               ),
             ),
