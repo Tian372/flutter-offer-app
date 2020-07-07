@@ -192,148 +192,108 @@ class _BuyerChatState extends State<BuyerChat> {
                   bool approval =
                       snapshot.data.documents[index].data['sellerApproved'];
                   String docID = snapshot.data.documents[index].documentID;
+                  double chatCornerRadius = 10;
                   return Container(
                     padding: EdgeInsets.only(
-                        top: 3,
-                        bottom: 3,
-                        left: sendByMe ? 0 : 24,
-                        right: sendByMe ? 24 : 0),
+                        top: 5,
+                        bottom: 5,
+                        left: sendByMe ? 80 : 5,
+                        right: sendByMe ? 5 : 80),
                     alignment:
                         sendByMe ? Alignment.centerRight : Alignment.centerLeft,
-                    child: (widget.declined)
-                        ? Container(
-                            child: Text('$message',
-                                textAlign: TextAlign.start,
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 20,
-                                    fontFamily: 'OverpassRegular',
-                                    fontWeight: FontWeight.w300)),
-                            margin: sendByMe
-                                ? EdgeInsets.only(left: 30)
-                                : EdgeInsets.only(right: 30),
-                            padding: EdgeInsets.only(
-                                top: 8, bottom: 8, left: 20, right: 20),
-                            decoration: BoxDecoration(
-                              borderRadius: sendByMe
-                                  ? BorderRadius.only(
-                                      topLeft: Radius.circular(23),
-                                      topRight: Radius.circular(23),
-                                      bottomLeft: Radius.circular(23))
-                                  : BorderRadius.only(
-                                      topLeft: Radius.circular(23),
-                                      topRight: Radius.circular(23),
-                                      bottomRight: Radius.circular(23)),
-                              color: !sendByMe
-                                  ? (approval)
-                                      ? Colors.green
-                                      : const Color(0xff007EF4)
-                                  : Colors.blueGrey[400],
-                            ))
-                        : SizedBox(
-                            width: 210,
-                            child: Container(
-                              margin: sendByMe
-                                  ? EdgeInsets.only(left: 30)
-                                  : EdgeInsets.only(right: 30),
-                              padding: EdgeInsets.only(
-                                  top: 8, bottom: 8, left: 20, right: 20),
-                              decoration: BoxDecoration(
-                                borderRadius: sendByMe
-                                    ? BorderRadius.only(
-                                        topLeft: Radius.circular(23),
-                                        topRight: Radius.circular(23),
-                                        bottomLeft: Radius.circular(23))
-                                    : BorderRadius.only(
-                                        topLeft: Radius.circular(23),
-                                        topRight: Radius.circular(23),
-                                        bottomRight: Radius.circular(23)),
-                                color: !sendByMe
-                                    ? const Color(0xff007EF4)
-                                    : (approval)
-                                        ? Colors.green
-                                        : Colors.blueGrey[400],
-                              ),
-                              child: Row(
-                                children: [
-                                  SizedBox(
-                                    width: 100,
-                                    child: Column(
-                                      children: [
-                                        (widget.declined)
-                                            ? Container()
-                                            : Text('\$$price',
-                                                textAlign: TextAlign.start,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 20,
-                                                    fontFamily:
-                                                        'OverpassRegular',
-                                                    fontWeight:
-                                                        FontWeight.w900)),
-                                        Text('$message',
-                                            textAlign: TextAlign.start,
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                fontSize: 13,
-                                                fontFamily: 'OverpassRegular',
-                                                fontWeight: FontWeight.w300)),
-                                      ],
+                    child: Container(
+                      padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                      decoration: BoxDecoration(
+                        borderRadius: sendByMe
+                            ? BorderRadius.only(
+                                topLeft: Radius.circular(chatCornerRadius),
+                                topRight: Radius.circular(chatCornerRadius),
+                                bottomLeft: Radius.circular(chatCornerRadius))
+                            : BorderRadius.only(
+                                topLeft: Radius.circular(chatCornerRadius),
+                                topRight: Radius.circular(chatCornerRadius),
+                                bottomRight: Radius.circular(chatCornerRadius)),
+                        color: !sendByMe
+                            ? Colors.blue[500]
+                            : (approval) ? Colors.green[300] : Colors.grey[500],
+                      ),
+                      child: (widget.declined)
+                          ? Container(
+                              padding: EdgeInsets.symmetric(
+                                  vertical: 0, horizontal: 10),
+                              child: Text('$message',
+                                  style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 16,
+                                      fontFamily: 'OverpassRegular',
+                                      fontWeight: FontWeight.w300)),
+                            )
+                          : Row(
+                              children: [
+                                SizedBox(
+                                  width: 10,
+                                ),
+                                Container(
+                                  width: 200,
+                                  alignment: Alignment.centerLeft,
+                                  child: Column(
+                                    children: [
+                                      Text('\$$price',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 20,
+                                              fontFamily: 'OverpassRegular',
+                                              fontWeight: FontWeight.w900)),
+                                      Text('$message',
+                                          textAlign: TextAlign.start,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 13,
+                                              fontFamily: 'OverpassRegular',
+                                              fontWeight: FontWeight.w300)),
+                                    ],
+                                  ),
+                                ),
+                                Expanded(child: Container()),
+                                Container(
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      if (!sendByMe || approval) {
+                                        setState(() {
+                                          _amount = price;
+                                        });
+                                        _pc.open();
+                                      }
+                                    },
+                                    child: Container(
+                                      padding:
+                                          EdgeInsets.symmetric(horizontal: 5),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(
+                                            chatCornerRadius),
+                                        border: Border.all(
+                                            width: 1,
+                                            color: (approval)
+                                                ? Colors.white
+                                                : Colors.transparent),
+                                      ),
+                                      child: Text((approval) ? 'Pay' : '',
+                                          textAlign: TextAlign.end,
+                                          style: TextStyle(
+                                              color: Colors.white,
+                                              fontSize: 18,
+                                              fontFamily: 'OverpassRegular',
+                                              fontWeight: FontWeight.w200)),
                                     ),
                                   ),
-                                  sendByMe
-                                      ? GestureDetector(
-                                          onTap: () {
-                                            if (!sendByMe || approval) {
-                                              setState(() {
-                                                _amount = price;
-                                              });
-                                              _pc.open();
-                                            }
-                                          },
-                                          child: Container(
-                                            child: Text((approval) ? 'Pay' : '',
-                                                textAlign: TextAlign.end,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 18,
-                                                    fontFamily:
-                                                        'OverpassRegular',
-                                                    fontWeight:
-                                                        FontWeight.w200)),
-                                            color: (approval)
-                                                ? Colors.green
-                                                : const Color(0xff007EF4),
-                                          ),
-                                        )
-                                      : GestureDetector(
-                                          onTap: () {
-                                            if (!sendByMe || approval) {
-                                              setState(() {
-                                                _amount = price;
-                                              });
-                                              _pc.open();
-                                            }
-                                          },
-                                          child: Container(
-                                            child: Text('Pay',
-                                                textAlign: TextAlign.end,
-                                                style: TextStyle(
-                                                    color: Colors.white,
-                                                    fontSize: 18,
-                                                    fontFamily:
-                                                        'OverpassRegular',
-                                                    fontWeight:
-                                                        FontWeight.w200)),
-                                            color: (approval)
-                                                ? Colors.green
-                                                : const Color(0xff007EF4),
-                                          ),
-                                        ),
-                                ],
-                              ),
+                                ),
+                                SizedBox(
+                                  width: 15,
+                                )
+                              ],
                             ),
-                          ),
+                    ),
                   );
                 })
             : Container();
@@ -410,94 +370,92 @@ class _BuyerChatState extends State<BuyerChat> {
           ),
 
           child: SafeArea(
-            child: SingleChildScrollView(
-              child: Container(
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 100,
-                      width: double.infinity,
-                      child: Container(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                          child: itemView('temp', 'temp')),
-                    ),
-                    (widget.declined)
-                        ? SizedBox(
-                            height: 50,
-                          )
-                        : Container(
-                            height: 50,
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 20, vertical: 0),
-                            color: Colors.white,
-                            child: Row(
-                              children: [
-                                Expanded(
-                                    flex: 1,
-                                    child: RaisedButton(
-                                      color: Colors.red,
-                                      onPressed: () {
-                                        DatabaseMethods()
-                                            .declineJob(widget.chatRoomId);
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('Decline',
-                                          style: TextStyle(
-                                              color: Colors.white,
-                                              fontSize: 20,
-                                              fontWeight: FontWeight.bold)),
-                                    )),
-                              ],
-                            ),
-                          ),
-                    Container(height: 500, child: chatMessages()),
-                    Container(
-                      height: 100,
+            child: Column(
+              children: <Widget>[
+                SizedBox(
+                  height: 100,
+                  width: double.infinity,
+                  child: Container(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 10, vertical: 0),
-                      color: boxColor,
-                      child: Row(
-                        children: [
-                          (widget.declined)
-                              ? Container()
-                              : Expanded(
-                                  flex: 2,
-                                  child: Container(
-                                    child: CupertinoTextField(
-                                      textInputAction: TextInputAction.next,
-                                      maxLength: 10,
-                                      controller: priceEditingController,
-                                      style: simpleTextStyle(),
-                                      keyboardType: TextInputType.number,
-                                      inputFormatters: [
-                                        WhitelistingTextInputFormatter
-                                            .digitsOnly
-                                      ],
-                                      placeholder: 'Price',
-                                    ),
-                                  )),
-                          SizedBox(
-                            width: (widget.declined) ? 0 : 10,
-                          ),
-                          Expanded(
-                            flex: 4,
-                            child: CupertinoTextField(
-                              textInputAction: TextInputAction.send,
-                              onSubmitted: (_) {
-                                addMessage();
-                              },
-                              maxLength: 50,
-                              controller: messageEditingController,
-                              placeholder: 'Message',
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                          EdgeInsets.symmetric(vertical: 2, horizontal: 10),
+                      child: itemView('stuff', 'Description')),
                 ),
-              ),
+                (widget.declined)
+                    ? SizedBox(
+                        height: 50,
+                      )
+                    : Container(
+                        height: 50,
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 20, vertical: 0),
+                        color: Colors.white,
+                        child: Row(
+                          children: [
+                            Expanded(
+                                flex: 1,
+                                child: RaisedButton(
+                                  color: Colors.red,
+                                  onPressed: () {
+                                    DatabaseMethods()
+                                        .declineJob(widget.chatRoomId);
+                                    Navigator.pop(context);
+                                  },
+                                  child: const Text('Decline',
+                                      style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 20,
+                                          fontWeight: FontWeight.bold)),
+                                )),
+                          ],
+                        ),
+                      ),
+                Flexible(child: chatMessages()),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  padding: EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                  child: Row(
+                    children: <Widget>[
+                      (widget.declined)
+                          ? Container()
+                          : Expanded(
+                              flex: 1,
+                              child: Container(
+                                child: CupertinoTextField(
+                                  textInputAction: TextInputAction.next,
+                                  maxLength: 10,
+                                  style: simpleTextStyle(),
+                                  controller: priceEditingController,
+                                  keyboardType: TextInputType.number,
+                                  inputFormatters: [
+                                    WhitelistingTextInputFormatter.digitsOnly
+                                  ],
+                                  placeholder: 'price',
+                                ),
+                              )),
+                      SizedBox(
+                        width: 5,
+                      ),
+                      Expanded(
+                        flex: 4,
+                        child: CupertinoTextField(
+                          textInputAction: TextInputAction.send,
+                          onSubmitted: (_) {
+                            addMessage();
+                          },
+                          maxLength: 50,
+                          controller: messageEditingController,
+                          placeholder: 'Message',
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                )
+              ],
             ),
           ),
         ),
@@ -534,7 +492,7 @@ class _BuyerChatState extends State<BuyerChat> {
                   width: 10,
                   child: Container(
                     decoration: BoxDecoration(
-                      color: (isOnline) ? Colors.green : Colors.blueGrey,
+                      color: (isOnline) ? Colors.green : Colors.grey,
                       border: Border.all(
                         color: Colors.black,
                         width: 20,

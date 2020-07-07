@@ -1,12 +1,9 @@
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:offer_app/helper/style.dart';
-import 'package:offer_app/main.dart';
 import 'package:offer_app/views/Rooms/sellerChat.dart';
 import 'package:offer_app/widget/widget.dart';
 
-import '../helper/authenticate.dart';
 import '../helper/constants.dart';
 import '../helper/helperfunctions.dart';
 import '../services/database.dart';
@@ -115,19 +112,22 @@ class _ChatRoomState extends State<ChatRoom> {
   }
 
   Widget segmentedTabs() {
-    return CupertinoSegmentedControl(
-      children: {
-        0: Text('Buy'),
-        1: Text('Sell'),
-        2: Text('Auction'),
-        3: Text('Other'),
-      },
-      groupValue: _currentIndex,
-      onValueChanged: (value) {
-        this.setState(() {
-          this._currentIndex = value;
-        });
-      },
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 20),
+      child: CupertinoSlidingSegmentedControl(
+        children: {
+          0: Text('Buy'),
+          1: Text('Sell'),
+          2: Text('Auction'),
+          3: Text('General'),
+        },
+        groupValue: _currentIndex,
+        onValueChanged: (value) {
+          this.setState(() {
+            this._currentIndex = value;
+          });
+        },
+      ),
     );
   }
 
@@ -233,7 +233,7 @@ class ChatRoomsTile extends StatelessWidget {
                                     ? (this.payment
                                         ? Colors.green[200]
                                         : Colors.red[200])
-                                    : Colors.grey,
+                                    : Colors.blue,
                                 borderRadius: new BorderRadius.circular(2),
                                 boxShadow: [
                                   BoxShadow(
@@ -246,19 +246,17 @@ class ChatRoomsTile extends StatelessWidget {
                                 ],
                               ),
                               child: Center(
-                                child: Text(this.declined
-                                    ? (this.payment
-                                    ? 'Accepted'
-                                    : 'Declined')
-                                    : 'Ongoing',
-                                style: Styles.indication,),
+                                child: Text(
+                                  this.declined
+                                      ? (this.payment ? 'Accepted' : 'Declined')
+                                      : 'Ongoing',
+                                  style: Styles.indication,
+                                ),
                               )),
                           SizedBox(
                             width: 20,
                           ),
-                          Text('$itemName',
-
-                              style: Styles.productRowItemName),
+                          Text('$itemName', style: Styles.productRowItemName),
                         ],
                       ),
                       SizedBox(
@@ -273,7 +271,6 @@ class ChatRoomsTile extends StatelessWidget {
                               isSeller
                                   ? '${this.buyerName}'
                                   : '${this.sellerName}',
-
                               style: Styles.productRowItemPrice),
                         ],
                       ),
