@@ -3,7 +3,7 @@ import 'package:offer_app/helper/style.dart';
 
 import '../helper/constants.dart';
 import '../services/database.dart';
-import '../views/buyerChat.dart';
+import 'Rooms/buyerChat.dart';
 import '../widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';

@@ -13,168 +13,28 @@ import '../services/database.dart';
 import 'Rooms/buyerChat.dart';
 import 'package:flutter/material.dart';
 
-import 'AuctionView.dart';
-
-class ChatRoom extends StatefulWidget {
+class AuctionView extends StatefulWidget {
   @override
-  _ChatRoomState createState() => _ChatRoomState();
+  _AuctionViewState createState() => _AuctionViewState();
 }
 
-class _ChatRoomState extends State<ChatRoom> {
-  Stream chatSellerRooms;
-  Stream chatBuyerRooms;
+class _AuctionViewState extends State<AuctionView> {
   int _currentIndex;
-
-  Widget chatRoomsSellerList() {
-    return StreamBuilder(
-      stream: chatSellerRooms,
-      builder: (context, snapshot) {
-        return snapshot.hasData
-            ? ListView.separated(
-                separatorBuilder: (context, index) => Divider(
-                      color: Styles.productRowDivider,
-                      thickness: 1,
-                    ),
-                itemCount: snapshot.data.documents.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  var roomData = snapshot.data.documents[index];
-                  return Container(
-                    child: ChatRoomsTile(
-                      sellerName: roomData.data['seller'],
-                      buyerName: roomData.data['buyer'],
-                      chatRoomId: roomData.data['chatRoomId'],
-                      declined: roomData.data['declined'],
-                      payment: roomData.data['paid'],
-                      itemName: roomData.data['itemName'],
-                      itemId: roomData.data['itemId'],
-                    ),
-                  );
-                })
-            : Center(
-                child: CircularProgressIndicator(),
-              );
-      },
-    );
-  }
-
-  Widget chatRoomsBuyerList() {
-    return StreamBuilder(
-      stream: chatBuyerRooms,
-      builder: (context, snapshot) {
-        return snapshot.hasData
-            ? ListView.separated(
-                separatorBuilder: (context, index) => Divider(
-                      color: Colors.grey,
-                      thickness: 1,
-                    ),
-                itemCount: snapshot.data.documents.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  var roomData = snapshot.data.documents[index];
-                  return ChatRoomsTile(
-                    sellerName: roomData.data['seller'],
-                    buyerName: roomData.data['buyer'],
-                    chatRoomId: roomData.data['chatRoomId'],
-                    declined: roomData.data['declined'],
-                    payment: roomData.data['paid'],
-                    itemName: roomData.data['itemName'],
-                    itemId: roomData.data['itemId'],
-                  );
-                })
-            : Center(
-                child: CircularProgressIndicator(),
-              );
-      },
-    );
-  }
 
   @override
   void initState() {
-    _currentIndex = 0;
-    getUserInfoGetChats();
     super.initState();
-  }
-
-  getUserInfoGetChats() async {
-    Constants.myName = await HelperFunctions.getUserNameSharedPreference();
-    DatabaseMethods().getUserBuyerChats(Constants.myName).then((snapshots) {
-      setState(() {
-        chatBuyerRooms = snapshots;
-        print(
-            'we got the data + ${chatBuyerRooms.toString()} this is name ${Constants.myName} ');
-      });
-    });
-    DatabaseMethods().getUserSellerChats(Constants.myName).then((snapshots) {
-      setState(() {
-        chatSellerRooms = snapshots;
-        print(
-            'we got the data + ${chatSellerRooms.toString()} this is name ${Constants.myName} ');
-      });
-    });
-  }
-
-  Widget segmentedTabs() {
-    return CupertinoSegmentedControl(
-      children: {
-        0: Text('Buy'),
-        1: Text('Sell'),
-        2: Text('Auction'),
-        3: Text('Other'),
-      },
-      groupValue: _currentIndex,
-      onValueChanged: (value) {
-        this.setState(() {
-          this._currentIndex = value;
-        });
-      },
-    );
-  }
-
-  Widget listViews() {
-    if (this._currentIndex == 0) {
-      return chatRoomsBuyerList();
-    }
-    if (this._currentIndex == 1) {
-      return chatRoomsSellerList();
-    }
-    if (this._currentIndex == 2) {
-      return AuctionView();
-    }
-    if (this._currentIndex == 3) {
-      return Center(child: Text('System Notifications'));
-    }
-
-    return Container();
   }
 
   @override
   Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: appBarMain(context, 'Notification'),
-      child: SafeArea(
-        child: Container(
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 0),
-          child: Column(children: [
-            Row(
-              children: [
-                Expanded(
-                  child: segmentedTabs(),
-                )
-              ],
-            ),
-            SizedBox(
-              height: 25,
-            ),
-            listViews(),
-          ]),
-        ),
-      ),
+    return Center(
+      child: Text('Auction Rooms'),
     );
   }
 }
 
-class ChatRoomsTile extends StatelessWidget {
+class AuctionRoomTile extends StatelessWidget {
   final String chatRoomId;
   final String itemName;
   final bool declined;
@@ -183,7 +43,7 @@ class ChatRoomsTile extends StatelessWidget {
   final String buyerName;
   final bool payment;
 
-  ChatRoomsTile(
+  AuctionRoomTile(
       {@required this.chatRoomId,
       this.declined,
       this.payment,

@@ -5,9 +5,9 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:offer_app/helper/style.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
-import '../helper/constants.dart';
-import '../services/database.dart';
-import '../widget/widget.dart';
+import '../../helper/constants.dart';
+import '../../services/database.dart';
+import '../../widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
@@ -36,13 +36,11 @@ class _SellerChatState extends State<SellerChat> {
   Stream<QuerySnapshot> chats;
   TextEditingController messageEditingController = new TextEditingController();
   TextEditingController priceEditingController = new TextEditingController();
-  ScrollController _controller = ScrollController();
 
   @override
   void dispose() {
     this.messageEditingController.dispose();
     this.priceEditingController.dispose();
-    this._controller.dispose();
     super.dispose();
   }
 
@@ -64,13 +62,14 @@ class _SellerChatState extends State<SellerChat> {
     );
   }
 
-  Widget chatMessages(ScrollController _controller) {
+  Widget chatMessages() {
     return StreamBuilder(
       stream: chats,
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
-                controller: _controller,
+                reverse: true,
+                //controller: _controller,
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
                   int price = snapshot.data.documents[index].data['price'];
@@ -242,20 +241,13 @@ class _SellerChatState extends State<SellerChat> {
 
   @override
   Widget build(BuildContext context) {
-    Timer(
-      Duration(milliseconds: 200),
-      () => _controller.jumpTo(_controller.position.maxScrollExtent),
-    );
+
     return CupertinoPageScaffold(
-      // resizeToAvoidBottomInset: true,
-      //resizeToAvoidBottomPadding: false,
       navigationBar: CupertinoNavigationBar(
         middle: Center(
           child: Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            //Center Row contents horizontally,
             crossAxisAlignment: CrossAxisAlignment.center,
-            //Center Row contents vertically,
             children: [
               Text(widget.userName),
               SizedBox(
@@ -308,7 +300,7 @@ class _SellerChatState extends State<SellerChat> {
                           ],
                         ),
                       ),
-                Container(height: 500, child: chatMessages(_controller)),
+                Container(height: 500, child: chatMessages()),
                 Container(
                   height: 100,
                   padding: EdgeInsets.symmetric(horizontal: 10, vertical: 0),

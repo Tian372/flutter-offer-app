@@ -96,7 +96,7 @@ class DatabaseMethods {
         .collection("chatRoom")
         .document(chatRoomId)
         .collection("chats")
-        .orderBy('time')
+        .orderBy('time', descending: true)
         .snapshots();
   }
 
