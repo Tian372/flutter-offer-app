@@ -1,3 +1,6 @@
+import 'dart:convert';
+import 'dart:io';
+
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -10,17 +13,21 @@ import 'package:offer_app/views/signin.dart';
 import 'package:offer_app/views/userInfoView.dart';
 import 'package:offer_app/widget/widget.dart';
 import 'package:provider/provider.dart';
-
+import 'package:http/http.dart' as http;
 import 'addItem.dart';
 import 'chatrooms.dart';
+import 'eBaySearchAPI.dart';
+
+const clientId = 'NathanTi-offerApp-PRD-4c8ec878c-d960497f';
+const clientSecret = '';
+const authority = 'https://api.ebay.com/identity/v1/oauth2/token';
+const scope = 'https://api.ebay.com/oauth/api_scope';
 
 class EbayMock extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
-
-
     return CupertinoApp(
       home: ChangeNotifierProvider<UserIsLoggedIn>(
           create: (context) => UserIsLoggedIn(), child: EbayMockPage()),
@@ -35,6 +42,7 @@ class EbayMockPage extends StatefulWidget {
 
 class _EbayMockPage extends State<EbayMockPage> with WidgetsBindingObserver {
   int _index;
+
   @override
   void initState() {
     super.initState();
@@ -50,16 +58,16 @@ class _EbayMockPage extends State<EbayMockPage> with WidgetsBindingObserver {
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
     super.didChangeAppLifecycleState(state);
-    switch(state){
+    switch (state) {
       case AppLifecycleState.paused:
         print('paused state');
-        if(Constants.myName != ''){
+        if (Constants.myName != '') {
           setOfflineStatus(Constants.myName);
         }
         break;
       case AppLifecycleState.resumed:
         print('resumed state');
-        if(Constants.myName != ''){
+        if (Constants.myName != '') {
           setOnlineStatus(Constants.myName);
         }
         break;
@@ -71,7 +79,6 @@ class _EbayMockPage extends State<EbayMockPage> with WidgetsBindingObserver {
         break;
     }
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -120,8 +127,8 @@ class _EbayMockPage extends State<EbayMockPage> with WidgetsBindingObserver {
                     )
                   : userIsLoggedIn.log
                       ? CupertinoPageScaffold(
-                          navigationBar: appBarMain(context, 'Item Enter'),
-                          child: ItemView(),
+                          navigationBar: appBarMain(context, 'eBay SearchAPI'),
+                          child: SearchAPI(),
                         )
                       : Authenticate();
             });
@@ -191,6 +198,7 @@ class _EbayMockPage extends State<EbayMockPage> with WidgetsBindingObserver {
       },
     );
   }
+
   void setOnlineStatus(String userId) async {
     DatabaseReference rf = FirebaseDatabase.instance.reference();
 
@@ -198,10 +206,8 @@ class _EbayMockPage extends State<EbayMockPage> with WidgetsBindingObserver {
       'status': 'online',
       'lastTime': DateTime.now().toUtc().toString(),
     });
-
-
-
   }
+
   void setOfflineStatus(String userId) async {
     DatabaseReference rf = FirebaseDatabase.instance.reference();
 
@@ -214,9 +220,11 @@ class _EbayMockPage extends State<EbayMockPage> with WidgetsBindingObserver {
 
 class UserIsLoggedIn with ChangeNotifier {
   bool log = false;
+  String token = '';
 
-  void login() {
+  Future<void> login() async {
     log = true;
+    getToken();
     notifyListeners();
   }
 
@@ -228,5 +236,23 @@ class UserIsLoggedIn with ChangeNotifier {
       'lastTime': DateTime.now().toUtc().toString(),
     });
     notifyListeners();
+  }
+
+  getToken() async {
+    String credentials = '$clientId:$clientSecret';
+    String encoded = base64.encode(utf8.encode(credentials));
+    String encodedScope = Uri.encodeFull(scope);
+    var response = await http.post(authority,
+        headers: {
+          HttpHeaders.contentTypeHeader: 'application/x-www-form-urlencoded',
+          HttpHeaders.authorizationHeader: 'Basic $encoded',
+        },
+        body: 'grant_type=client_credentials&scope=$encodedScope');
+    if (response.statusCode == 200) {
+      Map<String, dynamic> body = jsonDecode(response.body);
+
+      this.token = body['access_token'];
+      print('Token Generated');
+    }
   }
 }

@@ -55,7 +55,6 @@ class AuctionRoomTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     bool isSeller = Constants.myName == sellerName;
-
     return Container(
       child: Center(
         child: GestureDetector(

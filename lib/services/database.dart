@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
 class DatabaseMethods {
@@ -160,5 +161,27 @@ class DatabaseMethods {
         Firestore.instance.collection('mockData').document(itemId);
     dr.updateData(<String, dynamic>{'sold': true, 'winner': userName});
     print('Winner updated');
+  }
+}
+
+Future<Widget> getImage(BuildContext context, String image) async {
+  Image m;
+  await FireStorageService.loadImage(context, image)
+      .then((downloadUrl) {
+    m = Image.network(
+      downloadUrl.toString(),
+      fit: BoxFit.scaleDown,
+      height: 150,
+      width: 150,
+    );
+  });
+
+  return m;
+}
+
+class FireStorageService extends ChangeNotifier {
+  FireStorageService();
+  static Future<dynamic> loadImage(BuildContext context, String image) async {
+    return await FirebaseStorage.instance.ref().child(image).getDownloadURL();
   }
 }

@@ -52,17 +52,23 @@ class _SearchTabState extends State<SearchTab> {
     }
   }
 
-  Widget userList() {
+  Widget itemList() {
     return haveUserSearched
-        ? ListView.builder(
+        ? ListView.separated(
+            separatorBuilder: (context, index) => Divider(
+                  color: Styles.productRowDivider,
+                  thickness: 1,
+                ),
             shrinkWrap: true,
             itemCount: searchResultSnapshot.documents.length,
             itemBuilder: (context, index) {
-              return userTile(
+              return itemTile(
                 searchResultSnapshot.documents[index].data['seller'],
                 searchResultSnapshot.documents[index].data['itemName'],
                 searchResultSnapshot.documents[index].data['itemDesc'],
+                searchResultSnapshot.documents[index].data['listPrice'],
                 searchResultSnapshot.documents[index].documentID,
+                searchResultSnapshot.documents[index].data['offerNum'],
               );
             })
         : Container();
@@ -119,32 +125,84 @@ class _SearchTabState extends State<SearchTab> {
 //    }
   }
 
-  Widget userTile(
-      String userName, String itemName, String itemDesc, String itemId) {
+  Widget itemTile(String userName, String itemName, String itemDesc,
+      String price, String itemId, int offerNum) {
     return GestureDetector(
       onTap: () {
         sendMessage(userName, itemId, itemName);
       },
       child: Container(
-        color: Colors.blueGrey[100],
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
         child: Row(
           children: [
+            ClipRRect(
+              borderRadius: BorderRadius.circular(10),
+              child: FutureBuilder(
+                future: getImage(context, 'images/$itemId.jpg'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done)
+                    return Container(
+                      child: snapshot.data,
+                    );
+                  else {
+                    return CircularProgressIndicator();
+                  }
+                },
+              ),
+            ),
+            SizedBox(
+              width: 15,
+            ),
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
                 Text(
                   '$itemName',
-                  style: TextStyle(color: Colors.black, fontSize: 30),
+                  style: Styles.searchText,
                 ),
+                SizedBox(height: 5),
                 Text(
-                  'seller: $userName. $itemDesc',
-                  style: TextStyle(color: Colors.black, fontSize: 15),
+                  '$itemDesc . brand',
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                ),
+                SizedBox(height: 15),
+                Text(
+                  '\$ $price',
+                  style: TextStyle(
+                      color: Colors.black,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold),
+                ),
+                SizedBox(height: 10),
+                Text(
+                  '$offerNum people are interested.',
+                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
                 )
               ],
             ),
-            Spacer(),
-            Container(child: Icon(Icons.send))
+            SizedBox(
+              width: 10,
+            ),
+            Column(
+              children: [
+                CupertinoButton(
+                  child: Text('Offer'),
+                  onPressed: () {
+                    sendMessage(userName, itemId, itemName);
+                  },
+                ),
+                SizedBox(
+                  height: 5,
+                ),
+                CupertinoButton(
+                  child: Text('Auction'),
+                  onPressed: () {
+//                    sendAuction(userName, itemId, itemName);
+                  },
+                ),
+              ],
+            )
           ],
         ),
       ),
@@ -157,6 +215,10 @@ class _SearchTabState extends State<SearchTab> {
     } else {
       return '$a\_$b\_$itemName';
     }
+  }
+
+  getAuctionId(String itemName, sellerName) {
+    return '$itemName\_$sellerName';
   }
 
   @override
@@ -184,13 +246,48 @@ class _SearchTabState extends State<SearchTab> {
           child: Column(
             children: [
               _buildSearchBox(),
-              isLoading ? CupertinoActivityIndicator() : userList()
+              isLoading ? CupertinoActivityIndicator() : itemList()
             ],
           ),
         ),
       ),
     );
   }
+//
+//  sendAuction(String userName, String itemId, String itemName) async {
+//    String auctionId = getAuctionId(userName, itemName);
+//
+//    final snapShot = await Firestore.instance
+//        .collection('auctionRoom')
+//        .document(auctionId)
+//        .get();
+//
+//    bool ongoing= false;
+//
+//    if (snapShot.exists) {
+//      ongoing = snapShot.data['declined'];
+//    } else {
+//      DatabaseMethods().updateAucionList(itemId, Constants.myName);
+//      Map<String, dynamic> auction= {
+//        'itemName': itemName,
+//        'itemId': itemId,
+//        'seller': userName,
+//        'auctionId': auctionId,
+//        'finished':ongoing,
+//
+//      };
+//      databaseMethods.addAuction(auction, auctionId);
+//    }
+//
+//    Navigator.push(
+//        context,
+//        CupertinoPageRoute(
+//            builder: (context) => Auction(
+//              auctionId: auctionId,
+//              sellerName: userName,
+//              declined: ongoing,
+//            )));
+//  }
 }
 
 class SearchBar extends StatelessWidget {
@@ -225,7 +322,7 @@ class SearchBar extends StatelessWidget {
             ),
             Expanded(
               child: CupertinoTextField(
-                autofocus:true,
+                autofocus: true,
                 controller: controller,
                 focusNode: focusNode,
                 style: Styles.searchText,

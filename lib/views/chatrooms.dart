@@ -116,8 +116,8 @@ class _ChatRoomState extends State<ChatRoom> {
       padding: EdgeInsets.symmetric(horizontal: 20),
       child: CupertinoSlidingSegmentedControl(
         children: {
-          0: Text('Buy'),
-          1: Text('Sell'),
+          0: Text('As Buyer'),
+          1: Text('As Seller'),
           2: Text('Auction'),
           3: Text('General'),
         },

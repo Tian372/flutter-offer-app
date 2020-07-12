@@ -15,63 +15,65 @@ class ItemView extends StatelessWidget {
     TextEditingController nameEditingController = new TextEditingController();
     TextEditingController priceEditingController = new TextEditingController();
     TextEditingController sellerEditingController = new TextEditingController();
+
     return SafeArea(
+      bottom: false,
       child: Container(
-        child: Form(
-          child: Column(
-            children: [
-              SizedBox(
-                height: 30,
-              ),
-              Text('Item Name:'),
-              SizedBox(height: 10),
-              CupertinoTextField(
-                controller: nameEditingController,
-                style: Styles.searchText,
-                cursorColor: Styles.searchCursorColor,
-              ),
-              SizedBox(height: 50),
-              Text('Description:'),
-              SizedBox(height: 10),
-              CupertinoTextField(
-                controller: descEditingController,
-                style: Styles.searchText,
-                cursorColor: Styles.searchCursorColor,
-              ),
-              SizedBox(height: 50),
-              Text('seller:'),
-              SizedBox(height: 10),
-              CupertinoTextField(
-                controller: sellerEditingController,
-                style: Styles.searchText,
-                cursorColor: Styles.searchCursorColor,
-              ),
-              SizedBox(height: 50),
-              Text('Price:'),
-              SizedBox(height: 10),
-              CupertinoTextField(
-                controller: priceEditingController,
-                style: Styles.searchText,
-                cursorColor: Styles.searchCursorColor,
-              ),
-              SizedBox(height: 50),
-              RaisedButton(
-                color: Colors.green,
-                child: Text('Submit'),
-                onPressed: () {
-                  addItemMap(
-                      nameEditingController.text,
-                      descEditingController.text,
-                      sellerEditingController.text,
-                      priceEditingController.text);
-                  nameEditingController.text = '';
-                  descEditingController.text = '';
-                  sellerEditingController.text = '';
-                  priceEditingController.text = '';
-                },
-              )
-            ],
-          ),
+        child: Column(
+          children: [
+            SizedBox(
+              height: 30,
+            ),
+            Text('Item Name:'),
+            SizedBox(height: 2),
+            CupertinoTextField(
+              controller: nameEditingController,
+              style: Styles.searchText,
+              cursorColor: Styles.searchCursorColor,
+            ),
+            SizedBox(height: 5),
+            Text('Description:'),
+            SizedBox(height: 2),
+            CupertinoTextField(
+              controller: descEditingController,
+              style: Styles.searchText,
+              cursorColor: Styles.searchCursorColor,
+            ),
+            SizedBox(height: 5),
+            Text('seller:'),
+            SizedBox(height: 2),
+            CupertinoTextField(
+              controller: sellerEditingController,
+              style: Styles.searchText,
+              cursorColor: Styles.searchCursorColor,
+            ),
+            SizedBox(height: 5),
+            Text('Price:'),
+            SizedBox(height: 2),
+            CupertinoTextField(
+              controller: priceEditingController,
+              style: Styles.searchText,
+              cursorColor: Styles.searchCursorColor,
+            ),
+            SizedBox(
+              height: 5,
+            ),
+            RaisedButton(
+              color: Colors.green,
+              child: Text('Submit'),
+              onPressed: () {
+                addItemMap(
+                    nameEditingController.text,
+                    descEditingController.text,
+                    sellerEditingController.text,
+                    priceEditingController.text);
+                nameEditingController.text = '';
+                descEditingController.text = '';
+                sellerEditingController.text = '';
+                priceEditingController.text = '';
+              },
+            )
+          ],
         ),
       ),
     );
@@ -88,7 +90,7 @@ class ItemView extends StatelessWidget {
       'sold': false,
       'buyers': [],
       'winner': '',
-      'listTime': DateTime.now().millisecondsSinceEpoch,
+      'listTime': DateTime.now().toUtc().toString(),
     };
     DatabaseMethods().addItemHelper(itemInfo);
   }

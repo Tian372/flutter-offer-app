@@ -309,7 +309,7 @@ class _BuyerChatState extends State<BuyerChat> {
         'price':
             (widget.declined) ? -1 : int.parse(priceEditingController.text),
         'message': messageEditingController.text,
-        'time': DateTime.now().millisecondsSinceEpoch,
+        'time': DateTime.now().toUtc().toString(),
         'sellerApproved': false,
       };
 

@@ -87,8 +87,7 @@ class _SellerChatState extends State<SellerChat> {
                         bottom: 5,
                         left: sendByMe ? 80 : 5,
                         right: sendByMe ? 5 : 80),
-                    alignment:
-                        sendByMe ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                       decoration: BoxDecoration(
@@ -305,7 +304,7 @@ class _SellerChatState extends State<SellerChat> {
         'price':
             (widget.declined) ? -1 : int.parse(priceEditingController.text),
         'message': messageEditingController.text,
-        'time': DateTime.now().millisecondsSinceEpoch,
+        'time':DateTime.now().toUtc().toString(),
         'sellerApproved': true,
       };
 
