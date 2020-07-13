@@ -26,8 +26,9 @@ class BuyerChat extends StatefulWidget {
   final String sellerName;
   final bool declined;
   final String itemId;
+  final String imageUrl;
 
-  BuyerChat({this.chatRoomId, this.sellerName, this.declined, this.itemId});
+  BuyerChat({this.chatRoomId, this.sellerName, this.declined, this.itemId, this.imageUrl});
 
   @override
   _BuyerChatState createState() => _BuyerChatState();
@@ -136,7 +137,7 @@ class _BuyerChatState extends State<BuyerChat> {
         ClipRRect(
           borderRadius: BorderRadius.circular(5),
           child: Image.network(
-            'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
+            widget.imageUrl,
             fit: BoxFit.cover,
           ),
         ),
@@ -184,14 +185,13 @@ class _BuyerChatState extends State<BuyerChat> {
                 reverse: true,
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
-                  int price = snapshot.data.documents[index].data['price'];
-                  String message =
-                      snapshot.data.documents[index].data['message'];
-                  bool sendByMe = Constants.myName ==
-                      snapshot.data.documents[index].data['sendBy'];
-                  bool approval =
-                      snapshot.data.documents[index].data['sellerApproved'];
-                  String docID = snapshot.data.documents[index].documentID;
+                  var roomData = snapshot.data.documents[index].data;
+                  int price = roomData['price'];
+                  String message = roomData['message'];
+                  bool sendByMe = Constants.myName == roomData['sendBy'];
+                  bool approval = roomData['sellerApproved'];
+
+//                  String docID = snapshot.data.documents[index].documentID;
                   double chatCornerRadius = 10;
                   return Container(
                     padding: EdgeInsets.only(
@@ -463,75 +463,5 @@ class _BuyerChatState extends State<BuyerChat> {
     );
   }
 
-  Widget statusIndicator(String userId) {
-    return StreamBuilder(
-        stream: FirebaseDatabase.instance
-            .reference()
-            .child('userStatus')
-            .child(userId)
-            .onValue,
-        builder: (BuildContext context, snapshot) {
-          if (snapshot.hasData) {
-            String onlineStatus = snapshot.data.snapshot.value['status'];
-            var lastTime =
-                DateTime.parse(snapshot.data.snapshot.value['lastTime']);
 
-            Duration diff = new DateTime.now().difference(lastTime);
-            int inDays = diff.inDays;
-            int inHours = diff.inHours;
-            int inMinutes = diff.inMinutes;
-
-            print(userId);
-            print('online status: $onlineStatus');
-            bool isOnline = onlineStatus == 'online';
-
-            return Row(
-              children: [
-                SizedBox(
-                  height: 10,
-                  width: 10,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: (isOnline) ? Colors.green : Colors.grey,
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 20,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 6,
-                ),
-                isOnline
-                    ? Text(
-                        'online',
-                        style: Styles.productRowItemPrice,
-                      )
-                    : (inMinutes < 1)
-                        ? Text(
-                            'less than 1 min',
-                            style: Styles.productRowItemPrice,
-                          )
-                        : (inMinutes < 30)
-                            ? Text(
-                                '$inMinutes m ago',
-                                style: Styles.productRowItemPrice,
-                              )
-                            : (inHours < 24)
-                                ? Text(
-                                    '$inHours h ago',
-                                    style: Styles.productRowItemPrice,
-                                  )
-                                : Text(
-                                    '$inDays d ago',
-                                    style: Styles.productRowItemPrice,
-                                  )
-              ],
-            );
-          } else
-            return Text('no data');
-        });
-  }
 }

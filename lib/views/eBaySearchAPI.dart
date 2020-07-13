@@ -4,6 +4,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:offer_app/models/item.dart';
+import 'package:offer_app/services/database.dart';
+import 'package:offer_app/views/addItem.dart';
 import 'package:provider/provider.dart';
 
 import 'ebayMock.dart';
@@ -34,36 +36,42 @@ class _SearchAPIState extends State<SearchAPI> {
   Widget build(BuildContext context) {
     final userIsLoggedIn = Provider.of<UserIsLoggedIn>(context);
     return SafeArea(
-        bottom: false,
-        child: Container(
-          padding: EdgeInsets.symmetric(horizontal: 10),
-          child: Column(
-            children: [
-              CupertinoTextField(
-                controller: searchText,
-                onSubmitted: (text) {
-                  _terms = searchText.text;
-                  if (_terms != '') {
-                    setState(() {
-                      haveUserSearched = true;
-                    });
-                  }
-                },
-                autofocus: true,
-              ),
-              SizedBox(
-                height: 20,
-              ),
-              Container(
-                child: (!haveUserSearched)
-                    ? Container()
-                    : Flexible(child: httpResult(_terms, userIsLoggedIn.token)),
-              )
-            ],
-          ),
+      bottom: false,
+      child: Container(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        child: Column(
+          children: [
+            CupertinoButton(
+              child: Text('Add Item to Firebase'),
+              onPressed: () {
+                Navigator.push(context,
+                    CupertinoPageRoute(builder: (context) => ItemView()));
+              },
+            ),
+            CupertinoTextField(
+              controller: searchText,
+              onSubmitted: (text) {
+                _terms = searchText.text;
+                if (_terms != '') {
+                  setState(() {
+                    haveUserSearched = true;
+                  });
+                }
+              },
+              autofocus: true,
+            ),
+            SizedBox(
+              height: 20,
+            ),
+            Container(
+              child: (!haveUserSearched)
+                  ? Container()
+                  : Flexible(child: httpResult(_terms, userIsLoggedIn.token)),
+            )
+          ],
         ),
-      );
-
+      ),
+    );
   }
 
   Widget httpResult(String itemName, token) {
@@ -79,37 +87,42 @@ class _SearchAPIState extends State<SearchAPI> {
                   SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
               itemBuilder: (context, index) {
                 Item currentItem = items[index];
-                return Card(
-                  child: Column(
-                    children: [
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Image.network(
-                        currentItem.imageUrl == null
-                            ? 'https://us.123rf.com/450wm/pavelstasevich/pavelstasevich1811/pavelstasevich181101027/112815900-stock-vector-no-image-available-icon-flat-vector.jpg?ver=6'
-                            : items[index].imageUrl,
-                        height: 100,
-                        width: 100,
-                      ),
-                      Flexible(
-                        child: Container(),
-                      ),
-                      Text(
-                        currentItem.title.substring(0, 20),
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 16,
+                return GestureDetector(
+                  onTap: () {
+                    addItemMap(currentItem.title, currentItem.condition, currentItem.sellerName,currentItem.price, currentItem.imageUrl);
+                  },
+                  child: Card(
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 10,
                         ),
-                      ),
-                      Text(
-                        currentItem.condition,
-                        style: TextStyle(
-                          color: Colors.grey,
-                          fontSize: 15,
+                        Image.network(
+                          currentItem.imageUrl == null
+                              ? 'https://us.123rf.com/450wm/pavelstasevich/pavelstasevich1811/pavelstasevich181101027/112815900-stock-vector-no-image-available-icon-flat-vector.jpg?ver=6'
+                              : items[index].imageUrl,
+                          height: 100,
+                          width: 100,
                         ),
-                      ),
-                    ],
+                        Flexible(
+                          child: Container(),
+                        ),
+                        Text(
+                          currentItem.title.substring(0, 20),
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 16,
+                          ),
+                        ),
+                        Text(
+                          currentItem.condition,
+                          style: TextStyle(
+                            color: Colors.grey,
+                            fontSize: 15,
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 );
               },
@@ -119,6 +132,35 @@ class _SearchAPIState extends State<SearchAPI> {
         }
       },
     );
+  }
+
+  List<String> setSearchParam(String itemName) {
+    List<String> caseSearchList = new List<String>();
+    String temp = "";
+    for (int i = 0; i < itemName.length/2; i++) {
+      temp = temp + itemName[i];
+      caseSearchList.add(temp);
+    }
+    return caseSearchList;
+  }
+
+  addItemMap(String itemName, condition, seller, price, imageUrl) {
+
+    print('add $itemName to Firebase.');
+    Map<String, dynamic> itemInfo = {
+      'itemName': itemName,
+      'seller': seller,
+      'listPrice': price,
+      'condition': condition,
+      'imageUrl': imageUrl,
+      'offerNum': 0,
+      'sold': false,
+      'buyers': [],
+      'winner': '',
+      'listTime': DateTime.now().toUtc().toString(),
+      'searchParam': setSearchParam(itemName),
+    };
+    DatabaseMethods().addItemHelper(itemInfo);
   }
 }
 

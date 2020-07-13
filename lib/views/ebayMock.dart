@@ -19,7 +19,7 @@ import 'chatrooms.dart';
 import 'eBaySearchAPI.dart';
 
 const clientId = 'NathanTi-offerApp-PRD-4c8ec878c-d960497f';
-const clientSecret = '';
+const clientSecret = 'PRD-c8ec878c1af0-a176-463b-bd23-428d';
 const authority = 'https://api.ebay.com/identity/v1/oauth2/token';
 const scope = 'https://api.ebay.com/oauth/api_scope';
 

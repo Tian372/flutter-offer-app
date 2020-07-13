@@ -111,7 +111,8 @@ class DatabaseMethods {
   searchByItem(String item, String myName) {
     return Firestore.instance
         .collection("mockData")
-        .where('itemName', isEqualTo: item)
+//        .where('itemName', isEqualTo: item)
+        .where("searchParam", arrayContains: item)
         .getDocuments();
   }
 

@@ -24,7 +24,7 @@ abstract class Styles {
 
   static const TextStyle productRowItemPrice = TextStyle(
     color: Color(0xFF8E8E93),
-    fontSize: 13,
+    fontSize: 14,
     fontWeight: FontWeight.w300,
   );
 

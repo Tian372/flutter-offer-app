@@ -54,23 +54,26 @@ class _SearchTabState extends State<SearchTab> {
 
   Widget itemList() {
     return haveUserSearched
-        ? ListView.separated(
-            separatorBuilder: (context, index) => Divider(
-                  color: Styles.productRowDivider,
-                  thickness: 1,
-                ),
-            shrinkWrap: true,
-            itemCount: searchResultSnapshot.documents.length,
-            itemBuilder: (context, index) {
-              return itemTile(
-                searchResultSnapshot.documents[index].data['seller'],
-                searchResultSnapshot.documents[index].data['itemName'],
-                searchResultSnapshot.documents[index].data['itemDesc'],
-                searchResultSnapshot.documents[index].data['listPrice'],
-                searchResultSnapshot.documents[index].documentID,
-                searchResultSnapshot.documents[index].data['offerNum'],
-              );
-            })
+        ? Flexible(
+          child: ListView.separated(
+              separatorBuilder: (context, index) => Divider(
+                    color: Styles.productRowDivider,
+                    thickness: 1,
+                  ),
+              shrinkWrap: true,
+              itemCount: searchResultSnapshot.documents.length,
+              itemBuilder: (context, index) {
+                return itemTile(
+                  searchResultSnapshot.documents[index].data['seller'],
+                  searchResultSnapshot.documents[index].data['itemName'],
+                  searchResultSnapshot.documents[index].data['condition'],
+                  searchResultSnapshot.documents[index].data['listPrice'],
+                  searchResultSnapshot.documents[index].documentID,
+                  searchResultSnapshot.documents[index].data['offerNum'],
+                  searchResultSnapshot.documents[index].data['imageUrl'],
+                );
+              }),
+        )
         : Container();
   }
 
@@ -85,7 +88,7 @@ class _SearchTabState extends State<SearchTab> {
   }
 
   /// 1.create a chatroom, send user to the chatroom, other userdetails
-  sendMessage(String userName, String itemId, String itemName) async {
+  sendMessage(String userName, String itemId, String itemName,  condition, imageUrl) async {
     String chatRoomId = getChatRoomId(Constants.myName, userName, itemName);
 
     final snapShot = await Firestore.instance
@@ -108,6 +111,8 @@ class _SearchTabState extends State<SearchTab> {
         'chatRoomId': chatRoomId,
         'declined': declinedStatus,
         'paid': paymentStatus,
+        'imageUrl': imageUrl,
+        'condition' : condition,
       };
       databaseMethods.addChatRoom(chatRoom, chatRoomId);
     }
@@ -125,11 +130,11 @@ class _SearchTabState extends State<SearchTab> {
 //    }
   }
 
-  Widget itemTile(String userName, String itemName, String itemDesc,
-      String price, String itemId, int offerNum) {
+  Widget itemTile(String userName, String itemName, String condition,
+      String price, String itemId, int offerNum, String imageUrl) {
     return GestureDetector(
       onTap: () {
-        sendMessage(userName, itemId, itemName);
+        sendMessage(userName, itemId, itemName, condition,imageUrl);
       },
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -140,13 +145,18 @@ class _SearchTabState extends State<SearchTab> {
               child: FutureBuilder(
                 future: getImage(context, 'images/$itemId.jpg'),
                 builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.done)
-                    return Container(
-                      child: snapshot.data,
-                    );
-                  else {
-                    return CircularProgressIndicator();
+                  if(snapshot.hasData){
+                    if (snapshot.connectionState == ConnectionState.done)
+                      return Container(
+                        child: snapshot.data,
+                      );
+                    else {
+                     return CircularProgressIndicator();
+                    }
+                  }else{
+                    return Image.network(imageUrl, height: 100, width: 100,);
                   }
+
                 },
               ),
             ),
@@ -157,13 +167,16 @@ class _SearchTabState extends State<SearchTab> {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                Text(
-                  '$itemName',
-                  style: Styles.searchText,
+                SizedBox(
+                  width: 250,
+                  child: Text(
+                    '$itemName',
+                    style: Styles.searchText,
+                  ),
                 ),
                 SizedBox(height: 5),
                 Text(
-                  '$itemDesc . brand',
+                  '$condition . brand',
                   style: TextStyle(color: Colors.grey[600], fontSize: 12),
                 ),
                 SizedBox(height: 15),
@@ -184,25 +197,25 @@ class _SearchTabState extends State<SearchTab> {
             SizedBox(
               width: 10,
             ),
-            Column(
-              children: [
-                CupertinoButton(
-                  child: Text('Offer'),
-                  onPressed: () {
-                    sendMessage(userName, itemId, itemName);
-                  },
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                CupertinoButton(
-                  child: Text('Auction'),
-                  onPressed: () {
-//                    sendAuction(userName, itemId, itemName);
-                  },
-                ),
-              ],
-            )
+//            Column(
+//              children: [
+//                CupertinoButton(
+//                  child: Text('Offer'),
+//                  onPressed: () {
+//                    sendMessage(userName, itemId, itemName);
+//                  },
+//                ),
+//                SizedBox(
+//                  height: 5,
+//                ),
+//                CupertinoButton(
+//                  child: Text('Auction'),
+//                  onPressed: () {
+////                    sendAuction(userName, itemId, itemName);
+//                  },
+//                ),
+//              ],
+//            )
           ],
         ),
       ),

@@ -1,6 +1,8 @@
+import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:offer_app/helper/style.dart';
 
 Widget appBarMain(BuildContext context, String title) {
   return CupertinoNavigationBar(
@@ -40,3 +42,74 @@ TextStyle biggerTextStyle() {
 
 
 
+Widget statusIndicator(String userId) {
+  return StreamBuilder(
+      stream: FirebaseDatabase.instance
+          .reference()
+          .child('userStatus')
+          .child(userId)
+          .onValue,
+      builder: (BuildContext context, snapshot) {
+        if (snapshot.hasData && snapshot.data.snapshot.value != null) {
+          String onlineStatus = snapshot.data.snapshot.value['status'];
+          var lastTime =
+          DateTime.parse(snapshot.data.snapshot.value['lastTime']);
+
+          Duration diff = new DateTime.now().difference(lastTime);
+          int inDays = diff.inDays;
+          int inHours = diff.inHours;
+          int inMinutes = diff.inMinutes;
+
+          print(userId);
+          print('online status: $onlineStatus');
+          bool isOnline = onlineStatus == 'online';
+
+          return Row(
+            children: [
+              SizedBox(
+                height: 10,
+                width: 10,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: (isOnline) ? Colors.green : Colors.grey,
+                    border: Border.all(
+                      color: Colors.black,
+                      width: 20,
+                    ),
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: 6,
+              ),
+              isOnline
+                  ? Text(
+                'online',
+                style: Styles.productRowItemPrice,
+              )
+                  : (inMinutes < 1)
+                  ? Text(
+                'less than 1 min',
+                style: Styles.productRowItemPrice,
+              )
+                  : (inMinutes < 30)
+                  ? Text(
+                '$inMinutes m ago',
+                style: Styles.productRowItemPrice,
+              )
+                  : (inHours < 24)
+                  ? Text(
+                '$inHours h ago',
+                style: Styles.productRowItemPrice,
+              )
+                  : Text(
+                '$inDays d ago',
+                style: Styles.productRowItemPrice,
+              )
+            ],
+          );
+        } else
+          return Text('no data' ,style: Styles.productRowItemPrice,);
+      });
+}

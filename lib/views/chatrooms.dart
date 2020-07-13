@@ -45,6 +45,7 @@ class _ChatRoomState extends State<ChatRoom> {
                       payment: roomData.data['paid'],
                       itemName: roomData.data['itemName'],
                       itemId: roomData.data['itemId'],
+                      imageUrl: roomData.data['imageUrl'],
                     ),
                   );
                 })
@@ -77,6 +78,7 @@ class _ChatRoomState extends State<ChatRoom> {
                     payment: roomData.data['paid'],
                     itemName: roomData.data['itemName'],
                     itemId: roomData.data['itemId'],
+                    imageUrl: roomData.data['imageUrl'],
                   );
                 })
             : Center(
@@ -182,15 +184,18 @@ class ChatRoomsTile extends StatelessWidget {
   final String sellerName;
   final String buyerName;
   final bool payment;
+  final String imageUrl;
 
-  ChatRoomsTile(
-      {@required this.chatRoomId,
-      this.declined,
-      this.payment,
-      this.itemName,
-      @required this.itemId,
-      this.buyerName,
-      this.sellerName});
+  ChatRoomsTile({
+    @required this.chatRoomId,
+    this.declined,
+    this.payment,
+    this.itemName,
+    @required this.itemId,
+    this.buyerName,
+    this.sellerName,
+    this.imageUrl,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -208,12 +213,14 @@ class ChatRoomsTile extends StatelessWidget {
                             chatRoomId: this.chatRoomId,
                             userName: this.buyerName,
                             declined: this.declined,
+                            imageUrl: imageUrl,
                           )
                         : BuyerChat(
                             chatRoomId: this.chatRoomId,
                             sellerName: this.sellerName,
                             declined: this.declined,
                             itemId: this.itemId,
+                            imageUrl: imageUrl,
                           )));
           },
           child: Container(
@@ -256,7 +263,13 @@ class ChatRoomsTile extends StatelessWidget {
                           SizedBox(
                             width: 20,
                           ),
-                          Text('$itemName', style: Styles.productRowItemName),
+                          Flexible(
+                              child: Text(
+                                '$itemName',
+                                style: Styles.productRowItemName,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                              )),
                         ],
                       ),
                       SizedBox(
@@ -277,24 +290,14 @@ class ChatRoomsTile extends StatelessWidget {
                     ],
                   ),
                 ),
-                Container(
-                  height: 80,
-                  width: 80,
-                  decoration: new BoxDecoration(
-                      color: Colors.black38,
-                      borderRadius: new BorderRadius.only(
-                        topLeft: const Radius.circular(10),
-                        topRight: const Radius.circular(10),
-                        bottomRight: const Radius.circular(10),
-                        bottomLeft: const Radius.circular(10),
-                      )),
-                  child: Text(
-                    ' item pic goes here',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    imageUrl,
+                    height: 120,
+                    width: 120,
                   ),
-                )
+                ),
               ],
             ),
           ),

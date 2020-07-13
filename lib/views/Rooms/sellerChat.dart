@@ -22,11 +22,11 @@ const boxColor = Colors.white;
 class SellerChat extends StatefulWidget {
   final String chatRoomId;
   final String userName;
-
+  final String imageUrl;
   //TODO: need to change this to be a Stream from database
   final bool declined;
 
-  SellerChat({this.chatRoomId, this.userName, this.declined});
+  SellerChat({this.chatRoomId, this.userName, this.declined, this.imageUrl});
 
   @override
   _SellerChatState createState() => _SellerChatState();
@@ -50,7 +50,7 @@ class _SellerChatState extends State<SellerChat> {
         ClipRRect(
           borderRadius: BorderRadius.circular(5),
           child: Image.network(
-            'https://flutter.github.io/assets-for-api-docs/assets/widgets/owl.jpg',
+            widget.imageUrl,
             fit: BoxFit.cover,
           ),
         ),
@@ -434,75 +434,5 @@ class _SellerChatState extends State<SellerChat> {
     );
   }
 
-  Widget statusIndicator(String userId) {
-    return StreamBuilder(
-        stream: FirebaseDatabase.instance
-            .reference()
-            .child('userStatus')
-            .child(userId)
-            .onValue,
-        builder: (BuildContext context, snapshot) {
-          if (snapshot.hasData) {
-            String onlineStatus = snapshot.data.snapshot.value['status'];
-            var lastTime =
-                DateTime.parse(snapshot.data.snapshot.value['lastTime']);
 
-            Duration diff = new DateTime.now().difference(lastTime);
-            int inDays = diff.inDays;
-            int inHours = diff.inHours;
-            int inMinutes = diff.inMinutes;
-
-            print(userId);
-            print('online status: $onlineStatus');
-            bool isOnline = onlineStatus == 'online';
-
-            return Row(
-              children: [
-                SizedBox(
-                  height: 10,
-                  width: 10,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: (isOnline) ? Colors.green : Colors.grey,
-                      border: Border.all(
-                        color: Colors.black,
-                        width: 20,
-                      ),
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  width: 6,
-                ),
-                isOnline
-                    ? Text(
-                        'online',
-                        style: Styles.productRowItemPrice,
-                      )
-                    : (inMinutes < 1)
-                        ? Text(
-                            'less than 1 min',
-                            style: Styles.productRowItemPrice,
-                          )
-                        : (inMinutes < 60)
-                            ? Text(
-                                '$inMinutes m ago',
-                                style: Styles.productRowItemPrice,
-                              )
-                            : (inHours < 24)
-                                ? Text(
-                                    '$inHours h ago',
-                                    style: Styles.productRowItemPrice,
-                                  )
-                                : Text(
-                                    '$inDays d ago',
-                                    style: Styles.productRowItemPrice,
-                                  )
-              ],
-            );
-          } else
-            return Text('no data');
-        });
-  }
 }
