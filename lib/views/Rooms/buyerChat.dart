@@ -18,8 +18,20 @@ class BuyerChat extends StatefulWidget {
   final bool declined;
   final String itemId;
   final String imageUrl;
+  final String listPrice;
+  final String condition;
+  final int offerNum;
 
-  BuyerChat({this.chatRoomId, this.sellerName, this.declined, this.itemId, this.imageUrl});
+  BuyerChat({
+    this.chatRoomId,
+    this.sellerName,
+    this.declined,
+    this.itemId,
+    this.imageUrl,
+    this.listPrice,
+    this.condition,
+    this.offerNum,
+  });
 
   @override
   _BuyerChatState createState() => _BuyerChatState();
@@ -135,7 +147,28 @@ class _BuyerChatState extends State<BuyerChat> {
         SizedBox(
           width: 50,
         ),
-        Text('$itemName: $itemDesc')
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'List Price: ${widget.listPrice}',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              ),
+              SizedBox(height: 5),
+              Text(
+                '${widget.condition}',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              ),
+              SizedBox(height: 15),
+              Text(
+                '${widget.offerNum} people are interested.',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              )
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -453,6 +486,4 @@ class _BuyerChatState extends State<BuyerChat> {
       ),
     );
   }
-
-
 }

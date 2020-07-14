@@ -72,7 +72,6 @@ class _SearchTabState extends State<SearchTab> {
                     searchResultSnapshot.documents[index].documentID,
                     searchResultSnapshot.documents[index].data['offerNum'],
                     searchResultSnapshot.documents[index].data['imageUrl'],
-
                   );
                 }),
           )
@@ -126,6 +125,8 @@ class _SearchTabState extends State<SearchTab> {
                   userName: userName,
                   declined: false,
                   imageUrl: imageUrl,
+                  bidderNum: 1,
+                  condition: condition,
                 )));
 //
 //    if (snapShot == null || !snapShot.exists) {
@@ -134,8 +135,8 @@ class _SearchTabState extends State<SearchTab> {
   }
 
   /// 1.create a chatroom, send user to the chatroom, other userdetails
-  sendMessage(String userName, String itemId, String itemName, condition,
-      imageUrl) async {
+  sendMessage(String userName, itemId, itemName, condition, imageUrl, price,
+      int offerNum) async {
     String chatRoomId = getChatRoomId(Constants.myName, userName, itemName);
 
     final snapShot = await Firestore.instance
@@ -160,6 +161,8 @@ class _SearchTabState extends State<SearchTab> {
         'paid': paymentStatus,
         'imageUrl': imageUrl,
         'condition': condition,
+        'listedPrice': price,
+        'offerNum': offerNum,
       };
       databaseMethods.addChatRoom(chatRoom, chatRoomId);
     }
@@ -170,11 +173,12 @@ class _SearchTabState extends State<SearchTab> {
                   chatRoomId: chatRoomId,
                   sellerName: userName,
                   declined: declinedStatus,
+                  itemId: itemId,
+                  imageUrl: imageUrl,
+                  listPrice: price,
+                  condition: condition,
+                  offerNum: offerNum,
                 )));
-//
-//    if (snapShot == null || !snapShot.exists) {
-//      // Document with id == docId doesn't exist.
-//    }
   }
 
   Widget itemTile(String userName, String itemName, String condition,
@@ -247,8 +251,8 @@ class _SearchTabState extends State<SearchTab> {
               CupertinoButton(
                 child: Text('Offer'),
                 onPressed: () {
-                  sendMessage(
-                      userName, itemId, itemName, condition, imageUrl);
+                  sendMessage(userName, itemId, itemName, condition, imageUrl,
+                      price, offerNum);
                 },
               ),
               SizedBox(
@@ -273,10 +277,6 @@ class _SearchTabState extends State<SearchTab> {
     } else {
       return '$a\_$b\_$itemName';
     }
-  }
-
-  getAuctionId(String itemName, sellerName) {
-    return '$itemName\_$sellerName';
   }
 
   @override
@@ -311,41 +311,6 @@ class _SearchTabState extends State<SearchTab> {
       ),
     );
   }
-//
-//  sendAuction(String userName, String itemId, String itemName) async {
-//    String auctionId = getAuctionId(userName, itemName);
-//
-//    final snapShot = await Firestore.instance
-//        .collection('auctionRoom')
-//        .document(auctionId)
-//        .get();
-//
-//    bool ongoing= false;
-//
-//    if (snapShot.exists) {
-//      ongoing = snapShot.data['declined'];
-//    } else {
-//      DatabaseMethods().updateAucionList(itemId, Constants.myName);
-//      Map<String, dynamic> auction= {
-//        'itemName': itemName,
-//        'itemId': itemId,
-//        'seller': userName,
-//        'auctionId': auctionId,
-//        'finished':ongoing,
-//
-//      };
-//      databaseMethods.addAuction(auction, auctionId);
-//    }
-//
-//    Navigator.push(
-//        context,
-//        CupertinoPageRoute(
-//            builder: (context) => Auction(
-//              auctionId: auctionId,
-//              sellerName: userName,
-//              declined: ongoing,
-//            )));
-//  }
 }
 
 class SearchBar extends StatelessWidget {

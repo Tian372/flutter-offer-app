@@ -30,31 +30,30 @@ class _ChatRoomState extends State<ChatRoom> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.separated(
-            separatorBuilder: (context, index) =>
-                Divider(
-                  color: Styles.productRowDivider,
-                  thickness: 1,
-                ),
-            itemCount: snapshot.data.documents.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              var roomData = snapshot.data.documents[index];
-              return Container(
-                child: ChatRoomsTile(
-                  sellerName: roomData.data['seller'],
-                  buyerName: roomData.data['buyer'],
-                  chatRoomId: roomData.data['chatRoomId'],
-                  declined: roomData.data['declined'],
-                  payment: roomData.data['paid'],
-                  itemName: roomData.data['itemName'],
-                  itemId: roomData.data['itemId'],
-                  imageUrl: roomData.data['imageUrl'],
-                ),
-              );
-            })
+                separatorBuilder: (context, index) => Divider(
+                      color: Styles.productRowDivider,
+                      thickness: 1,
+                    ),
+                itemCount: snapshot.data.documents.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  var roomData = snapshot.data.documents[index];
+                  return Container(
+                    child: ChatRoomsTile(
+                      sellerName: roomData.data['seller'],
+                      buyerName: roomData.data['buyer'],
+                      chatRoomId: roomData.data['chatRoomId'],
+                      declined: roomData.data['declined'],
+                      payment: roomData.data['paid'],
+                      itemName: roomData.data['itemName'],
+                      itemId: roomData.data['itemId'],
+                      imageUrl: roomData.data['imageUrl'],
+                    ),
+                  );
+                })
             : Center(
-          child: CircularProgressIndicator(),
-        );
+                child: CircularProgressIndicator(),
+              );
       },
     );
   }
@@ -65,29 +64,31 @@ class _ChatRoomState extends State<ChatRoom> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.separated(
-            separatorBuilder: (context, index) =>
-                Divider(
-                  color: Colors.grey,
-                  thickness: 1,
-                ),
-            itemCount: snapshot.data.documents.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              var roomData = snapshot.data.documents[index];
-              return ChatRoomsTile(
-                sellerName: roomData.data['seller'],
-                buyerName: roomData.data['buyer'],
-                chatRoomId: roomData.data['chatRoomId'],
-                declined: roomData.data['declined'],
-                payment: roomData.data['paid'],
-                itemName: roomData.data['itemName'],
-                itemId: roomData.data['itemId'],
-                imageUrl: roomData.data['imageUrl'],
-              );
-            })
+                separatorBuilder: (context, index) => Divider(
+                      color: Colors.grey,
+                      thickness: 1,
+                    ),
+                itemCount: snapshot.data.documents.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  var roomData = snapshot.data.documents[index];
+                  return ChatRoomsTile(
+                    sellerName: roomData.data['seller'],
+                    buyerName: roomData.data['buyer'],
+                    chatRoomId: roomData.data['chatRoomId'],
+                    declined: roomData.data['declined'],
+                    payment: roomData.data['paid'],
+                    itemName: roomData.data['itemName'],
+                    itemId: roomData.data['itemId'],
+                    imageUrl: roomData.data['imageUrl'],
+                    listPrice: roomData.data['listedPrice'],
+                    condition: roomData.data['condition'],
+                    offerNum: roomData.data['offerNum'],
+                  );
+                })
             : Center(
-          child: CircularProgressIndicator(),
-        );
+                child: CircularProgressIndicator(),
+              );
       },
     );
   }
@@ -98,27 +99,28 @@ class _ChatRoomState extends State<ChatRoom> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.separated(
-            separatorBuilder: (context, index) =>
-                Divider(
-                  color: Colors.grey,
-                  thickness: 1,
-                ),
-            itemCount: snapshot.data.documents.length,
-            shrinkWrap: true,
-            itemBuilder: (context, index) {
-              var roomData = snapshot.data.documents[index];
-              return BidRoomTile(
-                sellerName: roomData.data['seller'],
-                chatRoomId: roomData.data['chatRoomId'],
-                declined: roomData.data['declined'],
-                payment: roomData.data['paid'],
-                itemName: roomData.data['itemName'],
-                imageUrl: roomData.data['imageUrl'],
-              );
-            })
+                separatorBuilder: (context, index) => Divider(
+                      color: Colors.grey,
+                      thickness: 1,
+                    ),
+                itemCount: snapshot.data.documents.length,
+                shrinkWrap: true,
+                itemBuilder: (context, index) {
+                  var roomData = snapshot.data.documents[index];
+                  int bidderNum = roomData.data['buyers'].length;
+                  return BidRoomTile(
+                    sellerName: roomData.data['seller'],
+                    declined: roomData.data['declined'],
+                    payment: roomData.data['paid'],
+                    itemName: roomData.data['itemName'],
+                    imageUrl: roomData.data['imageUrl'],
+                    bidderNum: bidderNum,
+                    condition: roomData.data['condition'],
+                  );
+                })
             : Center(
-          child: CircularProgressIndicator(),
-        );
+                child: CircularProgressIndicator(),
+              );
       },
     );
   }
@@ -136,24 +138,21 @@ class _ChatRoomState extends State<ChatRoom> {
       setState(() {
         chatBuyerRooms = snapshots;
         print(
-            'we got the data + ${chatBuyerRooms
-                .toString()} this is name ${Constants.myName} ');
+            'we got the data + ${chatBuyerRooms.toString()} this is name ${Constants.myName} ');
       });
     });
     DatabaseMethods().getUserSellerChats(Constants.myName).then((snapshots) {
       setState(() {
         chatSellerRooms = snapshots;
         print(
-            'we got the data + ${chatSellerRooms
-                .toString()} this is name ${Constants.myName} ');
+            'we got the data + ${chatSellerRooms.toString()} this is name ${Constants.myName} ');
       });
     });
     DatabaseMethods().getUserBids(Constants.myName).then((snapshots) {
       setState(() {
         bids = snapshots;
         print(
-            'we got the data + ${bids.toString()} this is name ${Constants
-                .myName} ');
+            'we got the data + ${bids.toString()} this is name ${Constants.myName} ');
       });
     });
   }
@@ -230,6 +229,9 @@ class ChatRoomsTile extends StatelessWidget {
   final String buyerName;
   final bool payment;
   final String imageUrl;
+  final String listPrice;
+  final String condition;
+  final int offerNum;
 
   ChatRoomsTile({
     @required this.chatRoomId,
@@ -240,6 +242,9 @@ class ChatRoomsTile extends StatelessWidget {
     this.buyerName,
     this.sellerName,
     this.imageUrl,
+    this.listPrice,
+    this.condition,
+    this.offerNum,
   });
 
   @override
@@ -253,21 +258,26 @@ class ChatRoomsTile extends StatelessWidget {
             Navigator.push(
                 context,
                 CupertinoPageRoute(
-                    builder: (context) =>
-                    isSeller
+                    builder: (context) => isSeller
                         ? SellerChat(
-                      chatRoomId: this.chatRoomId,
-                      userName: this.buyerName,
-                      declined: this.declined,
-                      imageUrl: imageUrl,
-                    )
+                            chatRoomId: this.chatRoomId,
+                            userName: this.buyerName,
+                            declined: this.declined,
+                            imageUrl: imageUrl,
+                            listPrice: listPrice,
+                            condition: condition,
+                            offerNum: offerNum,
+                          )
                         : BuyerChat(
-                      chatRoomId: this.chatRoomId,
-                      sellerName: this.sellerName,
-                      declined: this.declined,
-                      itemId: this.itemId,
-                      imageUrl: imageUrl,
-                    )));
+                            chatRoomId: this.chatRoomId,
+                            sellerName: this.sellerName,
+                            declined: this.declined,
+                            itemId: this.itemId,
+                            imageUrl: imageUrl,
+                            listPrice: listPrice,
+                            condition: condition,
+                            offerNum: offerNum,
+                          )));
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 5),
@@ -284,8 +294,8 @@ class ChatRoomsTile extends StatelessWidget {
                               decoration: new BoxDecoration(
                                 color: this.declined
                                     ? (this.payment
-                                    ? Colors.green[200]
-                                    : Colors.red[200])
+                                        ? Colors.green[200]
+                                        : Colors.red[200])
                                     : Colors.blue,
                                 borderRadius: new BorderRadius.circular(2),
                                 boxShadow: [
@@ -311,11 +321,11 @@ class ChatRoomsTile extends StatelessWidget {
                           ),
                           Flexible(
                               child: Text(
-                                '$itemName',
-                                style: Styles.productRowItemName,
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: false,
-                              )),
+                            '$itemName',
+                            style: Styles.productRowItemName,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                          )),
                         ],
                       ),
                       SizedBox(
@@ -330,6 +340,18 @@ class ChatRoomsTile extends StatelessWidget {
                               isSeller
                                   ? '${this.buyerName}'
                                   : '${this.sellerName}',
+                              style: Styles.productRowItemPrice),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 105,
+                          ),
+                          Text('$offerNum people are interested',
                               style: Styles.productRowItemPrice),
                         ],
                       ),
@@ -353,22 +375,23 @@ class ChatRoomsTile extends StatelessWidget {
   }
 }
 
-
 class BidRoomTile extends StatelessWidget {
-  final String chatRoomId;
   final String itemName;
   final bool declined;
   final String sellerName;
   final bool payment;
   final String imageUrl;
+  final int bidderNum;
+  final String condition;
 
   BidRoomTile({
-    @required this.chatRoomId,
     this.declined,
     this.payment,
     this.itemName,
     this.sellerName,
     this.imageUrl,
+    this.bidderNum,
+    this.condition,
   });
 
   @override
@@ -380,14 +403,14 @@ class BidRoomTile extends StatelessWidget {
             Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  // AuctionRoom({this.itemName, this.userName, this.declined, this.imageUrl});
-                    builder: (context) =>
-                        AuctionRoom(
+                    // AuctionRoom({this.itemName, this.userName, this.declined, this.imageUrl});
+                    builder: (context) => AuctionRoom(
                           itemName: itemName,
                           userName: sellerName,
                           declined: false,
                           imageUrl: imageUrl,
-
+                          bidderNum: bidderNum,
+                          condition: condition,
                         )));
           },
           child: Container(
@@ -405,8 +428,8 @@ class BidRoomTile extends StatelessWidget {
                               decoration: new BoxDecoration(
                                 color: this.declined
                                     ? (this.payment
-                                    ? Colors.green[200]
-                                    : Colors.red[200])
+                                        ? Colors.green[200]
+                                        : Colors.red[200])
                                     : Colors.blue,
                                 borderRadius: new BorderRadius.circular(2),
                                 boxShadow: [
@@ -432,11 +455,11 @@ class BidRoomTile extends StatelessWidget {
                           ),
                           Flexible(
                               child: Text(
-                                '$itemName',
-                                style: Styles.productRowItemName,
-                                overflow: TextOverflow.ellipsis,
-                                softWrap: false,
-                              )),
+                            '$itemName',
+                            style: Styles.productRowItemName,
+                            overflow: TextOverflow.ellipsis,
+                            softWrap: false,
+                          )),
                         ],
                       ),
                       SizedBox(
@@ -447,8 +470,16 @@ class BidRoomTile extends StatelessWidget {
                           SizedBox(
                             width: 105,
                           ),
-                          Text(
-                              '${this.sellerName}',
+                          Text('${this.sellerName}',
+                              style: Styles.productRowItemPrice),
+                        ],
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 105,
+                          ),
+                          Text('$bidderNum people bidding on this',
                               style: Styles.productRowItemPrice),
                         ],
                       ),

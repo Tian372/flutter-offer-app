@@ -12,11 +12,14 @@ class AuctionRoom extends StatefulWidget {
   final String itemName;
   final String userName;
   final String imageUrl;
-
+  final int bidderNum;
+  final String condition;
+  //bidderNum : bidderNum,
+  //                          condition: condition,
   //TODO: need to change this to be a Stream from database
   final bool declined;
 
-  AuctionRoom({this.itemName, this.userName, this.declined, this.imageUrl});
+  AuctionRoom({this.itemName, this.userName, this.declined, this.imageUrl, this.condition, this.bidderNum,});
 
   @override
   _AuctionRoomState createState() => _AuctionRoomState();
@@ -48,7 +51,24 @@ class _AuctionRoomState extends State<AuctionRoom> {
         SizedBox(
           width: 50,
         ),
-        const Text('Item Description')
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              SizedBox(height: 5),
+              Text(
+                '${widget.condition}',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              ),
+              SizedBox(height: 15),
+              Text(
+                '${widget.bidderNum} people are interested.',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              )
+            ],
+          ),
+        ),
       ],
     );
   }

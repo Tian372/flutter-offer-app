@@ -14,10 +14,22 @@ class SellerChat extends StatefulWidget {
   final String chatRoomId;
   final String userName;
   final String imageUrl;
+  final String listPrice;
+  final String condition;
+  final int offerNum;
+
   //TODO: need to change this to be a Stream from database
   final bool declined;
 
-  SellerChat({this.chatRoomId, this.userName, this.declined, this.imageUrl});
+  SellerChat({
+    this.chatRoomId,
+    this.userName,
+    this.declined,
+    this.imageUrl,
+    this.listPrice,
+    this.condition,
+    this.offerNum,
+  });
 
   @override
   _SellerChatState createState() => _SellerChatState();
@@ -48,7 +60,28 @@ class _SellerChatState extends State<SellerChat> {
         SizedBox(
           width: 50,
         ),
-        const Text('Item Description')
+        Flexible(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                'List Price: ${widget.listPrice}',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              ),
+              SizedBox(height: 5),
+              Text(
+                '${widget.condition}',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              ),
+              SizedBox(height: 15),
+              Text(
+                '${widget.offerNum} people are interested.',
+                style: TextStyle(color: Colors.grey[600], fontSize: 12),
+              )
+            ],
+          ),
+        ),
       ],
     );
   }
@@ -78,7 +111,8 @@ class _SellerChatState extends State<SellerChat> {
                         bottom: 5,
                         left: sendByMe ? 80 : 5,
                         right: sendByMe ? 5 : 80),
-                    alignment: sendByMe ? Alignment.centerRight : Alignment.centerLeft,
+                    alignment:
+                        sendByMe ? Alignment.centerRight : Alignment.centerLeft,
                     child: Container(
                       padding: EdgeInsets.symmetric(vertical: 5, horizontal: 5),
                       decoration: BoxDecoration(
@@ -295,7 +329,7 @@ class _SellerChatState extends State<SellerChat> {
         'price':
             (widget.declined) ? -1 : int.parse(priceEditingController.text),
         'message': messageEditingController.text,
-        'time':DateTime.now().toUtc().toString(),
+        'time': DateTime.now().toUtc().toString(),
         'sellerApproved': true,
       };
 
@@ -424,6 +458,4 @@ class _SellerChatState extends State<SellerChat> {
       ),
     );
   }
-
-
 }
