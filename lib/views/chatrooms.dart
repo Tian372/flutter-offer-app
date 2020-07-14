@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/gestures.dart';
 import 'package:offer_app/helper/style.dart';
+import 'package:offer_app/views/Rooms/auctionRoom.dart';
 import 'package:offer_app/views/Rooms/sellerChat.dart';
 import 'package:offer_app/widget/widget.dart';
 
@@ -20,6 +21,7 @@ class ChatRoom extends StatefulWidget {
 class _ChatRoomState extends State<ChatRoom> {
   Stream chatSellerRooms;
   Stream chatBuyerRooms;
+  Stream bids;
   int _currentIndex;
 
   Widget chatRoomsSellerList() {
@@ -28,30 +30,31 @@ class _ChatRoomState extends State<ChatRoom> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.separated(
-                separatorBuilder: (context, index) => Divider(
-                      color: Styles.productRowDivider,
-                      thickness: 1,
-                    ),
-                itemCount: snapshot.data.documents.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  var roomData = snapshot.data.documents[index];
-                  return Container(
-                    child: ChatRoomsTile(
-                      sellerName: roomData.data['seller'],
-                      buyerName: roomData.data['buyer'],
-                      chatRoomId: roomData.data['chatRoomId'],
-                      declined: roomData.data['declined'],
-                      payment: roomData.data['paid'],
-                      itemName: roomData.data['itemName'],
-                      itemId: roomData.data['itemId'],
-                      imageUrl: roomData.data['imageUrl'],
-                    ),
-                  );
-                })
-            : Center(
-                child: CircularProgressIndicator(),
+            separatorBuilder: (context, index) =>
+                Divider(
+                  color: Styles.productRowDivider,
+                  thickness: 1,
+                ),
+            itemCount: snapshot.data.documents.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              var roomData = snapshot.data.documents[index];
+              return Container(
+                child: ChatRoomsTile(
+                  sellerName: roomData.data['seller'],
+                  buyerName: roomData.data['buyer'],
+                  chatRoomId: roomData.data['chatRoomId'],
+                  declined: roomData.data['declined'],
+                  payment: roomData.data['paid'],
+                  itemName: roomData.data['itemName'],
+                  itemId: roomData.data['itemId'],
+                  imageUrl: roomData.data['imageUrl'],
+                ),
               );
+            })
+            : Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }
@@ -62,28 +65,60 @@ class _ChatRoomState extends State<ChatRoom> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.separated(
-                separatorBuilder: (context, index) => Divider(
-                      color: Colors.grey,
-                      thickness: 1,
-                    ),
-                itemCount: snapshot.data.documents.length,
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  var roomData = snapshot.data.documents[index];
-                  return ChatRoomsTile(
-                    sellerName: roomData.data['seller'],
-                    buyerName: roomData.data['buyer'],
-                    chatRoomId: roomData.data['chatRoomId'],
-                    declined: roomData.data['declined'],
-                    payment: roomData.data['paid'],
-                    itemName: roomData.data['itemName'],
-                    itemId: roomData.data['itemId'],
-                    imageUrl: roomData.data['imageUrl'],
-                  );
-                })
-            : Center(
-                child: CircularProgressIndicator(),
+            separatorBuilder: (context, index) =>
+                Divider(
+                  color: Colors.grey,
+                  thickness: 1,
+                ),
+            itemCount: snapshot.data.documents.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              var roomData = snapshot.data.documents[index];
+              return ChatRoomsTile(
+                sellerName: roomData.data['seller'],
+                buyerName: roomData.data['buyer'],
+                chatRoomId: roomData.data['chatRoomId'],
+                declined: roomData.data['declined'],
+                payment: roomData.data['paid'],
+                itemName: roomData.data['itemName'],
+                itemId: roomData.data['itemId'],
+                imageUrl: roomData.data['imageUrl'],
               );
+            })
+            : Center(
+          child: CircularProgressIndicator(),
+        );
+      },
+    );
+  }
+
+  Widget bidsList() {
+    return StreamBuilder(
+      stream: bids,
+      builder: (context, snapshot) {
+        return snapshot.hasData
+            ? ListView.separated(
+            separatorBuilder: (context, index) =>
+                Divider(
+                  color: Colors.grey,
+                  thickness: 1,
+                ),
+            itemCount: snapshot.data.documents.length,
+            shrinkWrap: true,
+            itemBuilder: (context, index) {
+              var roomData = snapshot.data.documents[index];
+              return BidRoomTile(
+                sellerName: roomData.data['seller'],
+                chatRoomId: roomData.data['chatRoomId'],
+                declined: roomData.data['declined'],
+                payment: roomData.data['paid'],
+                itemName: roomData.data['itemName'],
+                imageUrl: roomData.data['imageUrl'],
+              );
+            })
+            : Center(
+          child: CircularProgressIndicator(),
+        );
       },
     );
   }
@@ -101,14 +136,24 @@ class _ChatRoomState extends State<ChatRoom> {
       setState(() {
         chatBuyerRooms = snapshots;
         print(
-            'we got the data + ${chatBuyerRooms.toString()} this is name ${Constants.myName} ');
+            'we got the data + ${chatBuyerRooms
+                .toString()} this is name ${Constants.myName} ');
       });
     });
     DatabaseMethods().getUserSellerChats(Constants.myName).then((snapshots) {
       setState(() {
         chatSellerRooms = snapshots;
         print(
-            'we got the data + ${chatSellerRooms.toString()} this is name ${Constants.myName} ');
+            'we got the data + ${chatSellerRooms
+                .toString()} this is name ${Constants.myName} ');
+      });
+    });
+    DatabaseMethods().getUserBids(Constants.myName).then((snapshots) {
+      setState(() {
+        bids = snapshots;
+        print(
+            'we got the data + ${bids.toString()} this is name ${Constants
+                .myName} ');
       });
     });
   }
@@ -141,7 +186,7 @@ class _ChatRoomState extends State<ChatRoom> {
       return chatRoomsSellerList();
     }
     if (this._currentIndex == 2) {
-      return AuctionView();
+      return bidsList();
     }
     if (this._currentIndex == 3) {
       return Center(child: Text('System Notifications'));
@@ -208,20 +253,21 @@ class ChatRoomsTile extends StatelessWidget {
             Navigator.push(
                 context,
                 CupertinoPageRoute(
-                    builder: (context) => isSeller
+                    builder: (context) =>
+                    isSeller
                         ? SellerChat(
-                            chatRoomId: this.chatRoomId,
-                            userName: this.buyerName,
-                            declined: this.declined,
-                            imageUrl: imageUrl,
-                          )
+                      chatRoomId: this.chatRoomId,
+                      userName: this.buyerName,
+                      declined: this.declined,
+                      imageUrl: imageUrl,
+                    )
                         : BuyerChat(
-                            chatRoomId: this.chatRoomId,
-                            sellerName: this.sellerName,
-                            declined: this.declined,
-                            itemId: this.itemId,
-                            imageUrl: imageUrl,
-                          )));
+                      chatRoomId: this.chatRoomId,
+                      sellerName: this.sellerName,
+                      declined: this.declined,
+                      itemId: this.itemId,
+                      imageUrl: imageUrl,
+                    )));
           },
           child: Container(
             padding: EdgeInsets.symmetric(horizontal: 5),
@@ -238,8 +284,8 @@ class ChatRoomsTile extends StatelessWidget {
                               decoration: new BoxDecoration(
                                 color: this.declined
                                     ? (this.payment
-                                        ? Colors.green[200]
-                                        : Colors.red[200])
+                                    ? Colors.green[200]
+                                    : Colors.red[200])
                                     : Colors.blue,
                                 borderRadius: new BorderRadius.circular(2),
                                 boxShadow: [
@@ -284,6 +330,125 @@ class ChatRoomsTile extends StatelessWidget {
                               isSeller
                                   ? '${this.buyerName}'
                                   : '${this.sellerName}',
+                              style: Styles.productRowItemPrice),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+                ClipRRect(
+                  borderRadius: BorderRadius.circular(10),
+                  child: Image.network(
+                    imageUrl,
+                    height: 120,
+                    width: 120,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+
+class BidRoomTile extends StatelessWidget {
+  final String chatRoomId;
+  final String itemName;
+  final bool declined;
+  final String sellerName;
+  final bool payment;
+  final String imageUrl;
+
+  BidRoomTile({
+    @required this.chatRoomId,
+    this.declined,
+    this.payment,
+    this.itemName,
+    this.sellerName,
+    this.imageUrl,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: Center(
+        child: GestureDetector(
+          onTap: () {
+            Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  // AuctionRoom({this.itemName, this.userName, this.declined, this.imageUrl});
+                    builder: (context) =>
+                        AuctionRoom(
+                          itemName: itemName,
+                          userName: sellerName,
+                          declined: false,
+                          imageUrl: imageUrl,
+
+                        )));
+          },
+          child: Container(
+            padding: EdgeInsets.symmetric(horizontal: 5),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Column(
+                    children: [
+                      Row(
+                        children: [
+                          Container(
+                              width: 85,
+                              height: 30,
+                              decoration: new BoxDecoration(
+                                color: this.declined
+                                    ? (this.payment
+                                    ? Colors.green[200]
+                                    : Colors.red[200])
+                                    : Colors.blue,
+                                borderRadius: new BorderRadius.circular(2),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey.withOpacity(0.5),
+                                    spreadRadius: 3,
+                                    blurRadius: 10,
+                                    offset: Offset(
+                                        0, 2), // changes position of shadow
+                                  ),
+                                ],
+                              ),
+                              child: Center(
+                                child: Text(
+                                  this.declined
+                                      ? (this.payment ? 'Accepted' : 'Declined')
+                                      : 'Ongoing',
+                                  style: Styles.indication,
+                                ),
+                              )),
+                          SizedBox(
+                            width: 20,
+                          ),
+                          Flexible(
+                              child: Text(
+                                '$itemName',
+                                style: Styles.productRowItemName,
+                                overflow: TextOverflow.ellipsis,
+                                softWrap: false,
+                              )),
+                        ],
+                      ),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Row(
+                        children: [
+                          SizedBox(
+                            width: 105,
+                          ),
+                          Text(
+                              '${this.sellerName}',
                               style: Styles.productRowItemPrice),
                         ],
                       ),

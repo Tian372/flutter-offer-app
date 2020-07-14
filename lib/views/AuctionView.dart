@@ -45,7 +45,7 @@ class AuctionRoomTile extends StatelessWidget {
 
   AuctionRoomTile(
       {@required this.chatRoomId,
-      this.declined,
+      @required this.declined,
       this.payment,
       this.itemName,
       @required this.itemId,
@@ -105,19 +105,17 @@ class AuctionRoomTile extends StatelessWidget {
                                 ],
                               ),
                               child: Center(
-                                child: Text(this.declined
-                                    ? (this.payment
-                                    ? 'Accepted'
-                                    : 'Declined')
-                                    : 'Ongoing',
-                                style: Styles.indication,),
+                                child: Text(
+                                  this.declined
+                                      ? (this.payment ? 'Accepted' : 'Declined')
+                                      : 'Ongoing',
+                                  style: Styles.indication,
+                                ),
                               )),
                           SizedBox(
                             width: 20,
                           ),
-                          Text('$itemName',
-
-                              style: Styles.productRowItemName),
+                          Text('$itemName', style: Styles.productRowItemName),
                         ],
                       ),
                       SizedBox(
@@ -132,7 +130,6 @@ class AuctionRoomTile extends StatelessWidget {
                               isSeller
                                   ? '${this.buyerName}'
                                   : '${this.sellerName}',
-
                               style: Styles.productRowItemPrice),
                         ],
                       ),

@@ -1,21 +1,12 @@
 import 'dart:async';
 
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
-import 'package:offer_app/helper/style.dart';
-import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../helper/constants.dart';
 import '../../services/database.dart';
 import '../../widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-
-//only one accept or decline between
-//inventory closed until the payment is finished
-//always have a video backup
-//use less blue,
-//decline: history
 
 const boxColor = Colors.white;
 

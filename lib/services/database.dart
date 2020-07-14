@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +20,23 @@ class DatabaseMethods {
         Firestore.instance.collection("chatRoom").document(jobId);
 
     dr.updateData(<String, dynamic>{
+      'declined': true,
+    });
+//    dr.collection("chats").getDocuments().then((snapshot) {
+//      for (DocumentSnapshot ds in snapshot.documents) {
+//        ds.reference.delete();
+//      }
+//    });
+//    await Firestore.instance.runTransaction((Transaction myTransaction) async {
+//      await myTransaction.delete(dr);
+//    });
+  }
+  Future<void> paidJob(String jobId) async {
+    DocumentReference dr =
+    Firestore.instance.collection("chatRoom").document(jobId);
+
+    dr.updateData(<String, dynamic>{
+      'paid': true,
       'declined': true,
     });
 //    dr.collection("chats").getDocuments().then((snapshot) {
@@ -58,6 +74,15 @@ class DatabaseMethods {
     print('Buyer added');
   }
 
+  updateAuctionBuyerList(String itemId, buyerName){
+    DocumentReference dr =
+    Firestore.instance.collection('auctionRoom').document(itemId);
+
+    dr.updateData(<String, dynamic>{
+      'buyers': FieldValue.arrayUnion([buyerName]),
+    });
+    print('Buyer added');
+  }
   Future<void> rejectJob(String jobId) async {
     DocumentReference dr =
         Firestore.instance.collection("chatRoom").document(jobId);
@@ -82,11 +107,11 @@ class DatabaseMethods {
     });
   }
 
-  getLatestPriceFrom(String chatRoomId) async {
+  getLatestPriceFrom(String itemName) async {
     return Firestore.instance
-        .collection("chatRoom")
-        .document(chatRoomId)
-        .collection("chats")
+        .collection("auctionRoom")
+        .document(itemName)
+        .collection("bids")
         .orderBy('time', descending: true)
         .limit(1)
         .snapshots();
@@ -101,6 +126,14 @@ class DatabaseMethods {
         .snapshots();
   }
 
+  getBids(String itemName) async {
+    return Firestore.instance
+        .collection('auctionRoom')
+        .document(itemName)
+        .collection("bids")
+        .orderBy('time', descending: true)
+        .snapshots();
+  }
   searchByName(String searchField) {
     return Firestore.instance
         .collection("users")
@@ -116,7 +149,7 @@ class DatabaseMethods {
         .getDocuments();
   }
 
-  Future<bool> addChatRoom(chatRoom, chatRoomId) {
+  addChatRoom(chatRoom, chatRoomId) {
     Firestore.instance
         .collection("chatRoom")
         .document(chatRoomId)
@@ -125,8 +158,16 @@ class DatabaseMethods {
       print(e);
     });
   }
-
-  Future<void> addMessage(String chatRoomId, chatMessageData) {
+  addAuctionRoom(auctionRoom, itemName) {
+    Firestore.instance
+        .collection("auctionRoom")
+        .document(itemName)
+        .setData(auctionRoom)
+        .catchError((e) {
+      print(e);
+    });
+  }
+  addMessage(String chatRoomId, chatMessageData) {
     Firestore.instance
         .collection("chatRoom")
         .document(chatRoomId)
@@ -137,8 +178,19 @@ class DatabaseMethods {
     });
 
   }
+  addBid(String itemName, bidData) {
+    Firestore.instance
+        .collection("auctionRoom")
+        .document(itemName)
+        .collection("bids")
+        .add(bidData)
+        .catchError((e) {
+      print(e.toString());
+    });
+  }
 
-  getUserSellerChats(String myName) async {
+
+    getUserSellerChats(String myName) async {
     return Firestore.instance
         .collection("chatRoom")
         .where('seller', isEqualTo: myName)
@@ -151,6 +203,15 @@ class DatabaseMethods {
         .where('buyer', isEqualTo: myName)
         .snapshots();
   }
+
+
+  getUserBids(String myName) async {
+    return Firestore.instance
+        .collection("auctionRoom")
+        .where('buyers', arrayContains: myName)
+        .snapshots();
+  }
+
   isChatroomExist(String chatRoomId) {
     Firestore.instance
         .collection('chatRoom')

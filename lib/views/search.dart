@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:offer_app/helper/style.dart';
+import 'package:offer_app/views/Rooms/auctionRoom.dart';
 
 import '../helper/constants.dart';
 import '../services/database.dart';
@@ -55,25 +56,26 @@ class _SearchTabState extends State<SearchTab> {
   Widget itemList() {
     return haveUserSearched
         ? Flexible(
-          child: ListView.separated(
-              separatorBuilder: (context, index) => Divider(
-                    color: Styles.productRowDivider,
-                    thickness: 1,
-                  ),
-              shrinkWrap: true,
-              itemCount: searchResultSnapshot.documents.length,
-              itemBuilder: (context, index) {
-                return itemTile(
-                  searchResultSnapshot.documents[index].data['seller'],
-                  searchResultSnapshot.documents[index].data['itemName'],
-                  searchResultSnapshot.documents[index].data['condition'],
-                  searchResultSnapshot.documents[index].data['listPrice'],
-                  searchResultSnapshot.documents[index].documentID,
-                  searchResultSnapshot.documents[index].data['offerNum'],
-                  searchResultSnapshot.documents[index].data['imageUrl'],
-                );
-              }),
-        )
+            child: ListView.separated(
+                separatorBuilder: (context, index) => Divider(
+                      color: Styles.productRowDivider,
+                      thickness: 1,
+                    ),
+                shrinkWrap: true,
+                itemCount: searchResultSnapshot.documents.length,
+                itemBuilder: (context, index) {
+                  return itemTile(
+                    searchResultSnapshot.documents[index].data['seller'],
+                    searchResultSnapshot.documents[index].data['itemName'],
+                    searchResultSnapshot.documents[index].data['condition'],
+                    searchResultSnapshot.documents[index].data['listPrice'],
+                    searchResultSnapshot.documents[index].documentID,
+                    searchResultSnapshot.documents[index].data['offerNum'],
+                    searchResultSnapshot.documents[index].data['imageUrl'],
+
+                  );
+                }),
+          )
         : Container();
   }
 
@@ -87,8 +89,53 @@ class _SearchTabState extends State<SearchTab> {
     );
   }
 
+  sendAuction(String userName, itemName, condition, imageUrl, price) async {
+    final snapShot = await Firestore.instance
+        .collection('auctionRoom')
+        .document(itemName)
+        .get();
+
+    if (snapShot.exists) {
+      DatabaseMethods().updateAuctionBuyerList(itemName, Constants.myName);
+    } else {
+      Map<String, dynamic> auctionRoom = {
+        'itemName': itemName,
+        'seller': userName,
+        'buyers': [Constants.myName],
+        'declined': false,
+        'paid': false,
+        'imageUrl': imageUrl,
+        'condition': condition,
+      };
+
+      databaseMethods.addAuctionRoom(auctionRoom, itemName);
+
+      Map<String, dynamic> bidMap = {
+        'sendBy': userName,
+        'price': price,
+        'time': DateTime.now().toUtc().toString(),
+      };
+
+      DatabaseMethods().addBid(itemName, bidMap);
+    }
+    Navigator.push(
+        context,
+        CupertinoPageRoute(
+            builder: (context) => AuctionRoom(
+                  itemName: itemName,
+                  userName: userName,
+                  declined: false,
+                  imageUrl: imageUrl,
+                )));
+//
+//    if (snapShot == null || !snapShot.exists) {
+//      // Document with id == docId doesn't exist.
+//    }
+  }
+
   /// 1.create a chatroom, send user to the chatroom, other userdetails
-  sendMessage(String userName, String itemId, String itemName,  condition, imageUrl) async {
+  sendMessage(String userName, String itemId, String itemName, condition,
+      imageUrl) async {
     String chatRoomId = getChatRoomId(Constants.myName, userName, itemName);
 
     final snapShot = await Firestore.instance
@@ -112,7 +159,7 @@ class _SearchTabState extends State<SearchTab> {
         'declined': declinedStatus,
         'paid': paymentStatus,
         'imageUrl': imageUrl,
-        'condition' : condition,
+        'condition': condition,
       };
       databaseMethods.addChatRoom(chatRoom, chatRoomId);
     }
@@ -132,38 +179,38 @@ class _SearchTabState extends State<SearchTab> {
 
   Widget itemTile(String userName, String itemName, String condition,
       String price, String itemId, int offerNum, String imageUrl) {
-    return GestureDetector(
-      onTap: () {
-        sendMessage(userName, itemId, itemName, condition,imageUrl);
-      },
-      child: Container(
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-        child: Row(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(10),
-              child: FutureBuilder(
-                future: getImage(context, 'images/$itemId.jpg'),
-                builder: (context, snapshot) {
-                  if(snapshot.hasData){
-                    if (snapshot.connectionState == ConnectionState.done)
-                      return Container(
-                        child: snapshot.data,
-                      );
-                    else {
-                     return CircularProgressIndicator();
-                    }
-                  }else{
-                    return Image.network(imageUrl, height: 100, width: 100,);
+    return Container(
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+      child: Row(
+        children: [
+          ClipRRect(
+            borderRadius: BorderRadius.circular(10),
+            child: FutureBuilder(
+              future: getImage(context, 'images/$itemId.jpg'),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  if (snapshot.connectionState == ConnectionState.done)
+                    return Container(
+                      child: snapshot.data,
+                    );
+                  else {
+                    return CircularProgressIndicator();
                   }
-
-                },
-              ),
+                } else {
+                  return Image.network(
+                    imageUrl,
+                    height: 100,
+                    width: 100,
+                  );
+                }
+              },
             ),
-            SizedBox(
-              width: 15,
-            ),
-            Column(
+          ),
+          SizedBox(
+            width: 5,
+          ),
+          Flexible(
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: [
@@ -194,30 +241,28 @@ class _SearchTabState extends State<SearchTab> {
                 )
               ],
             ),
-            SizedBox(
-              width: 10,
-            ),
-//            Column(
-//              children: [
-//                CupertinoButton(
-//                  child: Text('Offer'),
-//                  onPressed: () {
-//                    sendMessage(userName, itemId, itemName);
-//                  },
-//                ),
-//                SizedBox(
-//                  height: 5,
-//                ),
-//                CupertinoButton(
-//                  child: Text('Auction'),
-//                  onPressed: () {
-////                    sendAuction(userName, itemId, itemName);
-//                  },
-//                ),
-//              ],
-//            )
-          ],
-        ),
+          ),
+          Column(
+            children: [
+              CupertinoButton(
+                child: Text('Offer'),
+                onPressed: () {
+                  sendMessage(
+                      userName, itemId, itemName, condition, imageUrl);
+                },
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              CupertinoButton(
+                child: Text('Auction'),
+                onPressed: () {
+                  sendAuction(userName, itemName, condition, imageUrl, price);
+                },
+              ),
+            ],
+          )
+        ],
       ),
     );
   }
