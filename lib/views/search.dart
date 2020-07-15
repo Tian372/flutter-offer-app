@@ -9,8 +9,6 @@ import '../widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
-//TODO: search by items
-
 class SearchTab extends StatefulWidget {
   @override
   _SearchTabState createState() => _SearchTabState();
@@ -34,7 +32,6 @@ class _SearchTabState extends State<SearchTab> {
     super.dispose();
   }
 
-//TODO: should not be able to search one's self
   initiateSearch() async {
     if (_terms != '') {
       setState(() {
@@ -44,7 +41,6 @@ class _SearchTabState extends State<SearchTab> {
           .searchByItem(_terms, Constants.myName)
           .then((snapshot) {
         searchResultSnapshot = snapshot;
-        //TODO: get rid of all elements == myName
         setState(() {
           isLoading = false;
           haveUserSearched = true;
@@ -128,24 +124,19 @@ class _SearchTabState extends State<SearchTab> {
                   bidderNum: 1,
                   condition: condition,
                 )));
-//
-//    if (snapShot == null || !snapShot.exists) {
-//      // Document with id == docId doesn't exist.
-//    }
   }
 
   /// 1.create a chatroom, send user to the chatroom, other userdetails
   sendMessage(String userName, itemId, itemName, condition, imageUrl, price,
       int offerNum) async {
     String chatRoomId = getChatRoomId(Constants.myName, userName, itemName);
-
     final snapShot = await Firestore.instance
         .collection('chatRoom')
         .document(chatRoomId)
         .get();
-
     bool declinedStatus = false;
     bool paymentStatus = false;
+
     if (snapShot.exists) {
       declinedStatus = snapShot.data['declined'];
       paymentStatus = snapShot.data['paid'];
@@ -181,7 +172,7 @@ class _SearchTabState extends State<SearchTab> {
                 )));
   }
 
-  Widget itemTile(String userName, String itemName, String condition,
+  Widget itemTile(String seller, String itemName, String condition,
       String price, String itemId, int offerNum, String imageUrl) {
     return Container(
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
@@ -251,8 +242,8 @@ class _SearchTabState extends State<SearchTab> {
               CupertinoButton(
                 child: Text('Offer'),
                 onPressed: () {
-                  sendMessage(userName, itemId, itemName, condition, imageUrl,
-                      price, offerNum);
+                  print('send message');
+                  sendMessage(seller, itemId, itemName, condition, imageUrl, price, offerNum);
                 },
               ),
               SizedBox(
@@ -261,7 +252,7 @@ class _SearchTabState extends State<SearchTab> {
               CupertinoButton(
                 child: Text('Auction'),
                 onPressed: () {
-                  sendAuction(userName, itemName, condition, imageUrl, price);
+                  sendAuction(seller, itemName, condition, imageUrl, price);
                 },
               ),
             ],

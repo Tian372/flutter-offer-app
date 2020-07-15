@@ -97,7 +97,7 @@ class _ChatRoomState extends State<ChatRoom> {
     return StreamBuilder(
       stream: bids,
       builder: (context, snapshot) {
-        return snapshot.hasData
+        return snapshot.hasData && snapshot.data.documents != null
             ? ListView.separated(
                 separatorBuilder: (context, index) => Divider(
                       color: Colors.grey,
@@ -107,14 +107,13 @@ class _ChatRoomState extends State<ChatRoom> {
                 shrinkWrap: true,
                 itemBuilder: (context, index) {
                   var roomData = snapshot.data.documents[index];
-                  int bidderNum = roomData.data['buyers'].length;
                   return BidRoomTile(
                     sellerName: roomData.data['seller'],
                     declined: roomData.data['declined'],
                     payment: roomData.data['paid'],
                     itemName: roomData.data['itemName'],
                     imageUrl: roomData.data['imageUrl'],
-                    bidderNum: bidderNum,
+                    bidderNum: roomData.data['buyers'] == null ? 0 : roomData.data['buyers'].length,
                     condition: roomData.data['condition'],
                   );
                 })
@@ -210,7 +209,7 @@ class _ChatRoomState extends State<ChatRoom> {
               ],
             ),
             SizedBox(
-              height: 25,
+              height: 20,
             ),
             listViews(),
           ]),
