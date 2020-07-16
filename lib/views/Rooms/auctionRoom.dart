@@ -14,12 +14,14 @@ class AuctionRoom extends StatefulWidget {
   final String imageUrl;
   final int bidderNum;
   final String condition;
+
   //bidderNum : bidderNum,
   //                          condition: condition,
   //TODO: need to change this to be a Stream from database
   final bool declined;
 
-  AuctionRoom({this.itemName, this.userName, this.declined, this.imageUrl, this.condition, this.bidderNum,});
+  AuctionRoom(
+      {this.itemName, this.userName, this.declined, this.imageUrl, this.condition, this.bidderNum,});
 
   @override
   _AuctionRoomState createState() => _AuctionRoomState();
@@ -93,20 +95,24 @@ class _AuctionRoomState extends State<AuctionRoom> {
                   child: Text('Your Bid:'),
                 ),
                 SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
                   height: 50,
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     itemCount: btnNum,
-                    itemBuilder: (_, int index) => Container(
-                      height: 50,
-                      child: RaisedButton(
-                        onPressed: () {
-                          print(bidBtnTitle[index].toStringAsFixed(2));
-                          addMessage(bidBtnTitle[index].toStringAsFixed(2));
-                        },
-                        child: Text(bidBtnTitle[index].toStringAsFixed(2)),
-                      ),
-                    ),
+                    itemBuilder: (_, int index) =>
+                        Container(
+                          height: 40,
+                          child: RaisedButton(
+                            onPressed: () {
+                              print(bidBtnTitle[index].toStringAsFixed(2));
+                              addMessage(bidBtnTitle[index].toStringAsFixed(2));
+                            },
+                            child: Text(bidBtnTitle[index].toStringAsFixed(2)),
+                          ),
+                        ),
                   ),
                 ),
               ],
@@ -123,53 +129,57 @@ class _AuctionRoomState extends State<AuctionRoom> {
       builder: (context, snapshot) {
         return snapshot.hasData
             ? ListView.builder(
-                reverse: true,
-                itemCount: snapshot.data.documents.length,
-                itemBuilder: (context, index) {
-                  String price = snapshot.data.documents[index].data['price'];
-                  bool sendByMe = Constants.myName ==
-                      snapshot.data.documents[index].data['sendBy'];
-                  double chatCornerRadius = 10;
-                  int docLen = snapshot.data.documents.length;
-                  return Container(
-                    padding: EdgeInsets.only(
-                        top: 5,
-                        bottom: 5,
-                        left: sendByMe ? 80 : 10,
-                        right: sendByMe ? 10 : 80),
-                    alignment:
-                        sendByMe ? Alignment.centerRight : Alignment.centerLeft,
+            reverse: false,
+            itemCount: snapshot.data.documents.length,
+            itemBuilder: (context, index) {
+              String price = snapshot.data.documents[index].data['price'];
+              bool sendByMe = Constants.myName ==
+                  snapshot.data.documents[index].data['sendBy'];
+              double chatCornerRadius = 10;
+              int docLen = snapshot.data.documents.length;
+              return Container(
+                padding: EdgeInsets.only(
+                    top: 5,
+                    bottom: 5,
+                    left: sendByMe ? 80 : 10,
+                    right: sendByMe ? 10 : 80),
+                alignment:
+                sendByMe ? Alignment.centerRight : Alignment.centerLeft,
+                child: Container(
+                    padding:
+                    EdgeInsets.symmetric(vertical: 5, horizontal: 5),
+                    decoration: BoxDecoration(
+                      borderRadius: sendByMe
+                          ? BorderRadius.only(
+                          topLeft: Radius.circular(chatCornerRadius),
+                          topRight: Radius.circular(chatCornerRadius),
+                          bottomLeft: Radius.circular(chatCornerRadius))
+                          : BorderRadius.only(
+                          topLeft: Radius.circular(chatCornerRadius),
+                          topRight: Radius.circular(chatCornerRadius),
+                          bottomRight:
+                          Radius.circular(chatCornerRadius)),
+                      color: (index == 0) ? Colors
+                          .green[500] : sendByMe ? Colors.grey[500] : Colors
+                          .blue[500],
+                    ),
                     child: Container(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 5, horizontal: 5),
-                        decoration: BoxDecoration(
-                          borderRadius: sendByMe
-                              ? BorderRadius.only(
-                                  topLeft: Radius.circular(chatCornerRadius),
-                                  topRight: Radius.circular(chatCornerRadius),
-                                  bottomLeft: Radius.circular(chatCornerRadius))
-                              : BorderRadius.only(
-                                  topLeft: Radius.circular(chatCornerRadius),
-                                  topRight: Radius.circular(chatCornerRadius),
-                                  bottomRight:
-                                      Radius.circular(chatCornerRadius)),
-                          color: sendByMe ? Colors.grey[500] : Colors.blue[500],
-                        ),
-                        child: Container(
-                          padding:
-                              EdgeInsets.symmetric(vertical: 0, horizontal: 10),
-                          child: Text(
-                              (index == docLen - 1)
-                                  ? 'Original Price: \$ $price'
-                                  : '\$ $price',
-                              style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 20,
-                                  fontFamily: 'OverpassRegular',
-                                  fontWeight: FontWeight.w300)),
-                        )),
-                  );
-                })
+                      padding:
+                      EdgeInsets.symmetric(vertical: 0, horizontal: 10),
+                      child: Text(
+                          (index == docLen - 1)
+                              ? 'Original Price: \$ $price'
+                              : (index == 0)
+                              ? 'Highest Bid: \$ $price'
+                              : '\$ $price',
+                          style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 20,
+                              fontFamily: 'OverpassRegular',
+                              fontWeight: FontWeight.w300)),
+                    )),
+              );
+            })
             : Container();
       },
     );

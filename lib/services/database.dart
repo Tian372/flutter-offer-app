@@ -22,14 +22,6 @@ class DatabaseMethods {
     dr.updateData(<String, dynamic>{
       'declined': true,
     });
-//    dr.collection("chats").getDocuments().then((snapshot) {
-//      for (DocumentSnapshot ds in snapshot.documents) {
-//        ds.reference.delete();
-//      }
-//    });
-//    await Firestore.instance.runTransaction((Transaction myTransaction) async {
-//      await myTransaction.delete(dr);
-//    });
   }
 
   Future<void> paidJob(String jobId) async {
@@ -40,14 +32,6 @@ class DatabaseMethods {
       'paid': true,
       'declined': true,
     });
-//    dr.collection("chats").getDocuments().then((snapshot) {
-//      for (DocumentSnapshot ds in snapshot.documents) {
-//        ds.reference.delete();
-//      }
-//    });
-//    await Firestore.instance.runTransaction((Transaction myTransaction) async {
-//      await myTransaction.delete(dr);
-//    });
   }
 
   Future<void> updateApproval(String chatRoomId, chatId) async {
@@ -145,9 +129,7 @@ class DatabaseMethods {
   }
 
   getItemInfo(String itemId) {
-    return Firestore.instance
-        .collection("mockData")
-        .document(itemId);
+    return Firestore.instance.collection("mockData").document(itemId);
   }
 
   searchByItem(String item, String myName) {
