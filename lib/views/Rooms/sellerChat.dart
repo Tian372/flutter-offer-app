@@ -388,24 +388,24 @@ class _SellerChatState extends State<SellerChat> {
                     height: 50,
                     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                     color: Colors.white,
-                    child: Row(
-                      children: [
-                        Expanded(
-                            flex: 1,
-                            child: RaisedButton(
-                              color: Colors.red,
-                              onPressed: () {
-                                DatabaseMethods().declineJob(widget.chatRoomId);
-                                Navigator.pop(context);
-                              },
-                              child: const Text('Decline',
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: 20,
-                                      fontWeight: FontWeight.bold)),
-                            )),
-                      ],
-                    ),
+//                    child: Row(
+//                      children: [
+//                        Expanded(
+//                            flex: 1,
+//                            child: RaisedButton(
+//                              color: Colors.red,
+//                              onPressed: () {
+//                                DatabaseMethods().declineJob(widget.chatRoomId);
+//                                Navigator.pop(context);
+//                              },
+//                              child: const Text('Decline',
+//                                  style: TextStyle(
+//                                      color: Colors.white,
+//                                      fontSize: 20,
+//                                      fontWeight: FontWeight.bold)),
+//                            )),
+//                      ],
+//                    ),
                   ),
             Flexible(child: chatMessages()),
             SizedBox(

@@ -29,6 +29,14 @@ class EbayMock extends StatelessWidget {
     SystemChrome.setPreferredOrientations(
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return CupertinoApp(
+      theme: CupertinoThemeData(
+
+          // Define the default brightness and colors.
+          primaryColor: Colors.lightBlue[800],
+          primaryContrastingColor: Colors.transparent,
+          // Define the default font family.
+      ),
+      debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<UserIsLoggedIn>(
           create: (context) => UserIsLoggedIn(), child: EbayMockPage()),
     );
@@ -255,4 +263,6 @@ class UserIsLoggedIn with ChangeNotifier {
       print('Token Generated');
     }
   }
+
+
 }

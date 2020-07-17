@@ -24,6 +24,13 @@ class _ChatRoomState extends State<ChatRoom> {
   Stream bids;
   int _currentIndex;
 
+  @override
+  dispose(){
+    super.dispose();
+    chatSellerRooms.drain();
+    chatBuyerRooms.drain();
+    bids.drain();
+  }
   Widget chatRoomsSellerList() {
     return StreamBuilder(
       stream: chatSellerRooms,
@@ -48,6 +55,9 @@ class _ChatRoomState extends State<ChatRoom> {
                       itemName: roomData.data['itemName'],
                       itemId: roomData.data['itemId'],
                       imageUrl: roomData.data['imageUrl'],
+                      listPrice: roomData.data['listedPrice'],
+                      condition: roomData.data['condition'],
+                      offerNum: roomData.data['offerNum'],
                     ),
                   );
                 })
@@ -136,22 +146,16 @@ class _ChatRoomState extends State<ChatRoom> {
     DatabaseMethods().getUserBuyerChats(Constants.myName).then((snapshots) {
       setState(() {
         chatBuyerRooms = snapshots;
-        print(
-            'we got the data + ${chatBuyerRooms.toString()} this is name ${Constants.myName} ');
       });
     });
     DatabaseMethods().getUserSellerChats(Constants.myName).then((snapshots) {
       setState(() {
         chatSellerRooms = snapshots;
-        print(
-            'we got the data + ${chatSellerRooms.toString()} this is name ${Constants.myName} ');
       });
     });
     DatabaseMethods().getUserBids(Constants.myName).then((snapshots) {
       setState(() {
         bids = snapshots;
-        print(
-            'we got the data + ${bids.toString()} this is name ${Constants.myName} ');
       });
     });
   }

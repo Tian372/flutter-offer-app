@@ -90,7 +90,7 @@ Widget statusIndicator(String userId) {
               )
                   : (inMinutes < 1)
                   ? Text(
-                'less than 1 min',
+                '< 1 min',
                 style: Styles.productRowItemPrice,
               )
                   : (inMinutes < 30)

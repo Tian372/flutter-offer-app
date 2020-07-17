@@ -1,7 +1,9 @@
 import 'dart:async';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../helper/constants.dart';
@@ -38,7 +40,7 @@ class BuyerChat extends StatefulWidget {
 }
 
 class _BuyerChatState extends State<BuyerChat> {
-  int _amount;
+  double _amount;
   Stream<QuerySnapshot> chats;
   TextEditingController messageEditingController = new TextEditingController();
   TextEditingController priceEditingController = new TextEditingController();
@@ -52,19 +54,26 @@ class _BuyerChatState extends State<BuyerChat> {
 
   Widget slidingCheckoutView() {
     return Container(
+      decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(24.0)),
+          boxShadow: [
+            BoxShadow(
+              blurRadius: 20.0,
+              color: Colors.grey,
+            ),
+          ]),
+      margin: const EdgeInsets.all(10.0),
       child: Column(
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(top: 0),
           ),
           Expanded(
-              flex: 4,
+              flex: 5,
               child: Container(
                 child: paymentMethod(),
               )),
-          SizedBox(
-            height: 10,
-          ),
           Expanded(
             flex: 4,
             child: Container(
@@ -108,30 +117,61 @@ class _BuyerChatState extends State<BuyerChat> {
   }
 
   Widget paymentMethod() {
+    List<String> cards = [
+      'https://pics.ebaystatic.com/aw/pics/mastercard/blue_card.png',
+      'https://media.tenor.com/images/7402215da4e98d367ebf27b526691271/tenor.png',
+      'https://www.apple.com/v/apple-pay/m/images/overview/og__dq5nejr4bg02_image.png?202006150938',
+      'https://storage.googleapis.com/gweb-uniblog-publish-prod/images/GooglePay_Lockup.max-1000x1000.png'
+    ];
+    final List<Widget> imageSliders = cards
+        .map((item) => Container(
+              child: Container(
+                child: ClipRRect(
+                    borderRadius: BorderRadius.all(Radius.circular(5.0)),
+                    child: Stack(
+                      children: <Widget>[
+                        Image.network(item, fit: BoxFit.cover),
+                        Positioned(
+                          bottom: 0.0,
+                          left: 0.0,
+                          right: 0.0,
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: LinearGradient(
+                                colors: [
+                                  Color.fromARGB(50, 0, 0, 0),
+                                  Color.fromARGB(0, 0, 0, 0)
+                                ],
+                                begin: Alignment.bottomCenter,
+                                end: Alignment.topCenter,
+                              ),
+                            ),
+                            padding: EdgeInsets.symmetric(
+                                vertical: 20.0, horizontal: 0.0),
+                            child: Container(),
+//                            Text(
+//                              'No. ${cards.indexOf(item)} image',
+//                              style: TextStyle(
+//                                color: Colors.white,
+//                                fontSize: 20.0,
+//                                fontWeight: FontWeight.bold,
+//                              ),
+//                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+              ),
+            ))
+        .toList();
     return Container(
-      child: CustomRadioButton(
-        height: 50,
-        buttonColor: Theme.of(context).canvasColor,
-        buttonLables: [
-          'Payment 1',
-          'Payment 2',
-          'Payment 3',
-        ],
-        buttonValues: [
-          'Payment 1',
-          'Payment 2',
-          'Payment 3',
-        ],
-        radioButtonValue: (values) {
-          print(values);
-        },
-        horizontal: true,
-        width: 110,
-        selectedColor: Theme.of(context).accentColor,
-        padding: 5,
-        enableShape: false,
+        child: CarouselSlider(
+      options: CarouselOptions(
+        aspectRatio: 16 / 8,
+        enlargeCenterPage: true,
       ),
-    );
+      items: imageSliders,
+    ));
   }
 
   Widget itemView(String itemName, itemDesc) {
@@ -176,7 +216,6 @@ class _BuyerChatState extends State<BuyerChat> {
   Widget addressMethod() {
     return Container(
       child: CustomRadioButton(
-        height: 50,
         buttonColor: Theme.of(context).canvasColor,
         buttonLables: [
           'Address 1',
@@ -192,10 +231,14 @@ class _BuyerChatState extends State<BuyerChat> {
           print(values);
         },
         horizontal: true,
-        width: 110,
+        customShape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(5),
+            side: BorderSide(color: Theme.of(context).accentColor)
+        ),
+        height: 40,
         selectedColor: Theme.of(context).accentColor,
         padding: 5,
-        enableShape: false,
+        enableShape: true,
       ),
     );
   }
@@ -210,7 +253,7 @@ class _BuyerChatState extends State<BuyerChat> {
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
                   var roomData = snapshot.data.documents[index].data;
-                  int price = roomData['price'];
+                  String price = roomData['price'].toString();
                   String message = roomData['message'];
                   bool sendByMe = Constants.myName == roomData['sendBy'];
                   bool approval = roomData['sellerApproved'];
@@ -285,7 +328,7 @@ class _BuyerChatState extends State<BuyerChat> {
                                     onTap: () {
                                       if (!sendByMe || approval) {
                                         setState(() {
-                                          _amount = price;
+                                          _amount = double.parse(price);
                                         });
                                         _pc.open();
                                       }
@@ -361,8 +404,10 @@ class _BuyerChatState extends State<BuyerChat> {
 
   @override
   Widget build(BuildContext context) {
+
     return Material(
       child: SlidingUpPanel(
+        renderPanelSheet: false,
         backdropEnabled: true,
         slideDirection: SlideDirection.UP,
         minHeight: 0,
@@ -413,25 +458,25 @@ class _BuyerChatState extends State<BuyerChat> {
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                         color: Colors.white,
-                        child: Row(
-                          children: [
-                            Expanded(
-                                flex: 1,
-                                child: RaisedButton(
-                                  color: Colors.red,
-                                  onPressed: () {
-                                    DatabaseMethods()
-                                        .declineJob(widget.chatRoomId);
-                                    Navigator.pop(context);
-                                  },
-                                  child: const Text('Decline',
-                                      style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                          fontWeight: FontWeight.bold)),
-                                )),
-                          ],
-                        ),
+//                        child: Row(
+//                          children: [
+//                            Expanded(
+//                                flex: 1,
+//                                child: RaisedButton(
+//                                  color: Colors.red,
+//                                  onPressed: () {
+//                                    DatabaseMethods()
+//                                        .declineJob(widget.chatRoomId);
+//                                    Navigator.pop(context);
+//                                  },
+//                                  child: const Text('Decline',
+//                                      style: TextStyle(
+//                                          color: Colors.white,
+//                                          fontSize: 20,
+//                                          fontWeight: FontWeight.bold)),
+//                                )),
+//                          ],
+//                        ),
                       ),
                 Flexible(child: chatMessages()),
                 SizedBox(

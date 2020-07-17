@@ -156,6 +156,17 @@ class _SearchTabState extends State<SearchTab> {
         'offerNum': offerNum,
       };
       databaseMethods.addChatRoom(chatRoom, chatRoomId);
+
+      Map<String, dynamic> priceMap = {
+        'sendBy': userName,
+        'price': price,
+        'message': 'Buy it now price.',
+        'sellerApproved': true,
+        'time': DateTime.now().toUtc().toString(),
+      };
+
+      DatabaseMethods().addMessage(chatRoomId, priceMap);
+
     }
     Navigator.push(
         context,

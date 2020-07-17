@@ -41,14 +41,12 @@ class UserInfoView extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(
-              height: 500,
-            ),
+            Flexible(child: Container(),),
             Container(
-              padding: EdgeInsets.symmetric(vertical: 8, horizontal: 20),
+              padding: EdgeInsets.symmetric(vertical: 1, horizontal: 20),
               decoration: BoxDecoration(
                 border: Border.all(color:Colors.blueAccent, width: 1.0),
-                borderRadius: BorderRadius.circular(30),
+                borderRadius: BorderRadius.circular(20),
 
               ),
 
@@ -61,6 +59,9 @@ class UserInfoView extends StatelessWidget {
                 },
               ),
             ),
+            SizedBox(
+              height: 20,
+            )
           ],
         ),
       ),
