@@ -74,7 +74,6 @@ class _SignInState extends State<SignIn> {
   Widget build(BuildContext context) {
     final userIsLoggedIn = Provider.of<UserIsLoggedIn>(context);
     return CupertinoPageScaffold(
-      navigationBar: loginAppBar(context),
       child: isLoading
           ? Container(
               child: Center(child: CircularProgressIndicator()),
@@ -84,7 +83,13 @@ class _SignInState extends State<SignIn> {
               child: Column(
                 children: [
                   Spacer(
-                    flex: 2,
+                    flex: 1,
+                  ),
+                  Container(
+                    child: Image.network('https://upload.wikimedia.org/wikipedia/commons/thumb/1/1b/EBay_logo.svg/800px-EBay_logo.svg.png', height: 100),
+                  ),
+                  Spacer(
+                    flex: 1,
                   ),
                   Form(
                     key: formKey,

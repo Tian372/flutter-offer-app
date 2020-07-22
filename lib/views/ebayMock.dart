@@ -30,11 +30,10 @@ class EbayMock extends StatelessWidget {
         [DeviceOrientation.portraitUp, DeviceOrientation.portraitDown]);
     return CupertinoApp(
       theme: CupertinoThemeData(
-
-          // Define the default brightness and colors.
-          primaryColor: Colors.lightBlue[800],
-          primaryContrastingColor: Colors.transparent,
-          // Define the default font family.
+        // Define the default brightness and colors.
+        primaryColor: Colors.lightBlue[800],
+        primaryContrastingColor: Colors.transparent,
+        // Define the default font family.
       ),
       debugShowCheckedModeBanner: false,
       home: ChangeNotifierProvider<UserIsLoggedIn>(
@@ -91,120 +90,83 @@ class _EbayMockPage extends State<EbayMockPage> with WidgetsBindingObserver {
   @override
   Widget build(BuildContext context) {
     final userIsLoggedIn = Provider.of<UserIsLoggedIn>(context);
-    return CupertinoTabScaffold(
-      tabBar: CupertinoTabBar(
-        onTap: (index) {
-          setState(() {
-            _index = index;
-          });
-          print(_index);
-        },
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.home),
-            title: Text('Home'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.person),
-            title: Text('My eBay'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.search),
-            title: Text('Search'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.bell),
-            title: Text('Notifications'),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(CupertinoIcons.tag),
-            title: Text('Selling'),
-          ),
-        ],
-      ),
-      tabBuilder: (context, index) {
-        CupertinoTabView returnValue;
-        switch (index) {
-          case 0:
-            returnValue = CupertinoTabView(builder: (context) {
-              return userIsLoggedIn.log == null
-                  ? Container(
+    return userIsLoggedIn.log
+        ? CupertinoTabScaffold(
+            tabBar: CupertinoTabBar(
+              onTap: (index) {
+                setState(() {
+                  _index = index;
+                });
+              },
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.home),
+                  title: Text('Home'),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.person),
+                  title: Text('My eBay'),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.search),
+                  title: Text('Search'),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.bell),
+                  title: Text('Notifications'),
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(CupertinoIcons.tag),
+                  title: Text('Selling'),
+                ),
+              ],
+            ),
+            tabBuilder: (context, index) {
+              CupertinoTabView returnValue;
+              switch (index) {
+                case 0:
+                  returnValue = CupertinoTabView(builder: (context) {
+                    return CupertinoPageScaffold(
+                      navigationBar: appBarMain(context, 'eBay SearchAPI'),
+                      child: SearchAPI(),
+                    );
+                  });
+                  break;
+                case 1:
+                  returnValue = CupertinoTabView(builder: (context) {
+                    return CupertinoPageScaffold(
+                        navigationBar: appBarMain(context, 'User Info'),
+                        child: UserInfoView());
+                  });
+                  break;
+                case 2:
+                  returnValue = CupertinoTabView(builder: (context) {
+                    return CupertinoPageScaffold(
+                      navigationBar: appBarMain(context, 'Search'),
+                      child: SearchTab(),
+                    );
+                  });
+                  break;
+                case 3:
+                  returnValue = CupertinoTabView(builder: (context) {
+                    return ChatRoom();
+                  });
+                  break;
+                case 4:
+                  returnValue = CupertinoTabView(builder: (context) {
+                    return CupertinoPageScaffold(
+                      navigationBar: appBarMain(context, 'Selling'),
                       child: Center(
-                        child: Authenticate(),
+                        child: Text('Selling'),
                       ),
-                    )
-                  : userIsLoggedIn.log
-                      ? CupertinoPageScaffold(
-                          navigationBar: appBarMain(context, 'eBay SearchAPI'),
-                          child: SearchAPI(),
-                        )
-                      : Authenticate();
-            });
-            break;
-          case 1:
-            returnValue = CupertinoTabView(builder: (context) {
-              return userIsLoggedIn.log == null
-                  ? Container(
-                      child: Center(
-                        child: Authenticate(),
-                      ),
-                    )
-                  : userIsLoggedIn.log
-                      ? CupertinoPageScaffold(
-                          navigationBar: appBarMain(context, 'User Info'),
-                          child: UserInfoView())
-                      : Authenticate();
-            });
-            break;
-          case 2:
-            returnValue = CupertinoTabView(builder: (context) {
-              return userIsLoggedIn.log == null
-                  ? Container(
-                      child: Center(
-                        child: Authenticate(),
-                      ),
-                    )
-                  : userIsLoggedIn.log
-                      ? CupertinoPageScaffold(
-                          navigationBar: appBarMain(context, 'Search'),
-                          child: SearchTab(),
-                        )
-                      : Authenticate();
-            });
-            break;
-          case 3:
-            returnValue = CupertinoTabView(builder: (context) {
-              return userIsLoggedIn.log == null
-                  ? Container(
-                      child: Center(
-                        child: Authenticate(),
-                      ),
-                    )
-                  : userIsLoggedIn.log ? ChatRoom() : Authenticate();
-            });
-            break;
-          case 4:
-            returnValue = CupertinoTabView(builder: (context) {
-              return userIsLoggedIn.log == null
-                  ? Container(
-                      child: Center(
-                        child: Authenticate(),
-                      ),
-                    )
-                  : userIsLoggedIn.log
-                      ? CupertinoPageScaffold(
-                          navigationBar: appBarMain(context, 'Selling'),
-                          child: Center(
-                            child: Text('Selling'),
-                          ),
-                        )
-                      : Authenticate();
-            });
-            break;
-        }
-        return returnValue;
-      },
-    );
+                    );
+                  });
+                  break;
+              }
+              return returnValue;
+            },
+          )
+        : Authenticate();
   }
 
   void setOnlineStatus(String userId) async {
@@ -263,6 +225,4 @@ class UserIsLoggedIn with ChangeNotifier {
       print('Token Generated');
     }
   }
-
-
 }

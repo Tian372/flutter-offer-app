@@ -307,21 +307,22 @@ class ChatRoomsTile extends StatelessWidget {
                           width: 85,
                           height: 30,
                           decoration: new BoxDecoration(
-                            color: this.declined
+                            border: Border.all(color: this.declined
                                 ? (this.payment
-                                    ? Colors.green[200]
-                                    : Colors.red[200])
-                                : Colors.blue,
-                            borderRadius: new BorderRadius.circular(2),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 3,
-                                blurRadius: 10,
-                                offset:
-                                    Offset(0, 2), // changes position of shadow
-                              ),
-                            ],
+                                ? Colors.green[200]
+                                : Colors.red[200])
+                                : Colors.blue, width: 5),
+                            color: Colors.transparent,
+                            borderRadius: new BorderRadius.circular(8),
+//                            boxShadow: [
+//                              BoxShadow(
+//                                color: Colors.grey.withOpacity(0.5),
+//                                spreadRadius: 3,
+//                                blurRadius: 10,
+//                                offset:
+//                                    Offset(0, 2), // changes position of shadow
+//                              ),
+//                            ],
                           ),
                           child: Center(
                             child: Text(
@@ -424,22 +425,23 @@ class BidRoomTile extends StatelessWidget {
                       Container(
                           width: 85,
                           height: 30,
-                          decoration: new BoxDecoration(
-                            color: this.declined
-                                ? (this.payment
-                                    ? Colors.green[200]
-                                    : Colors.red[200])
-                                : Colors.blue,
-                            borderRadius: new BorderRadius.circular(2),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.5),
-                                spreadRadius: 3,
-                                blurRadius: 10,
-                                offset: Offset(
-                                    0, 2), // changes position of shadow
-                              ),
-                            ],
+                          decoration: new BoxDecoration
+                            (border: Border.all(color: this.declined
+                              ? (this.payment
+                              ? Colors.green[200]
+                              : Colors.red[200])
+                              : Colors.blue, width: 5),
+
+                            borderRadius: new BorderRadius.circular(8),
+//                            boxShadow: [
+//                              BoxShadow(
+//                                color: Colors.grey.withOpacity(0.5),
+//                                spreadRadius: 3,
+//                                blurRadius: 10,
+//                                offset: Offset(
+//                                    0, 2), // changes position of shadow
+//                              ),
+//                            ],
                           ),
                           child: Center(
                             child: Text(
