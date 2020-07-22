@@ -1,15 +1,16 @@
 import 'dart:async';
 
 import 'package:carousel_slider/carousel_slider.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:custom_radio_grouped_button/custom_radio_grouped_button.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/services.dart';
+import 'package:offer_app/models/item.dart';
 import 'package:sliding_up_panel/sliding_up_panel.dart';
 import '../../helper/constants.dart';
 import '../../services/database.dart';
 import '../../widget/widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
 
 const boxColor = Colors.white;
@@ -56,44 +57,48 @@ class _BuyerChatState extends State<BuyerChat> {
     return Container(
       decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.all(Radius.circular(24.0)),
+          borderRadius: BorderRadius.all(Radius.circular(16.0)),
           boxShadow: [
             BoxShadow(
               blurRadius: 20.0,
-              color: Colors.grey,
+              color: Colors.white,
             ),
           ]),
-      margin: const EdgeInsets.all(10.0),
+      margin: const EdgeInsets.fromLTRB(24.0, 0, 24.0, 180),
       child: Column(
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(top: 0),
+          Container(
+            height: 200,
+            child: paymentMethod(),
           ),
-          Expanded(
-              flex: 5,
-              child: Container(
-                child: paymentMethod(),
-              )),
-          Expanded(
-            flex: 4,
-            child: Container(
-              child: addressMethod(),
-            ),
+          SizedBox(
+            height: 5,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Text('Address: '),
+              Text(' 17 Pinnacle Rd, 27705 ', style: TextStyle(decoration: TextDecoration.underline,),),
+            ],
+          ),
+          SizedBox(
+            height: 10,
           ),
           Text(
             'Offer: \$$_amount',
             style: TextStyle(
                 fontStyle: FontStyle.italic,
                 fontSize: 20,
-                fontWeight: FontWeight.bold,
+                fontWeight: FontWeight.w600,
                 fontFamily: 'Sriracha'),
           ),
           SizedBox(
-            height: 10,
+            height: 5,
           ),
-          Expanded(
-            flex: 1,
-            child: RaisedButton(
+          RaisedButton(
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(6.0),
+            ),
               color: Colors.green,
               onPressed: () {
                 //TODO: set paid to true after payment
@@ -101,15 +106,17 @@ class _BuyerChatState extends State<BuyerChat> {
                 DatabaseMethods().paidJob(widget.chatRoomId);
                 Navigator.pop(context);
               },
-              child: const Text('Finish Payment',
-                  style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold)),
+              child: Container(
+                child: const Text('Finish Payment',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w400)),
+              ),
             ),
-          ),
+
           Padding(
-            padding: EdgeInsets.only(bottom: 100),
+            padding: EdgeInsets.only(bottom: 10),
           ),
         ],
       ),
@@ -149,14 +156,6 @@ class _BuyerChatState extends State<BuyerChat> {
                             padding: EdgeInsets.symmetric(
                                 vertical: 20.0, horizontal: 0.0),
                             child: Container(),
-//                            Text(
-//                              'No. ${cards.indexOf(item)} image',
-//                              style: TextStyle(
-//                                color: Colors.white,
-//                                fontSize: 20.0,
-//                                fontWeight: FontWeight.bold,
-//                              ),
-//                            ),
                           ),
                         ),
                       ],
@@ -167,50 +166,11 @@ class _BuyerChatState extends State<BuyerChat> {
     return Container(
         child: CarouselSlider(
       options: CarouselOptions(
-        aspectRatio: 16 / 8,
+        aspectRatio: 16 / 7,
         enlargeCenterPage: true,
       ),
       items: imageSliders,
     ));
-  }
-
-  Widget itemView(String itemName, itemDesc) {
-    return Row(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(5),
-          child: Image.network(
-            widget.imageUrl,
-            fit: BoxFit.cover,
-          ),
-        ),
-        SizedBox(
-          width: 50,
-        ),
-        Flexible(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                'List Price: ${widget.listPrice}',
-                style: TextStyle(color: Colors.grey[600], fontSize: 12),
-              ),
-              SizedBox(height: 5),
-              Text(
-                '${widget.condition}',
-                style: TextStyle(color: Colors.grey[600], fontSize: 12),
-              ),
-              SizedBox(height: 15),
-              Text(
-                '${widget.offerNum} people are interested.',
-                style: TextStyle(color: Colors.grey[600], fontSize: 12),
-              )
-            ],
-          ),
-        ),
-      ],
-    );
   }
 
   Widget addressMethod() {
@@ -233,8 +193,7 @@ class _BuyerChatState extends State<BuyerChat> {
         horizontal: true,
         customShape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(5),
-            side: BorderSide(color: Theme.of(context).accentColor)
-        ),
+            side: BorderSide(color: Theme.of(context).accentColor)),
         height: 40,
         selectedColor: Theme.of(context).accentColor,
         padding: 5,
@@ -404,14 +363,13 @@ class _BuyerChatState extends State<BuyerChat> {
 
   @override
   Widget build(BuildContext context) {
-
     return Material(
       child: SlidingUpPanel(
         renderPanelSheet: false,
         backdropEnabled: true,
         slideDirection: SlideDirection.UP,
         minHeight: 0,
-        maxHeight: 700,
+        maxHeight: 500,
         isDraggable: false,
         controller: _pc,
         panel: Center(
@@ -445,9 +403,10 @@ class _BuyerChatState extends State<BuyerChat> {
                   height: 100,
                   width: double.infinity,
                   child: Container(
+                      decoration: new BoxDecoration(color: Colors.grey[100]),
                       padding:
                           EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                      child: itemView('stuff', 'Description')),
+                      child: itemView(widget.itemId)),
                 ),
                 (widget.declined)
                     ? SizedBox(
@@ -458,25 +417,6 @@ class _BuyerChatState extends State<BuyerChat> {
                         padding:
                             EdgeInsets.symmetric(horizontal: 20, vertical: 0),
                         color: Colors.white,
-//                        child: Row(
-//                          children: [
-//                            Expanded(
-//                                flex: 1,
-//                                child: RaisedButton(
-//                                  color: Colors.red,
-//                                  onPressed: () {
-//                                    DatabaseMethods()
-//                                        .declineJob(widget.chatRoomId);
-//                                    Navigator.pop(context);
-//                                  },
-//                                  child: const Text('Decline',
-//                                      style: TextStyle(
-//                                          color: Colors.white,
-//                                          fontSize: 20,
-//                                          fontWeight: FontWeight.bold)),
-//                                )),
-//                          ],
-//                        ),
                       ),
                 Flexible(child: chatMessages()),
                 SizedBox(

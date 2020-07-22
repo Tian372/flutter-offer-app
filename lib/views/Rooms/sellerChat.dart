@@ -17,6 +17,7 @@ class SellerChat extends StatefulWidget {
   final String listPrice;
   final String condition;
   final int offerNum;
+  final String itemId;
 
   //TODO: need to change this to be a Stream from database
   final bool declined;
@@ -29,6 +30,7 @@ class SellerChat extends StatefulWidget {
     this.listPrice,
     this.condition,
     this.offerNum,
+    this.itemId,
   });
 
   @override
@@ -47,44 +49,6 @@ class _SellerChatState extends State<SellerChat> {
     super.dispose();
   }
 
-  Widget itemView() {
-    return Row(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(5),
-          child: Image.network(
-            widget.imageUrl,
-            fit: BoxFit.cover,
-          ),
-        ),
-        SizedBox(
-          width: 50,
-        ),
-        Flexible(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              Text(
-                'List Price: ${widget.listPrice}',
-                style: TextStyle(color: Colors.grey[600], fontSize: 12),
-              ),
-              SizedBox(height: 5),
-              Text(
-                '${widget.condition}',
-                style: TextStyle(color: Colors.grey[600], fontSize: 12),
-              ),
-              SizedBox(height: 15),
-              Text(
-                '${widget.offerNum} people are interested.',
-                style: TextStyle(color: Colors.grey[600], fontSize: 12),
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget chatMessages() {
     return StreamBuilder(
@@ -96,7 +60,7 @@ class _SellerChatState extends State<SellerChat> {
                 //controller: _controller,
                 itemCount: snapshot.data.documents.length,
                 itemBuilder: (context, index) {
-                  int price = snapshot.data.documents[index].data['price'];
+                  String price = snapshot.data.documents[index].data['price'].toString();
                   String message =
                       snapshot.data.documents[index].data['message'];
                   bool sendByMe = Constants.myName ==
@@ -327,7 +291,7 @@ class _SellerChatState extends State<SellerChat> {
       Map<String, dynamic> chatMessageMap = {
         'sendBy': Constants.myName,
         'price':
-            (widget.declined) ? -1 : int.parse(priceEditingController.text),
+            (widget.declined) ? 'none': priceEditingController.text,
         'message': messageEditingController.text,
         'time': DateTime.now().toUtc().toString(),
         'sellerApproved': true,
@@ -377,8 +341,11 @@ class _SellerChatState extends State<SellerChat> {
               height: 100,
               width: double.infinity,
               child: Container(
+                  decoration: new BoxDecoration(
+                      color: Colors.grey[100]
+                  ),
                   padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                  child: itemView()),
+                  child: itemView(widget.itemId)),
             ),
             (widget.declined)
                 ? SizedBox(

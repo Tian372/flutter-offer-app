@@ -1,8 +1,10 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:offer_app/helper/style.dart';
+import 'package:offer_app/models/item.dart';
 
 Widget appBarMain(BuildContext context, String title) {
   return CupertinoNavigationBar(
@@ -22,6 +24,7 @@ Widget loginAppBar(BuildContext context) {
     ),
   );
 }
+
 InputDecoration textFieldInputDecoration(String hintText) {
   return InputDecoration(
       hintText: hintText,
@@ -40,8 +43,6 @@ TextStyle biggerTextStyle() {
   return TextStyle(color: Colors.black, fontSize: 17);
 }
 
-
-
 Widget statusIndicator(String userId) {
   return StreamBuilder(
       stream: FirebaseDatabase.instance
@@ -53,7 +54,7 @@ Widget statusIndicator(String userId) {
         if (snapshot.hasData && snapshot.data.snapshot.value != null) {
           String onlineStatus = snapshot.data.snapshot.value['status'];
           var lastTime =
-          DateTime.parse(snapshot.data.snapshot.value['lastTime']);
+              DateTime.parse(snapshot.data.snapshot.value['lastTime']);
 
           Duration diff = new DateTime.now().difference(lastTime);
           int inDays = diff.inDays;
@@ -85,31 +86,96 @@ Widget statusIndicator(String userId) {
               ),
               isOnline
                   ? Text(
-                'online',
-                style: Styles.productRowItemPrice,
-              )
+                      'online',
+                      style: Styles.productRowItemPrice,
+                    )
                   : (inMinutes < 1)
-                  ? Text(
-                '< 1 min',
-                style: Styles.productRowItemPrice,
-              )
-                  : (inMinutes < 30)
-                  ? Text(
-                '$inMinutes m ago',
-                style: Styles.productRowItemPrice,
-              )
-                  : (inHours < 24)
-                  ? Text(
-                '$inHours h ago',
-                style: Styles.productRowItemPrice,
-              )
-                  : Text(
-                '$inDays d ago',
-                style: Styles.productRowItemPrice,
-              )
+                      ? Text(
+                          '< 1 min',
+                          style: Styles.productRowItemPrice,
+                        )
+                      : (inMinutes < 30)
+                          ? Text(
+                              '$inMinutes m ago',
+                              style: Styles.productRowItemPrice,
+                            )
+                          : (inHours < 24)
+                              ? Text(
+                                  '$inHours h ago',
+                                  style: Styles.productRowItemPrice,
+                                )
+                              : Text(
+                                  '$inDays d ago',
+                                  style: Styles.productRowItemPrice,
+                                )
             ],
           );
         } else
-          return Text('no data' ,style: Styles.productRowItemPrice,);
+          return Text(
+            'no data',
+            style: Styles.productRowItemPrice,
+          );
+      });
+}
+
+
+Widget itemView(String itemId) {
+  return StreamBuilder(
+      stream: Firestore.instance
+          .collection('mockData')
+          .document(itemId)
+          .snapshots(),
+      builder: (BuildContext context, snapshot) {
+        if (snapshot.hasData) {
+          Map<String, dynamic> map = snapshot.data.data;
+          Item myItem = Item.fromJson2(map);
+          return Row(
+            children: [
+              SizedBox(
+                width: 15,
+              ),
+              ClipRRect(
+                borderRadius: BorderRadius.circular(5),
+                child: Image.network(
+                  myItem.imageUrl,
+                  fit: BoxFit.cover,
+                ),
+              ),
+              SizedBox(
+                width: 40,
+              ),
+              Container(
+                padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                      'List Price: ${myItem.price}',
+                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                    ),
+                    SizedBox(height: 5),
+                    Text(
+                      '${myItem.condition}',
+                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                    ),
+                    SizedBox(height: 5,),
+                    Text(
+                      'Feedback: ${myItem.feedbackPercentage}\%, ${myItem.feedbackScore}',
+                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                    ),
+                    SizedBox(height: 10),
+                    Text(
+                      '${myItem.offerNum} people are interested.',
+                      style: TextStyle(color: Colors.grey[600], fontSize: 12),
+                    )
+                  ],
+                ),
+              ),
+            ],
+          );
+        } else {
+          return Center(child: CircularProgressIndicator());
+        }
       });
 }

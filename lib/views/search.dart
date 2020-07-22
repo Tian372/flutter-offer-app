@@ -1,5 +1,8 @@
+import 'dart:convert';
+
 import 'package:flutter/cupertino.dart';
 import 'package:offer_app/helper/style.dart';
+import 'package:offer_app/models/item.dart';
 import 'package:offer_app/views/Rooms/auctionRoom.dart';
 
 import '../helper/constants.dart';
@@ -60,14 +63,11 @@ class _SearchTabState extends State<SearchTab> {
                 shrinkWrap: true,
                 itemCount: searchResultSnapshot.documents.length,
                 itemBuilder: (context, index) {
+                  Item currentItem = Item.fromJson2(
+                      searchResultSnapshot.documents[index].data);
                   return itemTile(
-                    searchResultSnapshot.documents[index].data['seller'],
-                    searchResultSnapshot.documents[index].data['itemName'],
-                    searchResultSnapshot.documents[index].data['condition'],
-                    searchResultSnapshot.documents[index].data['listPrice'],
+                    currentItem,
                     searchResultSnapshot.documents[index].documentID,
-                    searchResultSnapshot.documents[index].data['offerNum'],
-                    searchResultSnapshot.documents[index].data['imageUrl'],
                   );
                 }),
           )
@@ -84,52 +84,53 @@ class _SearchTabState extends State<SearchTab> {
     );
   }
 
-  sendAuction(String userName, itemName, condition, imageUrl, price) async {
+  sendAuction(Item currentItem, String itemId) async {
     final snapShot = await Firestore.instance
         .collection('auctionRoom')
-        .document(itemName)
+        .document(currentItem.title)
         .get();
 
     if (snapShot.exists) {
-      DatabaseMethods().updateAuctionBuyerList(itemName, Constants.myName);
+      DatabaseMethods()
+          .updateAuctionBuyerList(currentItem.title, Constants.myName);
     } else {
       Map<String, dynamic> auctionRoom = {
-        'itemName': itemName,
-        'seller': userName,
+        'itemName': currentItem.title,
+        'seller': currentItem.sellerName,
         'buyers': [Constants.myName],
         'declined': false,
         'paid': false,
-        'imageUrl': imageUrl,
-        'condition': condition,
+        'imageUrl': currentItem.imageUrl,
+        'condition': currentItem.condition,
       };
 
-      databaseMethods.addAuctionRoom(auctionRoom, itemName);
+      databaseMethods.addAuctionRoom(auctionRoom, currentItem.title);
 
       Map<String, dynamic> bidMap = {
-        'sendBy': userName,
-        'price': price,
+        'sendBy': currentItem.sellerName,
+        'price': currentItem.price,
         'time': DateTime.now().toUtc().toString(),
       };
 
-      DatabaseMethods().addBid(itemName, bidMap);
+      DatabaseMethods().addBid(currentItem.title, bidMap);
     }
-    Navigator.push(
-        context,
+    Navigator.of(context, rootNavigator: true).push(
         CupertinoPageRoute(
             builder: (context) => AuctionRoom(
-                  itemName: itemName,
-                  userName: userName,
+                  itemName: currentItem.title,
+                  userName: currentItem.sellerName,
                   declined: false,
-                  imageUrl: imageUrl,
+                  imageUrl: currentItem.imageUrl,
                   bidderNum: 1,
-                  condition: condition,
+                  condition: currentItem.condition,
                 )));
   }
 
   /// 1.create a chatroom, send user to the chatroom, other userdetails
-  sendMessage(String userName, itemId, itemName, condition, imageUrl, price,
-      int offerNum) async {
-    String chatRoomId = getChatRoomId(Constants.myName, userName, itemName);
+  sendMessage(Item currentItem, String itemId) async {
+    String chatRoomId = getChatRoomId(
+        Constants.myName, currentItem.sellerName, currentItem.title);
+    print(chatRoomId);
     final snapShot = await Firestore.instance
         .collection('chatRoom')
         .document(chatRoomId)
@@ -141,25 +142,26 @@ class _SearchTabState extends State<SearchTab> {
       declinedStatus = snapShot.data['declined'];
       paymentStatus = snapShot.data['paid'];
     } else {
+      print('add now chatroom');
       DatabaseMethods().updateBuyerList(itemId, Constants.myName);
       Map<String, dynamic> chatRoom = {
-        'itemName': itemName,
+        'itemName': currentItem.title,
         'itemId': itemId,
-        'seller': userName,
+        'seller': currentItem.sellerName,
         'buyer': Constants.myName,
         'chatRoomId': chatRoomId,
         'declined': declinedStatus,
         'paid': paymentStatus,
-        'imageUrl': imageUrl,
-        'condition': condition,
-        'listedPrice': price,
-        'offerNum': offerNum,
+        'imageUrl': currentItem.imageUrl,
+        'condition': currentItem.condition,
+        'listedPrice': currentItem.price,
+        'offerNum': currentItem.offerNum,
       };
       databaseMethods.addChatRoom(chatRoom, chatRoomId);
-
+      print('chat room added');
       Map<String, dynamic> priceMap = {
-        'sendBy': userName,
-        'price': price,
+        'sendBy': currentItem.sellerName,
+        'price': currentItem.price,
         'message': 'Buy it now price.',
         'sellerApproved': true,
         'time': DateTime.now().toUtc().toString(),
@@ -167,110 +169,124 @@ class _SearchTabState extends State<SearchTab> {
 
       DatabaseMethods().addMessage(chatRoomId, priceMap);
 
+      print('message added');
     }
-    Navigator.push(
-        context,
+    Navigator.of(context, rootNavigator: true).push(
         CupertinoPageRoute(
             builder: (context) => BuyerChat(
                   chatRoomId: chatRoomId,
-                  sellerName: userName,
+                  sellerName: currentItem.sellerName,
                   declined: declinedStatus,
                   itemId: itemId,
-                  imageUrl: imageUrl,
-                  listPrice: price,
-                  condition: condition,
-                  offerNum: offerNum,
+                  imageUrl: currentItem.imageUrl,
+                  listPrice: currentItem.price,
+                  condition: currentItem.condition,
+                  offerNum: currentItem.offerNum,
                 )));
   }
 
-  Widget itemTile(String seller, String itemName, String condition,
-      String price, String itemId, int offerNum, String imageUrl) {
-    return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-      child: Row(
-        children: [
-          ClipRRect(
-            borderRadius: BorderRadius.circular(10),
-            child: FutureBuilder(
-              future: getImage(context, 'images/$itemId.jpg'),
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  if (snapshot.connectionState == ConnectionState.done)
-                    return Container(
-                      child: snapshot.data,
-                    );
-                  else {
-                    return CircularProgressIndicator();
-                  }
-                } else {
-                  return Image.network(
-                    imageUrl,
-                    height: 100,
-                    width: 100,
-                  );
-                }
-              },
-            ),
-          ),
-          SizedBox(
-            width: 5,
-          ),
-          Flexible(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                SizedBox(
-                  width: 250,
-                  child: Text(
-                    '$itemName',
-                    style: Styles.searchText,
+  Widget itemTile(Item currentItem, String itemId) {
+    return StreamBuilder(
+        stream: Firestore.instance
+            .collection('mockData')
+            .document(itemId)
+            .snapshots(),
+        builder: (BuildContext context, snapshot) {
+          if (snapshot.hasData) {
+            Map<String, dynamic> map = snapshot.data.data;
+            Item myItem = Item.fromJson2(map);
+            return Container(
+              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 10),
+              child: Row(
+                children: [
+                  ClipRRect(
+                    borderRadius: BorderRadius.circular(10),
+                    child: FutureBuilder(
+                      future: getImage(context, 'images/$itemId.jpg'),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          if (snapshot.connectionState == ConnectionState.done)
+                            return Container(
+                              child: snapshot.data,
+                            );
+                          else {
+                            return CircularProgressIndicator();
+                          }
+                        } else {
+                          return Image.network(
+                            myItem.imageUrl,
+                            height: 100,
+                            width: 100,
+                          );
+                        }
+                      },
+                    ),
                   ),
-                ),
-                SizedBox(height: 5),
-                Text(
-                  '$condition . brand',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                ),
-                SizedBox(height: 15),
-                Text(
-                  '\$ $price',
-                  style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold),
-                ),
-                SizedBox(height: 10),
-                Text(
-                  '$offerNum people are interested.',
-                  style: TextStyle(color: Colors.grey[600], fontSize: 12),
-                )
-              ],
-            ),
-          ),
-          Column(
-            children: [
-              CupertinoButton(
-                child: Text('Offer'),
-                onPressed: () {
-                  print('send message');
-                  sendMessage(seller, itemId, itemName, condition, imageUrl, price, offerNum);
-                },
+                  SizedBox(
+                    width: 5,
+                  ),
+                  Flexible(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: [
+                        SizedBox(
+                          width: 250,
+                          child: Text(
+                            '${myItem.title}',
+                            style: Styles.searchText,
+                          ),
+                        ),
+                        SizedBox(height: 5),
+                        Text(
+                          '${myItem.condition}',
+                          style:
+                              TextStyle(color: Colors.grey[600], fontSize: 12),
+                        ),
+                        SizedBox(height: 15),
+                        Text(
+                          '\$ ${myItem.price}',
+                          style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        SizedBox(height: 10),
+                        Text(
+                          '${myItem.offerNum} people are interested.',
+                          style:
+                              TextStyle(color: Colors.grey[600], fontSize: 12),
+                        )
+                      ],
+                    ),
+                  ),
+                  Column(
+                    children: [
+                      CupertinoButton(
+                        child: Text('Offer'),
+                        onPressed: () {
+                          print('send message');
+                          sendMessage(currentItem, itemId);
+                        },
+                      ),
+                      SizedBox(
+                        height: 5,
+                      ),
+                      CupertinoButton(
+                        child: Text('Auction'),
+                        onPressed: () {
+                          sendAuction(currentItem, itemId);
+                        },
+                      ),
+                    ],
+                  )
+                ],
               ),
-              SizedBox(
-                height: 5,
-              ),
-              CupertinoButton(
-                child: Text('Auction'),
-                onPressed: () {
-                  sendAuction(seller, itemName, condition, imageUrl, price);
-                },
-              ),
-            ],
-          )
-        ],
-      ),
-    );
+            );
+          }else{
+            return CircularProgressIndicator();
+          }
+        });
   }
 
   getChatRoomId(String a, b, itemName) {

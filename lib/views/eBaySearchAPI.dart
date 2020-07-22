@@ -89,7 +89,7 @@ class _SearchAPIState extends State<SearchAPI> {
                 Item currentItem = items[index];
                 return GestureDetector(
                   onTap: () {
-                    addItemMap(currentItem.title, currentItem.condition, currentItem.sellerName,currentItem.price, currentItem.imageUrl);
+                    addItemMap(currentItem);
                   },
                   child: Card(
                     child: Column(
@@ -144,23 +144,28 @@ class _SearchAPIState extends State<SearchAPI> {
     return caseSearchList;
   }
 
-  addItemMap(String itemName, condition, seller, price, imageUrl) {
+  addItemMap(Item currentItem) {
 
-    print('add $itemName to Firebase.');
+
     Map<String, dynamic> itemInfo = {
-      'itemName': itemName,
-      'seller': seller,
-      'listPrice': price,
-      'condition': condition,
-      'imageUrl': imageUrl,
-      'offerNum': 0,
-      'sold': false,
+      'itemName': currentItem.title,
+      'seller': 'seller1',
+      'listPrice': currentItem.price,
+      'condition': currentItem.condition,
+      'imageUrl': currentItem.imageUrl,
+      'offerNum': currentItem.offerNum,
+      'sold': currentItem.sold,
       'buyers': [],
       'winner': '',
       'listTime': DateTime.now().toUtc().toString(),
-      'searchParam': setSearchParam(itemName),
+      'buyingOptions': currentItem.buyingOptions,
+      'searchParam': setSearchParam(currentItem.title),
+      'feedbackPercentage': currentItem.feedbackPercentage,
+      'feedbackScore': currentItem.feedbackScore,
+
     };
     DatabaseMethods().addItemHelper(itemInfo);
+    print('add ${currentItem.title} to Firebase.');
   }
 }
 
@@ -187,7 +192,6 @@ class HttpService {
           )
           .toList();
 
-      print(items.length);
       print('Done Parsing');
       return items;
     } else {

@@ -128,7 +128,7 @@ class DatabaseMethods {
         .getDocuments();
   }
 
-  getItemInfo(String itemId) {
+  getItemInfo(String itemId) async{
     return Firestore.instance.collection("mockData").document(itemId);
   }
 

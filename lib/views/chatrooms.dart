@@ -25,12 +25,13 @@ class _ChatRoomState extends State<ChatRoom> {
   int _currentIndex;
 
   @override
-  dispose(){
+  dispose() {
     super.dispose();
     chatSellerRooms.drain();
     chatBuyerRooms.drain();
     bids.drain();
   }
+
   Widget chatRoomsSellerList() {
     return StreamBuilder(
       stream: chatSellerRooms,
@@ -123,7 +124,9 @@ class _ChatRoomState extends State<ChatRoom> {
                     payment: roomData.data['paid'],
                     itemName: roomData.data['itemName'],
                     imageUrl: roomData.data['imageUrl'],
-                    bidderNum: roomData.data['buyers'] == null ? 0 : roomData.data['buyers'].length,
+                    bidderNum: roomData.data['buyers'] == null
+                        ? 0
+                        : roomData.data['buyers'].length,
                     condition: roomData.data['condition'],
                   );
                 })
@@ -258,8 +261,7 @@ class ChatRoomsTile extends StatelessWidget {
       child: Center(
         child: GestureDetector(
           onTap: () {
-            Navigator.push(
-                context,
+            Navigator.of(context, rootNavigator: true).push(
                 CupertinoPageRoute(
                     builder: (context) => isSeller
                         ? SellerChat(
@@ -270,6 +272,7 @@ class ChatRoomsTile extends StatelessWidget {
                             listPrice: listPrice,
                             condition: condition,
                             offerNum: offerNum,
+                            itemId: itemId,
                           )
                         : BuyerChat(
                             chatRoomId: this.chatRoomId,
@@ -286,81 +289,6 @@ class ChatRoomsTile extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 5),
             child: Row(
               children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                              width: 85,
-                              height: 30,
-                              decoration: new BoxDecoration(
-                                color: this.declined
-                                    ? (this.payment
-                                        ? Colors.green[200]
-                                        : Colors.red[200])
-                                    : Colors.blue,
-                                borderRadius: new BorderRadius.circular(2),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 3,
-                                    blurRadius: 10,
-                                    offset: Offset(
-                                        0, 2), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  this.declined
-                                      ? (this.payment ? 'Accepted' : 'Declined')
-                                      : 'Ongoing',
-                                  style: Styles.indication,
-                                ),
-                              )),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Flexible(
-                              child: Text(
-                            '$itemName',
-                            style: Styles.productRowItemName,
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: false,
-                          )),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 3,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 105,
-                          ),
-                          Text(
-                              isSeller
-                                  ? '${this.buyerName}'
-                                  : '${this.sellerName}',
-                              style: Styles.productRowItemPrice),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 3,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 105,
-                          ),
-                          Text('$offerNum people are interested',
-                              style: Styles.productRowItemPrice),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
@@ -369,6 +297,66 @@ class ChatRoomsTile extends StatelessWidget {
                     width: 120,
                   ),
                 ),
+                SizedBox(
+                  width: 10,
+                ),
+                Flexible(
+                  child: Column(
+                    children: [
+                      Container(
+                          width: 85,
+                          height: 30,
+                          decoration: new BoxDecoration(
+                            color: this.declined
+                                ? (this.payment
+                                    ? Colors.green[200]
+                                    : Colors.red[200])
+                                : Colors.blue,
+                            borderRadius: new BorderRadius.circular(2),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 3,
+                                blurRadius: 10,
+                                offset:
+                                    Offset(0, 2), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              this.declined
+                                  ? (this.payment ? 'Accepted' : 'Declined')
+                                  : 'Ongoing',
+                              style: Styles.indication,
+                            ),
+                          )),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        '$itemName',
+                        style: Styles.chatRoomTitle,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                      ),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Text(
+                          isSeller
+                              ? '${this.buyerName}'
+                              : '${this.sellerName}',
+                          style: Styles.productRowItemPrice),
+//                      SizedBox(
+//                        height: 3,
+//                      ),
+//                      Text('$offerNum people are interested',
+//                          style: Styles.productRowItemPrice),
+                    ],
+                  ),
+                ),
+
               ],
             ),
           ),
@@ -403,8 +391,7 @@ class BidRoomTile extends StatelessWidget {
       child: Center(
         child: GestureDetector(
           onTap: () {
-            Navigator.push(
-                context,
+            Navigator.of(context, rootNavigator: true).push(
                 CupertinoPageRoute(
                     // AuctionRoom({this.itemName, this.userName, this.declined, this.imageUrl});
                     builder: (context) => AuctionRoom(
@@ -420,75 +407,6 @@ class BidRoomTile extends StatelessWidget {
             padding: EdgeInsets.symmetric(horizontal: 5),
             child: Row(
               children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Row(
-                        children: [
-                          Container(
-                              width: 85,
-                              height: 30,
-                              decoration: new BoxDecoration(
-                                color: this.declined
-                                    ? (this.payment
-                                        ? Colors.green[200]
-                                        : Colors.red[200])
-                                    : Colors.blue,
-                                borderRadius: new BorderRadius.circular(2),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.grey.withOpacity(0.5),
-                                    spreadRadius: 3,
-                                    blurRadius: 10,
-                                    offset: Offset(
-                                        0, 2), // changes position of shadow
-                                  ),
-                                ],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  this.declined
-                                      ? (this.payment ? 'Accepted' : 'Declined')
-                                      : 'Ongoing',
-                                  style: Styles.indication,
-                                ),
-                              )),
-                          SizedBox(
-                            width: 20,
-                          ),
-                          Flexible(
-                              child: Text(
-                            '$itemName',
-                            style: Styles.productRowItemName,
-                            overflow: TextOverflow.ellipsis,
-                            softWrap: false,
-                          )),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 3,
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 105,
-                          ),
-                          Text('${this.sellerName}',
-                              style: Styles.productRowItemPrice),
-                        ],
-                      ),
-                      Row(
-                        children: [
-                          SizedBox(
-                            width: 105,
-                          ),
-                          Text('$bidderNum people bidding on this',
-                              style: Styles.productRowItemPrice),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
                 ClipRRect(
                   borderRadius: BorderRadius.circular(10),
                   child: Image.network(
@@ -497,6 +415,61 @@ class BidRoomTile extends StatelessWidget {
                     width: 120,
                   ),
                 ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: Column(
+                    children: [
+                      Container(
+                          width: 85,
+                          height: 30,
+                          decoration: new BoxDecoration(
+                            color: this.declined
+                                ? (this.payment
+                                    ? Colors.green[200]
+                                    : Colors.red[200])
+                                : Colors.blue,
+                            borderRadius: new BorderRadius.circular(2),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.5),
+                                spreadRadius: 3,
+                                blurRadius: 10,
+                                offset: Offset(
+                                    0, 2), // changes position of shadow
+                              ),
+                            ],
+                          ),
+                          child: Center(
+                            child: Text(
+                              this.declined
+                                  ? (this.payment ? 'Accepted' : 'Declined')
+                                  : 'Ongoing',
+                              style: Styles.indication,
+                            ),
+                          )),
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Text(
+                        '$itemName',
+                        style: Styles.chatRoomTitle,
+                        overflow: TextOverflow.ellipsis,
+                        softWrap: false,
+                      ),
+                      SizedBox(
+                        height: 3,
+                      ),
+                      Text('${this.sellerName}',
+                          style: Styles.productRowItemPrice),
+
+//                      Text('$bidderNum people bidding on this',
+//                          style: Styles.productRowItemPrice),
+                    ],
+                  ),
+                ),
+
               ],
             ),
           ),

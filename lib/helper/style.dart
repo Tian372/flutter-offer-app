@@ -11,7 +11,7 @@ abstract class Styles {
 
   static const TextStyle indication = TextStyle(
     color: Color.fromRGBO(0, 0, 0, 0.8),
-    fontSize: 18,
+    fontSize: 16,
     fontStyle: FontStyle.normal,
     fontWeight: FontWeight.normal,
   );
@@ -42,6 +42,12 @@ abstract class Styles {
 
   static const TextStyle deliveryTime = TextStyle(
     color: CupertinoColors.inactiveGray,
+  );
+  static const TextStyle chatRoomTitle = TextStyle(
+    color: Color.fromRGBO(0, 0, 0, 0.8),
+    fontSize: 18,
+    fontStyle: FontStyle.normal,
+    fontWeight: FontWeight.w400,
   );
 
   static const Color productRowDivider = Color(0xFFD9D9D9);

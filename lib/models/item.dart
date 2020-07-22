@@ -1,3 +1,5 @@
+import 'package:flutter/cupertino.dart';
+
 class Item {
   final String title;
   final String price;
@@ -8,17 +10,21 @@ class Item {
   final String feedbackPercentage;
   final int feedbackScore;
   final List<dynamic> buyingOptions;
+  final int offerNum;
+  final bool sold;
 
   Item(
-      {this.title,
-      this.price,
-      this.currency,
-      this.condition,
-      this.imageUrl,
-      this.sellerName,
-      this.feedbackPercentage,
-      this.feedbackScore,
-      this.buyingOptions});
+      {@required this.title,
+      @required this.price,
+      @required this.currency,
+      @required this.condition,
+      @required this.imageUrl,
+      @required this.sellerName,
+      @required this.feedbackPercentage,
+      @required this.feedbackScore,
+      @required this.buyingOptions,
+      this.offerNum = 0,
+      this.sold = false});
 
   factory Item.fromJson(Map<String, dynamic> json) => Item(
         title: json['title'] as String,
@@ -30,5 +36,19 @@ class Item {
         feedbackPercentage: json['seller']['feedbackPercentage'] as String,
         feedbackScore: json['seller']['feedbackScore'] as int,
         buyingOptions: json['buyingOptions'] as List<dynamic>,
+      );
+
+  factory Item.fromJson2(Map<String, dynamic> json) => Item(
+        title: json['itemName'] as String,
+        price: json['listPrice'] as String,
+        currency: 'USD',
+        condition: json['condition'] as String,
+        imageUrl: json['imageUrl'] as String,
+        sellerName: json['seller'] as String,
+        feedbackPercentage: json['feedbackPercentage'] as String,
+        feedbackScore: json['feedbackScore'] as int,
+        buyingOptions: json['buyingOptions'] as List<dynamic>,
+        offerNum: json['offerNum'] as int,
+        sold: json['sold'] as bool,
       );
 }
