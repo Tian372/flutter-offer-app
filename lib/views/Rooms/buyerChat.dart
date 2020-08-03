@@ -104,6 +104,7 @@ class _BuyerChatState extends State<BuyerChat> {
                 //TODO: set paid to true after payment
                 DatabaseMethods().addWinner(widget.itemId, Constants.myName);
                 DatabaseMethods().paidJob(widget.chatRoomId);
+                DatabaseMethods().declineOtherJobs(widget.sellerName);
                 Navigator.pop(context);
               },
               child: Container(

@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flutter/cupertino.dart';
+import 'package:offer_app/widget/widget.dart';
 import '../../helper/constants.dart';
 import '../../services/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -14,6 +15,7 @@ class AuctionRoom extends StatefulWidget {
   final String imageUrl;
   final int bidderNum;
   final String condition;
+  final String itemId;
 
   //bidderNum : bidderNum,
   //                          condition: condition,
@@ -21,7 +23,7 @@ class AuctionRoom extends StatefulWidget {
   final bool declined;
 
   AuctionRoom(
-      {this.itemName, this.userName, this.declined, this.imageUrl, this.condition, this.bidderNum,});
+      {this.itemName, this.userName, this.declined, this.imageUrl, this.condition, this.bidderNum,this.itemId});
 
   @override
   _AuctionRoomState createState() => _AuctionRoomState();
@@ -40,40 +42,6 @@ class _AuctionRoomState extends State<AuctionRoom> {
     super.dispose();
   }
 
-  Widget itemView() {
-    return Row(
-      children: [
-        ClipRRect(
-          borderRadius: BorderRadius.circular(5),
-          child: Image.network(
-            widget.imageUrl,
-            fit: BoxFit.cover,
-          ),
-        ),
-        SizedBox(
-          width: 50,
-        ),
-        Flexible(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              SizedBox(height: 5),
-              Text(
-                '${widget.condition}',
-                style: TextStyle(color: Colors.grey[600], fontSize: 12),
-              ),
-              SizedBox(height: 15),
-              Text(
-                '${widget.bidderNum} people are interested.',
-                style: TextStyle(color: Colors.grey[600], fontSize: 12),
-              )
-            ],
-          ),
-        ),
-      ],
-    );
-  }
 
   Widget priceAdder() {
     return StreamBuilder(
@@ -230,7 +198,7 @@ class _AuctionRoomState extends State<AuctionRoom> {
               width: double.infinity,
               child: Container(
                   padding: EdgeInsets.symmetric(vertical: 2, horizontal: 10),
-                  child: itemView()),
+                  child: itemView(widget.itemId)),
             ),
             Flexible(child: bidRecord()),
             SizedBox(

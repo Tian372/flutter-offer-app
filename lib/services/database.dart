@@ -17,7 +17,7 @@ class DatabaseMethods {
 
   Future<void> declineJob(String jobId) async {
     DocumentReference dr =
-        Firestore.instance.collection("chatRoom").document(jobId);
+    Firestore.instance.collection("chatRoom").document(jobId);
 
     dr.updateData(<String, dynamic>{
       'declined': true,
@@ -26,11 +26,19 @@ class DatabaseMethods {
 
   Future<void> paidJob(String jobId) async {
     DocumentReference dr =
-        Firestore.instance.collection("chatRoom").document(jobId);
+    Firestore.instance.collection("chatRoom").document(jobId);
 
     dr.updateData(<String, dynamic>{
       'paid': true,
-      'declined': true,
+    });
+  }
+
+  Future<void> declineOtherJobs(String userName) async {
+    await Firestore.instance.collection('chatRoom').where(
+        'seller', isEqualTo: userName).snapshots().forEach((snapshot) {
+          snapshot.documents.forEach((doc) {
+            doc.reference.updateData({'declined': true});
+          });
     });
   }
 
@@ -50,7 +58,7 @@ class DatabaseMethods {
 
   Future<void> updateBuyerList(String itemId, buyerName) async {
     DocumentReference dr =
-        Firestore.instance.collection('mockData').document(itemId);
+    Firestore.instance.collection('mockData').document(itemId);
 
     dr.updateData(<String, dynamic>{
       'offerNum': FieldValue.increment(1),
@@ -61,7 +69,7 @@ class DatabaseMethods {
 
   updateAuctionBuyerList(String itemId, buyerName) {
     DocumentReference dr =
-        Firestore.instance.collection('auctionRoom').document(itemId);
+    Firestore.instance.collection('auctionRoom').document(itemId);
 
     dr.updateData(<String, dynamic>{
       'buyers': FieldValue.arrayUnion([buyerName]),
@@ -71,7 +79,7 @@ class DatabaseMethods {
 
   Future<void> rejectJob(String jobId) async {
     DocumentReference dr =
-        Firestore.instance.collection("chatRoom").document(jobId);
+    Firestore.instance.collection("chatRoom").document(jobId);
 
     dr.collection("chats").getDocuments().then((snapshot) {
       for (DocumentSnapshot ds in snapshot.documents) {
@@ -128,7 +136,7 @@ class DatabaseMethods {
         .getDocuments();
   }
 
-  getItemInfo(String itemId) async{
+  getItemInfo(String itemId) async {
     return Firestore.instance.collection("mockData").document(itemId);
   }
 
@@ -211,7 +219,7 @@ class DatabaseMethods {
 
   Future<void> addWinner(String itemId, userName) async {
     DocumentReference dr =
-        Firestore.instance.collection('mockData').document(itemId);
+    Firestore.instance.collection('mockData').document(itemId);
     dr.updateData(<String, dynamic>{'sold': true, 'winner': userName});
     print('Winner updated');
   }

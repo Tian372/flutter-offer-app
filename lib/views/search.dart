@@ -102,6 +102,7 @@ class _SearchTabState extends State<SearchTab> {
         'paid': false,
         'imageUrl': currentItem.imageUrl,
         'condition': currentItem.condition,
+        'itemId': itemId,
       };
 
       databaseMethods.addAuctionRoom(auctionRoom, currentItem.title);
@@ -123,6 +124,7 @@ class _SearchTabState extends State<SearchTab> {
                   imageUrl: currentItem.imageUrl,
                   bidderNum: 1,
                   condition: currentItem.condition,
+                  itemId: itemId,
                 )));
   }
 

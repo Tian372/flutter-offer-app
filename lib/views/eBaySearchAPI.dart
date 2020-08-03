@@ -149,7 +149,7 @@ class _SearchAPIState extends State<SearchAPI> {
 
     Map<String, dynamic> itemInfo = {
       'itemName': currentItem.title,
-      'seller': 'seller1',
+      'seller': currentItem.sellerName,
       'listPrice': currentItem.price,
       'condition': currentItem.condition,
       'imageUrl': currentItem.imageUrl,

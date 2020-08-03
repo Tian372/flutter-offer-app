@@ -128,6 +128,7 @@ class _ChatRoomState extends State<ChatRoom> {
                         ? 0
                         : roomData.data['buyers'].length,
                     condition: roomData.data['condition'],
+                    itemId: roomData.data['itemId'],
                   );
                 })
             : Center(
@@ -375,6 +376,7 @@ class BidRoomTile extends StatelessWidget {
   final String imageUrl;
   final int bidderNum;
   final String condition;
+  final String itemId;
 
   BidRoomTile({
     this.declined,
@@ -384,6 +386,7 @@ class BidRoomTile extends StatelessWidget {
     this.imageUrl,
     this.bidderNum,
     this.condition,
+    @required this.itemId,
   });
 
   @override
@@ -402,6 +405,7 @@ class BidRoomTile extends StatelessWidget {
                           imageUrl: imageUrl,
                           bidderNum: bidderNum,
                           condition: condition,
+                      itemId: itemId,
                         )));
           },
           child: Container(
